@@ -9,16 +9,18 @@ let index = require('./routes/index');
 let api   = require('./routes/api');
 let lib      = require('./lib');
 let app = express();
+const detector = require('spider-detector');
 
 const passport = require('./passport');
 const session = require('./session');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(detector.middleware());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

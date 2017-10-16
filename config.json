@@ -1,12 +1,12 @@
 {
   "development": {
     "initDb":   "postgres",
-    "database": "seed",
+    "database": "iran-insight",
     "pgConnection": "postgres://postgres@localhost:5432/"
   },
   "production": {
     "initDb":   "",
-    "database": "seed",
+    "database": "iran-insight",
     "pgConnection": ""
   }
 }
