@@ -1,0 +1,12 @@
+{
+  "development": {
+    "initDb":   "postgres",
+    "database": "seed",
+    "pgConnection": "postgres://postgres@localhost:5432/"
+  },
+  "production": {
+    "initDb":   "",
+    "database": "seed",
+    "pgConnection": ""
+  }
+}

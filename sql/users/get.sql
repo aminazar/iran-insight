@@ -1,0 +1,1 @@
+select * from users where lower(name)=lower(${name})
