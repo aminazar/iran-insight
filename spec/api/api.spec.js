@@ -31,30 +31,30 @@ describe("REST API", ()=>{
     });
   });
   describe("user", ()=>{
-    let uid;
-    let adminUid;
+    let pid;
+    let adminPid;
     let u;
     let a;
     let teardown=false;
     let setup=true;
     beforeEach(done=>{
       if(setup) {
-        sql.test.users.drop().then(()=>{}).catch(()=>{});
+        sql.test.person.drop().then(()=>{}).catch(()=>{});
         u = new lib.User(true);
         u.username = 'amin';
         u.password = 'test';
-        sql.test.users.create()
+        sql.test.person.create()
           .then(() => {
             u.save()
               .then(id => {
-                uid = id;
+                pid = id;
                 setup=false;
                 a = new lib.User(true);
                 a.username = 'Admin';
                 a.password = 'atest';
                 a.save()
                   .then(aid=>{
-                    adminUid = aid;
+                    adminPid = aid;
                     done();
                   })
               })
@@ -107,13 +107,13 @@ describe("REST API", ()=>{
        expect(res.statusCode).toBe(200);
        let data = JSON.parse(res.body);
        expect(data.length).toBe(2);
-       expect(data.map(r=>r.uid)).toContain(adminUid);
-       expect(data.map(r=>r.name)).toContain('admin');
+       expect(data.map(r=>r.pid)).toContain(adminPid);
+       expect(data.map(r=>r.username)).toContain('admin');
        done();
      })
    });
    it("allows admin to update a username", done => {
-     req.post({url: base_url + 'user/' + uid + test_query, form:{username:'aminazar'}}, (err,res)=>{
+     req.post({url: base_url + 'user/' + pid + test_query, form:{username:'aminazar'}}, (err,res)=>{
        expect(res.statusCode).toBe(200);
        done();
      })
@@ -125,7 +125,7 @@ describe("REST API", ()=>{
      })
     });
     it("allows admin to update a password", done => {
-      req.post({url: base_url + 'user/' + uid + test_query, form:{password:'test2'}}, (err,res)=>{
+      req.post({url: base_url + 'user/' + pid + test_query, form:{password:'test2'}}, (err,res)=>{
         expect(res.statusCode).toBe(200);
         done();
       })
@@ -137,7 +137,7 @@ describe("REST API", ()=>{
       })
     });
     it("allows admin to update both username and password", done => {
-      req.post({url: base_url + 'user/' + uid + test_query, form:{username:'amin2', password:'test3'}}, (err,res)=>{
+      req.post({url: base_url + 'user/' + pid + test_query, form:{username:'amin2', password:'test3'}}, (err,res)=>{
         expect(res.statusCode).toBe(200);
         done();
       })
@@ -149,7 +149,7 @@ describe("REST API", ()=>{
       })
     });
     it("allows admin to delete a user", done => {
-      req.delete({url: base_url + 'user/' + uid + test_query, form:{username:'amin2',password:'test3'}}, (err,res)=> {
+      req.delete({url: base_url + 'user/' + pid + test_query, form:{username:'amin2',password:'test3'}}, (err,res)=> {
         expect(res.statusCode).toBe(200);
         done();
       });
@@ -159,8 +159,8 @@ describe("REST API", ()=>{
         if(resExpect(res,200)) {
           let data = JSON.parse(res.body);
           expect(data.length).toBe(1);
-          expect(data[0].uid).toBe(adminUid);
-          expect(data[0].name).toBe('admin');
+          expect(data[0].pid).toBe(adminPid);
+          expect(data[0].username).toBe('admin');
         }
         done();
       })
@@ -168,8 +168,8 @@ describe("REST API", ()=>{
     it("allows admin to add a new user", done => {
       req.put({url: base_url + 'user' + test_query, form:{username:'ali',password:'tes'}}, function(err,res){
         if(resExpect(res,200)) {
-          uid = JSON.parse(res.body);
-          expect(uid).toBeTruthy();
+          pid = JSON.parse(res.body);
+          expect(pid).toBeTruthy();
         }
         done();
       });
@@ -179,8 +179,8 @@ describe("REST API", ()=>{
         if(resExpect(res,200)){
           let data = JSON.parse(res.body);
           expect(data.length).toBe(2);
-          expect(data.map(r => r.name)).toContain('ali');
-          expect(data.map(r => r.uid)).toContain(uid);
+          expect(data.map(r => r.username)).toContain('ali');
+          expect(data.map(r => r.pid)).toContain(pid);
         }
         done();
       });
@@ -202,8 +202,8 @@ describe("REST API", ()=>{
       expect(teardown).toBeTruthy();
     });
     afterEach((done)=>{
-      if(uid&&teardown)
-        sql.test.users.drop().then(()=>done()).catch(err=>{console.log(err.message);done()});
+      if(pid&&teardown)
+        sql.test.person.drop().then(()=>done()).catch(err=>{console.log(err.message);done()});
       else done();
     });
   })
