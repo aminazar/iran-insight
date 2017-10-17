@@ -4,10 +4,10 @@
 const env = require("../../env");
 const sql = require('../../sql');
 
-describe("Test 'users' table",()=>{
-  let uid;
+describe("Test 'person' table",()=>{
+  let pid;
   beforeAll(done=>{
-      sql.test.users.create()
+      sql.test.person.create()
         .then(() => {
           done();
         })
@@ -18,10 +18,10 @@ describe("Test 'users' table",()=>{
   });
 
   it("should add a row to table", done=>{
-    sql.test.users.add({name:'Ali Alavi'})
+    sql.test.person.add({username:'a@a.com', secret: '123'})
       .then(res=>{
-        expect(typeof res.uid).toBe('number');
-        uid = res.uid;
+        expect(typeof res.pid).toBe('number');
+        pid = res.pid;
         done();
       })
       .catch(err=>{
@@ -31,10 +31,10 @@ describe("Test 'users' table",()=>{
   });
 
   it("should get the row in table", done=>{
-    if(uid){
-      sql.test.users.get({name:'Ali Alavi'})
+    if(pid){
+      sql.test.person.get({username:'a@a.com'})
         .then(res=>{
-          expect(res[0].uid).toBe(uid);
+          expect(res[0].pid).toBe(pid);
           done();
         })
         .catch(err=>{
@@ -45,8 +45,8 @@ describe("Test 'users' table",()=>{
   });
 
   it("should update a row in table", done=>{
-    if(uid){
-      sql.test.users.update({name:'Hadi Alavi'},uid)
+    if(pid){
+      sql.test.person.update({username:'hadi_0'}, pid)
         .then(res=> {
           expect(res).toBeTruthy();
           done()
@@ -59,10 +59,10 @@ describe("Test 'users' table",()=>{
   });
 
   it("should get the row in table", done=>{
-    if(uid){
-      sql.test.users.get({name:'Hadi Alavi'})
+    if(pid){
+      sql.test.person.get({username:'hadi_0'})
         .then(res=>{
-          expect(res[0].uid).toBe(uid);
+          expect(res[0].pid).toBe(pid);
           done();
         })
         .catch(err=>{
@@ -73,8 +73,8 @@ describe("Test 'users' table",()=>{
   });
 
   afterAll((done)=>{
-    if(uid)
-      sql.test.users.drop().then(res=>done()).catch(err=>{console.log(err.message);done()});
+    if(pid)
+      sql.test.person.drop().then(res=>done()).catch(err=>{console.log(err.message);done()});
     else done();
   });
 });

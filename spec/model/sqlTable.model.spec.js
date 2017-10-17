@@ -8,8 +8,8 @@ describe('SqlTable abstract class',()=>{
   let instance;
   let spies = {};
   beforeAll(done=>{
-    instance = new SqlTable('users','uid',true);
-    ['get','add','update'].forEach(e=>spies[e]=spyOn(instance.sql.users,e));
+    instance = new SqlTable('person','pid',true);
+    ['get','add','update'].forEach(e=>spies[e]=spyOn(instance.sql.person,e));
     done();
   });
   it("should throw error without table name",()=>{
@@ -33,21 +33,21 @@ describe('SqlTable abstract class',()=>{
     expect(test).toThrowError(TypeError,"exportData is not implemented");
   });
 
-  it("should call sql.users.get on load",()=>{
+  it("should call sql.person.get on load",()=>{
     instance.load({x:'y'}).then(()=>{}).catch(()=>{});
-    expect(instance.sql.users.get).toHaveBeenCalledWith({x:'y'});
+    expect(instance.sql.person.get).toHaveBeenCalledWith({x:'y'});
   });
 
-  it("should call exportData and sql.users.add on save where uid is not defined",done=>{
+  it("should call exportData and sql.person.add on save where pid is not defined",done=>{
     spies.exportData = spyOn(instance,'exportData');
-    spies.exportData.and.callFake(()=>new Promise(resolve=>resolve({name:'amin'})));
-    spies.add.and.callFake(data=>new Promise(resolve=>resolve({uid:'xyz'})));
+    spies.exportData.and.callFake(()=>new Promise(resolve=>resolve({username:'amin'})));
+    spies.add.and.callFake(data=>new Promise(resolve=>resolve({pid:'xyz'})));
     spies.update.and.callFake(data=>new Promise(resolve=>resolve(11)));
     instance.save()
       .then(()=>{
         expect(instance.exportData).toHaveBeenCalled();
-        expect(instance.sql.users.add).toHaveBeenCalledWith({name:'amin'});
-        expect(instance.uid).toBe('xyz');
+        expect(instance.sql.person.add).toHaveBeenCalledWith({username:'amin'});
+        expect(instance.pid).toBe('xyz');
         done();
       })
       .catch(err=>{
@@ -55,17 +55,17 @@ describe('SqlTable abstract class',()=>{
         done();
         });
   });
-  it("should call exportData and sql.users.add on save and work with plain object instead of promise",done=>{
+  it("should call exportData and sql.person.add on save and work with plain object instead of promise",done=>{
     spies.exportData = spyOn(instance,'exportData');
-    spies.exportData.and.callFake(()=>{return {name:'amin'}});
-    spies.add.and.callFake(data=>new Promise(resolve=>resolve({uid:10})));
-    spies.update.and.callFake(data=>new Promise(resolve=>resolve({uid:11})));
-    delete instance.uid;
+    spies.exportData.and.callFake(()=>{return {username:'amin'}});
+    spies.add.and.callFake(data=>new Promise(resolve=>resolve({pid:10})));
+    spies.update.and.callFake(data=>new Promise(resolve=>resolve({pid:11})));
+    delete instance.pid;
     instance.save()
       .then(()=>{
         expect(instance.exportData).toHaveBeenCalled();
-        expect(instance.sql.users.add).toHaveBeenCalledWith({name:'amin'});
-        expect(instance.uid).toBe(10);
+        expect(instance.sql.person.add).toHaveBeenCalledWith({username:'amin'});
+        expect(instance.pid).toBe(10);
         done();
       })
       .catch(err=>{
@@ -73,16 +73,16 @@ describe('SqlTable abstract class',()=>{
         done();
       });
   });
-  it("should call sql.users.update on save and work with plain object instead of promise",done=>{
+  it("should call sql.person.update on save and work with plain object instead of promise",done=>{
     spies.exportData = spyOn(instance,'exportData');
-    spies.exportData.and.callFake(()=>{return {name:'amin'}});
-    spies.add.and.callFake(data=>new Promise(resolve=>resolve({uid:10})));
-    spies.update.and.callFake(data=>new Promise(resolve=>resolve({uid:11})));
+    spies.exportData.and.callFake(()=>{return {username :'amin'}});
+    spies.add.and.callFake(data=>new Promise(resolve=>resolve({pid:10})));
+    spies.update.and.callFake(data=>new Promise(resolve=>resolve({pid:11})));
     instance.save()
       .then(()=>{
         expect(instance.exportData).toHaveBeenCalled();
-        expect(instance.sql.users.update).toHaveBeenCalledWith({name:'amin'},10);
-        expect(instance.uid).toBe(10);
+        expect(instance.sql.person.update).toHaveBeenCalledWith({username:'amin'},10);
+        expect(instance.pid).toBe(10);
         done();
       })
       .catch(err=>{
@@ -91,17 +91,17 @@ describe('SqlTable abstract class',()=>{
       });
   });
   it("should call importData on load",done=>{
-    spies.get.and.callFake(()=>new Promise(resolve=>resolve([{uid:1,name:'amin'}])));
+    spies.get.and.callFake(()=>new Promise(resolve=>resolve([{pid:1,username:'amin'}])));
     spies.importData = spyOn(instance,'importData');
     instance.load()
       .then(()=>{
-        expect(instance.importData).toHaveBeenCalledWith({uid:1,name:'amin'});
+        expect(instance.importData).toHaveBeenCalledWith({pid:1,username:'amin'});
         done();
       })
       .catch(err=>{fail(err.message);done()});
   });
   it("should fail on load where more than one recored is returned",done=>{
-    spies.get.and.callFake(()=>new Promise(resolve=>resolve([{uid:1,name:'amin'},{uid:2,name:'Ali'}])));
+    spies.get.and.callFake(()=>new Promise(resolve=>resolve([{pid:1,username:'amin'},{pid:2,username:'Ali'}])));
     instance.load({test:1})
       .then(()=>{
         fail('succeeded!');

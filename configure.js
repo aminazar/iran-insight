@@ -33,9 +33,10 @@ function createOrExist(tableName) {
 
 function prodTablesCreate() {
   return new Promise((resolve, reject) => {
-    createOrExist('users')
-        .then(res => resolve())
-    //     .then(createOrExist('products')) //Add new tables in order of dependency in promise chain
+    createOrExist('person')
+      .then(res => createOrExist('expertise'))
+      .then(res => createOrExist('person_expertise'))
+      .then(res => resolve())
       .catch((err) => {
         reject(err);
       });

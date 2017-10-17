@@ -22,10 +22,17 @@ module.exports = {
     drop:     sql('db/drop.sql'),
     test:     sql('db/test.sql'),
   },
-  users: {
-    create:   sql('users/create.sql'),
-    drop:     sql('users/drop.sql'),
-    get:      sql('users/get.sql'),
-    select:   sql('users/select.sql'),
+  person: {
+    create:         sql('person/create.sql'),
+    drop:           sql('person/drop.sql'),
+    get:            sql('person/get.sql'),
+  },
+  expertise: {
+    create:         sql('expertise/create.sql'),
+    drop:           sql('expertise/drop.sql'),
+  },
+  person_expertise: {
+    create:         sql('person_expertise/create.sql'),
+    drop:           sql('person_expertise/drop.sql'),
   },
 };
