@@ -67,16 +67,32 @@ genericDelete = (tableName,idColumn,isTest)=>{
   return (id)=> {
     return db.query(`delete from ${tableName} where ${idColumn}=` + id)
   }
-}
+};
 
 let tablesWithSqlCreatedByHelpers = [
   {
-    name: 'users',
+    name: 'person',
     insert: true,
     update: true,
-    select: false,
+    select: true,
     delete: true,
-    idColumn: 'uid',
+    idColumn: 'pid',
+  },
+  {
+    name: 'expertise',
+    insert: true,
+    update: true,
+    select: true,
+    delete: true,
+    idColumn: 'pid',
+  },
+  {
+    name: 'person_expertise',
+    insert: true,
+    update: true,
+    select: true,
+    delete: true,
+    idColumn: 'expertise_id',
   },
 ];
 
