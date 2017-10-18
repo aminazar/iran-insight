@@ -1,0 +1,1 @@
+select oid,name from organization
