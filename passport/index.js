@@ -6,6 +6,8 @@ let authDetails = require('./authDetails');
 let passport = require('passport');
 let LocalStrategy = require('passport-local');
 let GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+let FacebookStrategy = require('passport-facebook').Strategy;
+let LinkedInStrategy = require('passport-linkedin').Strategy;
 
 let setup = (app) => {
   app.use(passport.initialize());
@@ -24,7 +26,24 @@ let setup = (app) => {
     clientSecret: authDetails.googleAuth.clientSecret,
     callbackURL: authDetails.googleAuth.callBackURL,
     passReqToCallback: true,
-  }, lib.User.passportGoogleStrategy));
+  }, lib.User.passportOAuthStrategy));
+
+  passport.use(new FacebookStrategy({
+    clientID: authDetails.facebookAuth.clientID,
+    clientSecret: authDetails.facebookAuth.clientSecret,
+    callbackURL: authDetails.facebookAuth.callBackURL,
+    profileFields:  ['id', 'email', 'gender', 'name'],
+    enableProof: true,
+    passReqToCallback: true
+  }, lib.User.passportOAuthStrategy));
+
+  passport.use(new LinkedInStrategy({
+    consumerKey: authDetails.linkedinAuth.clientID,
+    consumerSecret: authDetails.linkedinAuth.clientSecret,
+    callbackURL: authDetails.linkedinAuth.callBackURL,
+    profileFields: ['id', 'first-name', 'last-name', 'email-address', 'headline'],
+    passReqToCallback: true
+  }, lib.User.passportOAuthStrategy));
 };
 
 module.exports = {

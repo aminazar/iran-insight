@@ -166,8 +166,8 @@ describe("User model",()=>{
       });
   });
 
-  it("should save data received from google", done => {
-    //Create simple object like google callback object
+  it("should save data received from google/facebook/linkedin", done => {
+    //Create simple object like google callback passport object
     let profile = { id: '111478276625076148179',
       displayName: 'Alireza Hariri',
       name: { familyName: 'Hariri', givenName: 'Alireza' },
@@ -201,7 +201,7 @@ describe("User model",()=>{
     let req = {query: {
       test: 'tEsT',
     }};
-    User.passportGoogleStrategy(req, token, refreshToken, profile, (err, user) => {
+    User.passportOAuthStrategy(req, token, refreshToken, profile, (err, user) => {
       if(err)
         fail(err);
       else{
@@ -213,7 +213,7 @@ describe("User model",()=>{
     });
   });
 
-  it("should get received data from google from database", done => {
+  it("should get received data from google/facebook/linkedin from database", done => {
     u = new User(true);
     u.load('ali.71hariri@gmail.com', null)
       .then(res => {
@@ -226,7 +226,7 @@ describe("User model",()=>{
       })
   });
 
-  it("should update user data when received data from google for existence user email", done => {
+  it("should update user data when received data from google/facebook/linkedin for existence user email", done => {
     //Create simple object like google callback object
     let profile = { id: '111478276625076148179',
       displayName: 'John Smith',
@@ -261,7 +261,7 @@ describe("User model",()=>{
     let req = {query: {
       test: 'tEsT',
     }};
-    User.passportGoogleStrategy(req, token, refreshToken, profile, (err, user) => {
+    User.passportOAuthStrategy(req, token, refreshToken, profile, (err, user) => {
       if(err)
         fail(err);
       else{
@@ -273,7 +273,7 @@ describe("User model",()=>{
     });
   });
 
-  it("should update user data (received data from google callback)", done => {
+  it("should update user data (received data from google/facebook/linkedin callback)", done => {
     u = new User(true);
     u.load('ali.71hariri@gmail.com', null)
       .then(res => {
@@ -281,6 +281,48 @@ describe("User model",()=>{
         expect(res.display_name).toBe('John Smith');
         expect(res.firstname).toBe('John');
         expect(res.surename).toBe('Smith');
+        done();
+      })
+      .catch(err => {
+        fail(err);
+        done();
+      })
+  });
+
+  it("should save data received from google/facebook/linkedin without all data", done => {
+    //Create simple object like google callback passport object
+    let profile = { id: '111478276625076148179',
+      displayName: undefined,
+      name: { familyName: 'Sparrow', givenName: 'Jack' },
+      emails: [ { value: 'js@k.com', type: 'account' } ],
+      photos: [ { value: 'https://lh4.googleusercontent.com/-o05725655m4/AAAAAAAAAAI/AAAAAAAAAYM/dImmjGwBIUk/photo.jpg?sz=50' } ],
+      gender: 'male'
+    };
+    let token = 'kjlh123012SDF@$!@5DFGsdfg92134SZ+SAdf-234ASDF';
+    let refreshToken = null;
+    let req = {query: {
+      test: 'tEsT',
+    }};
+    User.passportOAuthStrategy(req, token, refreshToken, profile, (err, user) => {
+      if(err)
+        fail(err);
+      else{
+        expect(user).toBeTruthy();
+        pid = user.pid;
+      }
+
+      done();
+    });
+  });
+
+  it("should get received data from google/facebook/linkedin from database", done => {
+    u = new User(true);
+    u.load('js@k.com', null)
+      .then(res => {
+        expect(res.pid).toBe(pid);
+        expect(res.display_name).toBe('Jack Sparrow');
+        expect(res.firstname).toBe('Jack');
+        expect(res.surename).toBe('Sparrow');
         done();
       })
       .catch(err => {

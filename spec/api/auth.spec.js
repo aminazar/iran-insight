@@ -46,15 +46,24 @@ describe("Test auth APIs", () => {
   });
 
   it("should call google authentication API", (done) => {
-    request.get(base_url + 'login/google' + test_query, (err, res) => {
+    req.get(base_url + 'login/google' + test_query, (err, res) => {
       expect(res.statusCode).toBe(200);
       done();
     })
   });
 
-  it("should get user profile and email data from google", (done) => {
+  it("should call facebook authentication API", (done) => {
+    req.get(base_url + 'login/facebook' + test_query, (err, res) => {
+      expect(res.statusCode).toBe(200);
+      done();
+    });
+  });
 
-    done();
+  it("should call linkedin authentication API", (done) => {
+    req.get(base_url + 'login/linkedin' + test_query, (err, res) => {
+      expect(res.statusCode).toBe(200);
+      done();
+    });
   });
 
   it("tears down",()=>{
