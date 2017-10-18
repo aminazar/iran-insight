@@ -1,0 +1,1 @@
+select lec_type_id,name from lce_type
