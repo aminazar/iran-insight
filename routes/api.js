@@ -63,7 +63,7 @@ router.post('/user/:uid', apiResponse('User', 'update', true, ['params.uid','bod
 router.delete('/user/:uid', apiResponse('User', 'delete', true, ['params.uid']));
 router.put('/user/message', apiResponse('User', 'socketHandler', false, ['body']));
 // Organization API
-router.get('/organization', apiResponse('Organization', 'select' , false));
+router.get('/organization/:oid', apiResponse('Organization', 'select' , false, ['params.oid']));
 
 
 module.exports = router;

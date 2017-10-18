@@ -1,1 +1,1 @@
-select oid,name from organization
+select * from organization
