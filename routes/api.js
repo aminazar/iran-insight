@@ -62,5 +62,7 @@ router.get('/user', apiResponse('User', 'select', true));
 router.post('/user/:pid', apiResponse('User', 'update', true, ['params.pid','body']));
 router.delete('/user/:pid', apiResponse('User', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('User', 'socketHandler', false, ['body']));
+router.get('/user/checkifrep',apiResponse('User','findRepRequests',true, ['user.username']));
+//
 
 module.exports = router;

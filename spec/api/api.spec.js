@@ -99,32 +99,46 @@ describe("REST API", ()=>{
     it("logins as admin", done => {
       req.post({url: base_url + 'login' + test_query, form:{username:'admin',password:'atest'}}, (err,res)=>{
         expect(res.statusCode).toBe(200);
+        console.log(res.headers);
         done();
       })
     });
-   it("allows admin to list all users",done => {
+
+    it("allows admin to list all users",done => {
      req.get(base_url + 'user' + test_query, (err,res)=>{
        expect(res.statusCode).toBe(200);
        let data = JSON.parse(res.body);
        expect(data.length).toBe(2);
+       // console.log(data);
        expect(data.map(r=>r.pid)).toContain(adminPid);
        expect(data.map(r=>r.username)).toContain('admin');
        done();
      })
    });
+
+    it("should get all Representative user pending requests", done =>{
+      req.get(base_url + 'user/checkifrep' + test_query, (err,res)=>{
+        expect(res.statusCode).toBe(200);
+        done();
+      })
+    });
+
+
    it("allows admin to update a username", done => {
      req.post({url: base_url + 'user/' + pid + test_query, form:{username:'aminazar'}}, (err,res)=>{
        expect(res.statusCode).toBe(200);
        done();
      })
    });
+
    it("allows admin to update a username - checking that update happened", done =>{
      req.post({url: base_url + 'loginCheck' + test_query, form:{username:'aminazar',password:'test'}}, (err,res)=>{
        expect(res.statusCode).toBe(200);
        done();
      })
     });
-    it("allows admin to update a password", done => {
+
+   it("allows admin to update a password", done => {
       req.post({url: base_url + 'user/' + pid + test_query, form:{password:'test2'}}, (err,res)=>{
         expect(res.statusCode).toBe(200);
         done();
