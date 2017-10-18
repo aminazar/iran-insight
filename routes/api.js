@@ -59,8 +59,8 @@ router.get('/validUser',apiResponse('User', 'afterLogin', false, ['user.username
 //User API
 router.put('/user', apiResponse('User', 'insert', true, ['body']));
 router.get('/user', apiResponse('User', 'select', true));
-router.post('/user/:uid', apiResponse('User', 'update', true, ['params.uid','body']));
-router.delete('/user/:uid', apiResponse('User', 'delete', true, ['params.uid']));
+router.post('/user/:pid', apiResponse('User', 'update', true, ['params.pid','body']));
+router.delete('/user/:pid', apiResponse('User', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('User', 'socketHandler', false, ['body']));
 // Organization API
 router.get('/organization/:oid', apiResponse('Organization', 'select' , false, ['params.oid']));
