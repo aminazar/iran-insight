@@ -1,1 +1,1 @@
-drop table person;
+drop table if exists person;
