@@ -33,9 +33,10 @@ function createOrExist(tableName) {
 
 function prodTablesCreate() {
   return new Promise((resolve, reject) => {
-
     [
-      'users',
+      'person',
+      'expertise',
+      'person_expertise',
       'organization_type',
       'organization',
       'lce_type',
