@@ -33,14 +33,18 @@ function createOrExist(tableName) {
 
 function prodTablesCreate() {
   return new Promise((resolve, reject) => {
-    createOrExist('person')
-      .then(res => createOrExist('expertise'))
-      .then(res => createOrExist('person_expertise'))
-      .then(res => resolve())
-      .catch((err) => {
-        reject(err);
-      });
+
+    [
+      'users',
+      'organization_type',
+      'organization',
+      'lce_type',
+      'organization_lce',
+    ].reduce((x, y) => createOrExist(x).then(createOrExist(y)))
+      .then(resolve())
+      .catch(err => reject(err));
   });
+
 }
 
 function adminRowCreate() {

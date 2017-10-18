@@ -1,0 +1,1 @@
+select * from organization_type where lower(name)=lower(${name})

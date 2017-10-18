@@ -9,7 +9,7 @@
 const rawSql = require('./raw.sql');
 const env = require('../env');
 let wrappedSQL = {test: {}};
-let usingFunction = query=> {
+let usingFunction = query => {
   let res = {
     get: 'any',
     uniqueGet: 'one',
@@ -28,10 +28,10 @@ for (let table in rawSql) {
   wrappedSQL[table] = {};
   wrappedSQL.test[table] = {};
   for (let query in rawSql[table]) {
-    wrappedSQL[table][query] = (data)=> {
+    wrappedSQL[table][query] = (data) => {
       return ((table === 'db' ? env.initDb : env.db)[usingFunction(query)])(rawSql[table][query], data);
     };
-    wrappedSQL.test[table][query] = (data)=> {
+    wrappedSQL.test[table][query] = (data) => {
       return (env.testDb[usingFunction(query)])(rawSql[table][query], data);
     };
   }
@@ -41,30 +41,30 @@ for (let table in rawSql) {
  */
 chooseDb = (tableName, isTest) => tableName === 'db' ? env.initDb : (isTest ? env.testDb : env.db);
 
-genericInsert = (tableName, idColumn, isTest)=> {
+genericInsert = (tableName, idColumn, isTest) => {
   let db = chooseDb(tableName, isTest);
-  return (data)=> {
+  return (data) => {
     return db.one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn);
   }
 };
 
-genericUpdate = (tableName, idColumn, isTest)=> {
+genericUpdate = (tableName, idColumn, isTest) => {
   let db = chooseDb(tableName, isTest);
   return (data, id) => {
     return db.query(env.pgp.helpers.update(data, null, tableName) + ` where ${idColumn}=` + id);
   };
 };
 
-genericSelect = (tableName, isTest)=> {
+genericSelect = (tableName, isTest) => {
   let db = chooseDb(tableName, isTest);
   return () => {
     return db.query(`select * from ${tableName}`);
   };
 };
 
-genericDelete = (tableName,idColumn,isTest)=>{
-  let db = chooseDb(tableName,isTest);
-  return (id)=> {
+genericDelete = (tableName, idColumn, isTest) => {
+  let db = chooseDb(tableName, isTest);
+  return (id) => {
     return db.query(`delete from ${tableName} where ${idColumn}=` + id)
   }
 };
@@ -94,9 +94,19 @@ let tablesWithSqlCreatedByHelpers = [
     delete: true,
     idColumn: 'expertise_id',
   },
+  {
+    name: 'organization',
+    insert: true,
+    update: true,
+    select: false,
+    delete: true,
+    idColumn: 'oid',
+  }
+
+
 ];
 
-tablesWithSqlCreatedByHelpers.forEach((table)=> {
+tablesWithSqlCreatedByHelpers.forEach((table) => {
   if (!wrappedSQL[table])
     wrappedSQL[table] = {};
 
@@ -118,9 +128,9 @@ tablesWithSqlCreatedByHelpers.forEach((table)=> {
     wrappedSQL.test[table.name].select = genericSelect(table.name, true);
   }
 
-  if(table.delete){
-    wrappedSQL[table.name].delete       = genericDelete(table.name, table.idColumn, false);
-    wrappedSQL.test[table.name].delete  = genericDelete(table.name, table.idColumn, true);
+  if (table.delete) {
+    wrappedSQL[table.name].delete = genericDelete(table.name, table.idColumn, false);
+    wrappedSQL.test[table.name].delete = genericDelete(table.name, table.idColumn, true);
   }
 });
 
