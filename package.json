@@ -34,7 +34,7 @@
     "spider-detector": "^1.0.18"
   },
   "devDependencies": {
-    "jasmine": "^2.5.3",
+    "jasmine": "^2.8.0",
     "jasmine-node": "^1.14.5",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",

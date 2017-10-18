@@ -4,6 +4,8 @@
 /dist
 /tmp
 
+config.json
+
 # dependencies
 /node_modules
 /bower_components
