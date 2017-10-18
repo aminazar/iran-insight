@@ -56,11 +56,15 @@ router.post('/login', passport.authenticate('local', {}), apiResponse('User', 'a
 router.post('/loginCheck', apiResponse('User', 'loginCheck', false, ['body.username', 'body.password']));
 router.get('/logout', (req,res)=>{req.logout();res.sendStatus(200)});
 router.get('/validUser',apiResponse('User', 'afterLogin', false, ['user.username']));
+
+//Authentication API
+router.get('/login/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login', 'profile', 'email']}));
+router.get('/login/google/callback', passport.authenticate('google', {}), apiResponse('User', 'afterLogin', false, ['user.username']));
+
 //User API
 router.put('/user', apiResponse('User', 'insert', true, ['body']));
 router.get('/user', apiResponse('User', 'select', true));
 router.post('/user/:pid', apiResponse('User', 'update', true, ['params.pid','body']));
 router.delete('/user/:pid', apiResponse('User', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('User', 'socketHandler', false, ['body']));
-
 module.exports = router;

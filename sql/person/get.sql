@@ -1,3 +1,3 @@
 select *
 from person
-where username = ${username}
+where lower(username) = lower(${username})
