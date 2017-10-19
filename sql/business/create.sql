@@ -1,3 +1,4 @@
+CREATE EXTENSION if not exists postgis;
 create table if not exists business(
     bid serial not null primary key,
     name varchar(50) not null unique,
@@ -11,4 +12,4 @@ create table if not exists business(
     url varchar(30),
     general_stats jsonb,
     financial_stats jsonb
-)
+);
