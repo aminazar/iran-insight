@@ -1,11 +1,14 @@
 CREATE TABLE if not exists organization_lce(
     id serial not null primary key,
-    name varchar(50) not null,
     oid1 integer not null references organization(oid),
     oid2 integer references organization(oid),
     start_date timestamp without time zone not null,
-    end_date timestamp without time zone not null,
-description varchar(50),
-lce_type_id integer references lce_type(lce_type_id)
+    start_date_fa varchar(20),
+    end_date timestamp without time zone,
+    end_date_fa varchar(20),
+description varchar(100),
+description_fa varchar(100),
+lce_type_id integer
+--lce_type_id integer references lce_type(lce_type_id)
 
 )

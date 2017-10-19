@@ -101,7 +101,32 @@ let tablesWithSqlCreatedByHelpers = [
     select: false,
     delete: true,
     idColumn: 'oid',
-  }
+  },
+  {
+    name: 'organization_type',
+    insert: true,
+    update: true,
+    select: false,
+    delete: true,
+    idColumn: 'org_type_id',
+  },
+  {
+    name: 'organization_lce',
+    insert: true,
+    update: true,
+    select: false,
+    delete: true,
+    idColumn: 'id',
+  },
+  {
+    name: 'lce_type',
+    insert: true,
+    update: true,
+    select: false,
+    delete: true,
+    idColumn: 'lce_type_id',
+  },
+
 
 
 ];
