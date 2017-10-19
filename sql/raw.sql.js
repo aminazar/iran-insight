@@ -60,5 +60,13 @@ module.exports = {
     get:        sql('lce_type/get.sql'),
     select:     sql('lce_type/select.sql'),
   },
+  business: {
+    create:     sql('business/create.sql'),
+    drop:       sql('business/drop.sql'),
+  },
+  event: {
+    create:     sql('event/create.sql'),
+    drop:       sql('event/drop.sql'),
+  },
 }
 ;

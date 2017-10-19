@@ -42,6 +42,7 @@ function prodTablesCreate() {
       .then(createOrExist('lce_type'))
       .then(createOrExist('organization_lce'))
       .then(createOrExist('business'))
+      .then(createOrExist('event'))
       .then(resolve())
       .catch(err => reject(err));
   });

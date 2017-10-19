@@ -74,5 +74,7 @@ router.put('/user/message', apiResponse('User', 'socketHandler', false, ['body']
 // Organization API
 router.get('/organization/:oid', apiResponse('Organization', 'select' , false, ['params.oid']));
 
+//Events API
+router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid']));
 
 module.exports = router;
