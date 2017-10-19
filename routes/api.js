@@ -72,7 +72,9 @@ router.post('/user/:pid', apiResponse('User', 'update', true, ['params.pid','bod
 router.delete('/user/:pid', apiResponse('User', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('User', 'socketHandler', false, ['body']));
 // Organization API
-router.get('/organization/:oid', apiResponse('Organization', 'select' , false, ['params.oid']));
+router.get('/organization', apiResponse('Organization', 'getAll' , false));
+router.get('/organization/:oid', apiResponse('Organization', 'getById' , false, ['params.oid']));
+router.put('/organization', apiResponse('Organization', 'insert' , false, ['body']));
 
 
 module.exports = router;
