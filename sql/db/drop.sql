@@ -1,1 +1,1 @@
-drop database ${dbName~}
+drop database if exists "${dbName~}"
