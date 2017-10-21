@@ -223,12 +223,13 @@ describe("Test auth APIs", () => {
         })
       })
       .catch(err => {
-
+        fail(err);
+        done();
       })
   });
 
   it("should login with username and password (Local Authentication)", (done) => {
-    req.post({
+    request.post({
       url: base_url + 'login' + test_query,
       form: {
         username: username,
@@ -243,24 +244,4 @@ describe("Test auth APIs", () => {
       done();
     })
   });
-
-  it("tears down",()=>{
-    teardown=true;
-    expect(teardown).toBeTruthy();
-  });
-
-  // afterEach(done => {
-  //   if(teardown)
-  //     sql.test.person_activation_link.drop()
-  //       .then(res => sql.test.person_expertise.drop())
-  //       .then(res => sql.test.expertise.drop())
-  //       .then(res => sql.test.person.drop())
-  //       .then(res => done())
-  //       .catch(err => {
-  //         console.log(err);
-  //         done();
-  //       });
-  //   else
-  //     done();
-  // });
 });

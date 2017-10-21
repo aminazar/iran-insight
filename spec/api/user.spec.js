@@ -217,17 +217,5 @@ describe("REST API", () => {
         done();
       });
     });
-    it("tears down", () => {
-      teardown = true;
-      expect(teardown).toBeTruthy();
-    });
-    afterEach((done) => {
-      if (pid && teardown)
-        sql.test.person.drop().then(() => done()).catch(err => {
-          console.log(err.message);
-          done()
-        });
-      else done();
-    });
   })
 });
