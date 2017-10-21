@@ -39,7 +39,6 @@ describe("REST API", () => {
   describe("user", () => {
     let pid;
     let adminPid;
-    let teardown = false;
     let setup = true;
     beforeEach(done => {
       if (setup) {
@@ -221,18 +220,6 @@ describe("REST API", () => {
         expect(res.statusCode).toBe(403);
         done();
       });
-    });
-    it("tears down", () => {
-      teardown = true;
-      expect(teardown).toBeTruthy();
-    });
-    afterEach((done) => {
-      if (pid && teardown)
-        sql.test.person.drop().then(() => done()).catch(err => {
-          console.log(err.message);
-          done()
-        });
-      else done();
     });
   })
 });

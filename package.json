@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "jasmine-node --verbose spec/api --forceexit --captureExceptions",
+    "test": "jasmine & jasmine-node --verbose spec/api --forceexit --captureExceptions",
     "model_test": "jasmine",
     "postinstall": "node configure.js"
   },
@@ -20,6 +20,7 @@
     "express-session": "^1.15.0",
     "moment": "^2.19.1",
     "morgan": "~1.7.0",
+    "nodemailer": "^4.2.0",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",
     "passport-google-oauth": "^1.0.0",
@@ -29,6 +30,7 @@
     "pg-monitor": "^0.7.1",
     "pg-promise": "^5.5.4",
     "pug": "^2.0.0-rc.4",
+    "randomstring": "^1.1.5",
     "redis": "^2.7.1",
     "request": "^2.79.0",
     "serve-favicon": "~2.3.0",

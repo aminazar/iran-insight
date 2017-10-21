@@ -66,6 +66,10 @@ router.get('/login/linkedin', passport.authenticate('linkedin', { scope: ['r_bas
 router.get('/login/linkedin/callback', passport.authenticate('linkedin', {}), apiResponse('User', 'afterLogin', false, ['user.username']));
 
 //User API
+router.put('/user/register', apiResponse('User', 'registration', false, ['body']));
+router.get('/user/activate/link/:link', apiResponse('User', 'checkActiveLink', false, ['params.link']));
+router.post('/user/auth/local/:link', apiResponse('User', 'completeAuth', false, ['params.link', 'body']));
+
 router.put('/user', apiResponse('User', 'insert', true, ['body']));
 router.get('/user', apiResponse('User', 'select', true));
 router.post('/user/:pid', apiResponse('User', 'update', true, ['params.pid','body']));
