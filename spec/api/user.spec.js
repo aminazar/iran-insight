@@ -10,7 +10,7 @@ let resExpect = (res, statusCode) => {
     let jres;
     try {
       jres = JSON.parse(res.body);
-    } catch(e) {
+    } catch (e) {
       console.log('Unexpected server response:', res.body);
       return false;
     }
@@ -39,29 +39,17 @@ describe("REST API", () => {
   describe("user", () => {
     let pid;
     let adminPid;
-    let u;
-    let a;
     let teardown = false;
     let setup = true;
     beforeEach(done => {
       if (setup) {
-        sql.test.person.drop()
-          .then(() => {
-            u = new lib.User(true);
-            u.username = 'amin';
-            u.password = 'test';
-            return sql.test.person.create();
-          })
-          .then(() => {
-            return u.save();
-          })
+        lib.dbHelpers.create(['person', 'business', 'organization', 'event'])
+          .then(() => lib.dbHelpers.addPerson('amin', 'test'))
           .then(id => {
+            console.log('id', id);
             pid = id;
             setup = false;
-            a = new lib.User(true);
-            a.username = 'Admin';
-            a.password = 'atest';
-            return a.save();
+            return lib.dbHelpers.addPerson('Admin', 'atest')
           })
           .then(aid => {
             adminPid = aid;
@@ -123,7 +111,6 @@ describe("REST API", () => {
       req.get(base_url + 'user' + test_query, (err, res) => {
         expect(res.statusCode).toBe(200);
         let data = JSON.parse(res.body);
-        console.log('===>data: ', data);
         expect(data.length).toBe(2);
         expect(data.map(r => r.pid)).toContain(adminPid);
         expect(data.map(r => r.username)).toContain('admin');

@@ -4,7 +4,6 @@
 const env = require('./env');
 const sql = require('./sql');
 const lib = require('./lib');
-const User = lib.User;
 
 function dbTestCreate() {
   return new Promise((resolve, reject) => {
@@ -13,64 +12,32 @@ function dbTestCreate() {
         resolve();
       })
       .catch(err => {
-        reject(err);
+        if(err.message.indexOf('already exists') === -1) {
+          reject(err);
+        } else {
+          resolve();
+        }
       });
   });
-}
-
-function createOrExist(tableName) {
-  return new Promise((resolve, reject) => {
-    sql[tableName].create()
-      .then(resolve)
-      .catch(err => {
-        if (err.message.indexOf(`"${tableName}" already exists`) !== -1)
-          resolve();
-        else
-          reject(err);
-      })
-  })
 }
 
 function prodTablesCreate() {
-  return new Promise((resolve, reject) => {
-    createOrExist('person')
-      .then(createOrExist('expertise'))
-      .then(createOrExist('person_expertise'))
-      .then(createOrExist('organization_type'))
-      .then(createOrExist('person_activation_link'))
-      .then(createOrExist('organization'))
-      .then(createOrExist('lce_type'))
-      .then(createOrExist('organization_lce'))
-      .then(createOrExist('business'))
-      .then(resolve())
-      .catch(err => reject(err));
-  });
-
+  return lib.dbHelpers.create([
+      'person',
+      'expertise',
+      'person_expertise',
+      'organization_type',
+      'organization',
+      'lce_type',
+      'organization_lce',
+      'business',
+      'event',
+      ], false, false); // WARNING: never change this 'false' to 'true'.
 }
 
-function adminRowCreate() {
-  return new Promise((resolve, reject) => {
-    let user = new User();
-
-    let data = {
-      username: 'admin',
-      password: 'admin',
-    };
-
-    user.insert(data)
-      .then(() => {
-        resolve();
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
-}
-
-function setupMainDatabase(msg) {
-  console.log(msg);
+function setupMainDatabase() {
   prodTablesCreate()
-    .then(adminRowCreate)
+    .then(() => lib.dbHelpers.addPerson('admin', 'admin', {}, false, true))
     .then(() => {
       if (env.isDev)
         return dbTestCreate();
@@ -86,10 +53,15 @@ function setupMainDatabase(msg) {
 
 if (env.isDev) {
   sql.db.create({dbName: env.db_name})
-    .then(res => {
-      setupMainDatabase(res);
+    .then(() => {
+      setupMainDatabase();
     })
     .catch(err => {
-      setupMainDatabase(err.message);
+      if(err.message.indexOf('already exists') === -1) {
+        console.log(err);
+        process.exit();
+      } else {
+        setupMainDatabase();
+      }
     });
 }

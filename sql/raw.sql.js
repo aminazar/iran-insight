@@ -67,5 +67,13 @@ module.exports = {
     get:                sql('person_activation_link/get.sql'),
     getByLink:          sql('person_activation_link/getByLink.sql'),
   },
+  business: {
+    create:     sql('business/create.sql'),
+    drop:       sql('business/drop.sql'),
+  },
+  event: {
+    create:     sql('event/create.sql'),
+    drop:       sql('event/drop.sql'),
+  },
 }
 ;
