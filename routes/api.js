@@ -80,8 +80,8 @@ router.get('/organization/:oid', apiResponse('Organization', 'select' , false, [
 
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid']));
-router.put('/event', apiResponse('Event', 'saveData', false, ['body']));
-router.post('/event/:eid', apiResponse('Event', 'saveData', false, ['body', 'params.eid']));
-router.delete('/event/:eid', apiResponse('Event', 'delete', false, ['params.eid']));
+router.put('/event', apiResponse('Event', 'saveData', false, ['body', 'user.pid']));
+router.post('/event/:eid', apiResponse('Event', 'saveData', false, ['body', 'params.eid', 'user.pid']));
+router.delete('/event/:eid', apiResponse('Event', 'delete', false, ['params.eid', 'user.pid']));
 
 module.exports = router;
