@@ -124,6 +124,14 @@ let tablesWithSqlCreatedByHelpers = [
     idColumn: 'oid',
   },
   {
+    name: 'person_activation_link',
+    insert: true,
+    update: true,
+    select: true,
+    delete: true,
+    idColumn: 'pid',
+  },
+  {
     name: 'event',
     insert: true,
     update: true,
@@ -132,8 +140,6 @@ let tablesWithSqlCreatedByHelpers = [
     delete: true,
     idColumn: 'eid',
   },
-
-
 ];
 
 tablesWithSqlCreatedByHelpers.forEach((table) => {
