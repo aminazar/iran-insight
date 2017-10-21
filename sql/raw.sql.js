@@ -63,7 +63,7 @@ module.exports = {
   person_activation_link: {
     create:             sql('person_activation_link/create.sql'),
     drop:               sql('person_activation_link/drop.sql'),
-    deleteByUsername:   sql('person_activation_link/deleteByUsername.sql'),
+    deleteByLink:       sql('person_activation_link/deleteByLink.sql'),
     get:                sql('person_activation_link/get.sql'),
     getByLink:          sql('person_activation_link/getByLink.sql'),
   },
