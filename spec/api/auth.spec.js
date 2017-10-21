@@ -3,9 +3,9 @@ const base_url = "http://localhost:3000/api/";
 const test_query = '?test=tEsT';
 const lib = require('../../lib');
 const sql = require('../../sql');
+let req = request.defaults({jar: true});//enabling cookies
 
 describe("Test auth APIs", () => {
-  let teardown=false;
   let setup=true;
   let u;
   let username;
@@ -86,12 +86,12 @@ describe("Test auth APIs", () => {
   }, 10000);
 
   it("should semi register user locally (no email)", (done) => {
-    req.put({
+    request.put({
       url: base_url + '/user/register' + test_query,
       form: {email: '', display_name: 'ali'}
     }, (err, res) => {
       if(err)
-        fail(err);
+        this.fail(err);
       else
         expect(res.statusCode).toBe(400);
       done();
@@ -99,12 +99,12 @@ describe("Test auth APIs", () => {
   });
 
   it("should semi register user locally (no display_name)", (done) => {
-    req.put({
+    request.put({
       url: base_url + '/user/register' + test_query,
       form: {email: 'alireza@bentoak.systems'}
     }, (err, res) => {
       if(err)
-        fail(err);
+        this.fail(err);
       else
         expect(res.statusCode).toBe(400);
       done();
@@ -112,12 +112,12 @@ describe("Test auth APIs", () => {
   });
 
   it("should get error for incorrect email address pattern", (done) => {
-    req.put({
+    request.put({
       url: base_url + '/user/register' + test_query,
       form: {email: '123', display_name: 'ali'}
     }, (err, res) => {
       if(err)
-        fail(err);
+        this.fail(err);
       else
         expect(res.statusCode).toBe(406);
 
@@ -126,13 +126,14 @@ describe("Test auth APIs", () => {
   });
 
   it("should semi register user locally (complete data)", (done) => {
+    let outerContext = this;
     username = 'alireza@bentoak.systems';
-    req.put({
+    request.put({
       url: base_url + '/user/register' + test_query,
       form: {email: username, display_name: 'ali'}
     }, (err, res) => {
       if(err){
-        fail(err);
+        this.fail(err);
         done();
       }
       else{
@@ -144,7 +145,7 @@ describe("Test auth APIs", () => {
             done();
           })
           .catch(err => {
-            fail(err);
+            outerContext.fail(err);
             done();
           });
       }
@@ -152,11 +153,12 @@ describe("Test auth APIs", () => {
   }, 6000);
 
   it("should choose password then click on activation link from mail", (done) => {
+    let outerContext = this;
     sql.test.person_activation_link.get({username: username})
       .then(res => {
-        req.get(base_url + 'user/activate/link/' + res[0].link + test_query, (err, res) => {
+        request.get(base_url + 'user/activate/link/' + res[0].link + test_query, (err, res) => {
           if(err)
-            fail(err);
+            outerContext.fail(err);
           else{
             expect(res.statusCode).toBe(200);
             pid = JSON.parse(res.body);
@@ -166,15 +168,15 @@ describe("Test auth APIs", () => {
         })
       })
       .catch(err => {
-        fail(err);
+        this.fail(err);
         done();
       });
   });
 
   it("should show suitable message when activation link not found", (done) => {
-    req.get(base_url + 'user/activate/link/123' + test_query, (err, res) => {
+    request.get(base_url + 'user/activate/link/123' + test_query, (err, res) => {
       if(err)
-        fail(err);
+        this.fail(err);
       else{
         expect(res.statusCode).toBe(500);
         expect(res.body).toBe('This activation link is expired');
@@ -185,6 +187,7 @@ describe("Test auth APIs", () => {
   });
 
   it("should choose password for themselves", (done) => {
+    let outerContext = this;
     sql.test.person_activation_link.get({username: username})
       .then(res => {
         req.post({
@@ -195,7 +198,7 @@ describe("Test auth APIs", () => {
           }
         }, (err, res) => {
           if(err){
-            fail(err);
+            outerContext.fail(err);
             done();
           }
           else{
@@ -208,14 +211,14 @@ describe("Test auth APIs", () => {
                 done();
               })
               .catch(er => {
-                fail(er);
+                outerContext.fail(er);
                 done();
               });
           }
         })
       })
       .catch(err => {
-        fail(err);
+        this.fail(err);
         done();
       })
   });
@@ -229,7 +232,7 @@ describe("Test auth APIs", () => {
       }
     }, (err, res) => {
       if(err)
-        fail(err);
+        this.fail(err);
       else
         expect(res.statusCode).toBe(200);
 

@@ -39,7 +39,6 @@ describe("REST API", () => {
   describe("user", () => {
     let pid;
     let adminPid;
-    let teardown = false;
     let setup = true;
     beforeEach(done => {
       if (setup) {
