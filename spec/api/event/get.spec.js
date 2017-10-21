@@ -6,13 +6,7 @@ describe('GET Event API', () => {
   let eid = 0, pid = 0, eventData = {title: 'test event', title_fa: 'همایش تست', start_date: '20171010'};
 
   beforeEach(function (done) {
-    lib.dbHelpers.create([
-      'person',
-      'organization_type',
-      'business',
-      'organization',
-      'event',
-    ])
+    lib.dbHelpers.create()
       .then(() => lib.dbHelpers.addPerson('amin', '123456', {}, true))
       .then(res => {
         pid = res;

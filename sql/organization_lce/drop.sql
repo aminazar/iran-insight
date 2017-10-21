@@ -1,1 +1,1 @@
-drop table if exists  organization_type
+drop table if exists organization_lce

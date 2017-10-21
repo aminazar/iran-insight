@@ -15,7 +15,7 @@ describe("organization", () => {
   let org_type;
   let lce_type;
   beforeEach(done => {
-    lib.dbHelpers.create(['organization_type', 'business', 'organization', 'event'])
+    lib.dbHelpers.create()
       .then(() => {
         org = new lib.Organization(true);
         org.name = org_info.name;
@@ -40,9 +40,12 @@ describe("organization", () => {
       let result = JSON.parse(response.body);
 
       expect(response.statusCode).toBe(200);
-      expect(result[0].name).toBe(org_info.name);
-      expect(result[0].ceo_pid).toBe(org_info.ceo_pid);
-      expect(result[0].org_type_id).toBe(org_info.org_type_id);
+      expect(result[0]).toBeTruthy();
+      if(result[0]) {
+        expect(result[0].name).toBe(org_info.name);
+        expect(result[0].ceo_pid).toBe(org_info.ceo_pid);
+        expect(result[0].org_type_id).toBe(org_info.org_type_id);
+      }
 
       done();
     })

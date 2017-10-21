@@ -22,17 +22,7 @@ function dbTestCreate() {
 }
 
 function prodTablesCreate() {
-  return lib.dbHelpers.create([
-      'person',
-      'expertise',
-      'person_expertise',
-      'organization_type',
-      'organization',
-      'lce_type',
-      'organization_lce',
-      'business',
-      'event',
-      ], false, false); // WARNING: never change this 'false' to 'true'.
+  return lib.dbHelpers.createForConfig();
 }
 
 function setupMainDatabase() {
