@@ -10,7 +10,7 @@ let resExpect = (res, statusCode) => {
     let jres;
     try {
       jres = JSON.parse(res.body);
-    } catch(e) {
+    } catch (e) {
       console.log('Unexpected server response:', res.body);
       return false;
     }
@@ -39,33 +39,21 @@ describe("REST API", () => {
   describe("user", () => {
     let pid;
     let adminPid;
-    let u;
-    let a;
     let teardown = false;
     let setup = true;
     beforeEach(done => {
       if (setup) {
-        sql.test.person.drop().then(() => {
-        }).catch(() => {
-        });
-        u = new lib.User(true);
-        u.username = 'amin';
-        u.password = 'test';
-        sql.test.person.create()
-          .then(() => {
-            u.save()
-              .then(id => {
-                pid = id;
-                setup = false;
-                a = new lib.User(true);
-                a.username = 'Admin';
-                a.password = 'atest';
-                a.save()
-                  .then(aid => {
-                    adminPid = aid;
-                    done();
-                  })
-              })
+        lib.dbHelpers.create(['person', 'business', 'organization', 'event'])
+          .then(() => lib.dbHelpers.addPerson('amin', 'test'))
+          .then(id => {
+            console.log('id', id);
+            pid = id;
+            setup = false;
+            return lib.dbHelpers.addPerson('Admin', 'atest')
+          })
+          .then(aid => {
+            adminPid = aid;
+            done();
           })
           .catch(err => {
             console.log(err.message);
