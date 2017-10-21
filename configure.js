@@ -37,6 +37,7 @@ function prodTablesCreate() {
       'person',
       'expertise',
       'person_expertise',
+      'person_activation_link',
       'organization_type',
       'organization',
       'lce_type',

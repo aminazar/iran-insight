@@ -1,1 +1,1 @@
-drop table experitse;
+drop table expertise;

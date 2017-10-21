@@ -1,0 +1,1 @@
+drop table person_activation_link;

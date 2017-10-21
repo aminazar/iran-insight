@@ -101,9 +101,15 @@ let tablesWithSqlCreatedByHelpers = [
     select: false,
     delete: true,
     idColumn: 'oid',
-  }
-
-
+  },
+  {
+    name: 'person_activation_link',
+    insert: true,
+    update: true,
+    select: true,
+    delete: true,
+    idColumn: 'pid',
+  },
 ];
 
 tablesWithSqlCreatedByHelpers.forEach((table) => {
