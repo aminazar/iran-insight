@@ -7,7 +7,7 @@ create table if not exists event(
     title_fa varchar(100) not null unique,
     address varchar(100),
     address_fa varchar(100),
-    geo_location geography,
+--    geo_location geography,
     start_date date not null,
     end_date date,
     description text,
