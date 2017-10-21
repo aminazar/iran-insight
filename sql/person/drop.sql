@@ -1,1 +1,1 @@
-drop table if exists person cascade;
+drop table if exists person;
