@@ -53,6 +53,7 @@ describe("Test auth APIs", () => {
       done();
     }, 1500);
     request.get(base_url + 'login/google' + test_query, (err, res) => {
+      console.log('-> ',err);
       expect(res.statusCode).not.toBe(404);
       expect(res.statusCode).not.toBe(500);
       done();
@@ -67,6 +68,7 @@ describe("Test auth APIs", () => {
       done();
     }, 1500);
     request.get(base_url + 'login/facebook' + test_query, (err, res) => {
+
       expect(res.statusCode).not.toBe(404);
       expect(res.statusCode).not.toBe(500);
       done();
