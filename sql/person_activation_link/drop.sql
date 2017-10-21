@@ -1,1 +1,1 @@
-drop table person_activation_link;
+drop table if exists person_activation_link;

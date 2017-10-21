@@ -45,27 +45,27 @@ describe("REST API", () => {
     let setup = true;
     beforeEach(done => {
       if (setup) {
-        sql.test.person.drop().then(() => {
-        }).catch(() => {
-        });
-        u = new lib.User(true);
-        u.username = 'amin';
-        u.password = 'test';
-        sql.test.person.create()
+        sql.test.person.drop()
           .then(() => {
-            u.save()
-              .then(id => {
-                pid = id;
-                setup = false;
-                a = new lib.User(true);
-                a.username = 'Admin';
-                a.password = 'atest';
-                a.save()
-                  .then(aid => {
-                    adminPid = aid;
-                    done();
-                  })
-              })
+            u = new lib.User(true);
+            u.username = 'amin';
+            u.password = 'test';
+            return sql.test.person.create();
+          })
+          .then(() => {
+            return u.save();
+          })
+          .then(id => {
+            pid = id;
+            setup = false;
+            a = new lib.User(true);
+            a.username = 'Admin';
+            a.password = 'atest';
+            return a.save();
+          })
+          .then(aid => {
+            adminPid = aid;
+            done();
           })
           .catch(err => {
             console.log(err.message);
@@ -123,6 +123,7 @@ describe("REST API", () => {
       req.get(base_url + 'user' + test_query, (err, res) => {
         expect(res.statusCode).toBe(200);
         let data = JSON.parse(res.body);
+        console.log('===>data: ', data);
         expect(data.length).toBe(2);
         expect(data.map(r => r.pid)).toContain(adminPid);
         expect(data.map(r => r.username)).toContain('admin');

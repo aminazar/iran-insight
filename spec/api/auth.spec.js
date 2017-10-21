@@ -30,8 +30,11 @@ describe("Test auth APIs", () => {
 
   beforeEach(done => {
     if(setup){
-      sql.test.person.drop().then(() => {}).catch(() => {});
-      sql.test.person.create()
+      sql.test.person.drop()
+        .then(() => sql.test.expertise.drop())
+        .then(() => sql.test.person_expertise.drop())
+        .then(() => sql.test.person_activation_link.drop())
+        .then(() => sql.test.person.create())
         .then(() => sql.test.expertise.create())
         .then(() => sql.test.person_expertise.create())
         .then(() => sql.test.person_activation_link.create())
@@ -246,18 +249,18 @@ describe("Test auth APIs", () => {
     expect(teardown).toBeTruthy();
   });
 
-  afterEach(done => {
-    if(teardown)
-      sql.test.person_activation_link.drop()
-        .then(res => sql.test.person_expertise.drop())
-        .then(res => sql.test.expertise.drop())
-        .then(res => sql.test.person.drop())
-        .then(res => done())
-        .catch(err => {
-          console.log(err);
-          done();
-        });
-    else
-      done();
-  });
+  // afterEach(done => {
+  //   if(teardown)
+  //     sql.test.person_activation_link.drop()
+  //       .then(res => sql.test.person_expertise.drop())
+  //       .then(res => sql.test.expertise.drop())
+  //       .then(res => sql.test.person.drop())
+  //       .then(res => done())
+  //       .catch(err => {
+  //         console.log(err);
+  //         done();
+  //       });
+  //   else
+  //     done();
+  // });
 });
