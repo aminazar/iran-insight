@@ -14,7 +14,7 @@ describe('GET Event API', () => {
         return sql.test.event.add(eventData);
       })
       .then(res => {
-        eid = res.eid;
+        eid = +res.eid;
         done();
       })
       .catch(err => {

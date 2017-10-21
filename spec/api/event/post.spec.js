@@ -3,7 +3,7 @@ const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 const moment = require('moment');
 
-describe('PUT Event API', () => {
+describe('POST Event API', () => {
   let eid = 0, pid = 0, eventData = {title: 'test event', title_fa: 'همایش تست', start_date: '20171010'};
 
   beforeEach(function (done) {
@@ -11,6 +11,11 @@ describe('PUT Event API', () => {
       .then(() => lib.dbHelpers.addPerson('amin', '123456', {}, true))
       .then(res => {
         pid = res;
+        eventData.organizer_pid = pid;
+        return sql.test.event.add(eventData);
+      })
+      .then(res => {
+        eid = +res.eid;
         done();
       })
       .catch(err => {
@@ -19,38 +24,19 @@ describe('PUT Event API', () => {
       });
   });
 
-  it('errors on adding an event without organizer', function (done) {
+  it('has an API updating a single event', function (done) {
+    this.done = done;
+    eventData.title = 'tested event';
+    eventData.description = 'This was tested';
     rp({
-      method: 'PUT',
+      method: 'POST',
       form: eventData,
-      uri: lib.helpers.apiTestURL(`event`),
-      resolveWithFullResponse: true,
-    })
-      .then(() => {
-        this.fail('did not fail when no organizer was available');
-        done();
-      })
-      .catch(err => {
-        err = lib.helpers.parseServerError(err);
-        expect(+err.statusCode).toBe(500);
-        expect(err.message).toContain('has_organizer');
-        done();
-      });
-    }
-  );
-
-  it('has an API inserting a single event', function (done) {
-    eventData.organizer_pid = pid;
-    rp({
-      method: 'PUT',
-      form: eventData,
-      uri: lib.helpers.apiTestURL(`event`),
+      uri: lib.helpers.apiTestURL(`event/${eid}`),
       resolveWithFullResponse: true,
     })
       .then(res => {
-        eid = +res.body;
         expect(res.statusCode).toBe(200);
-        return sql.test.event.get({eid:eid});
+        return sql.test.event.get({eid: eid});
       })
       .then(getResult => {
         let row = getResult[0];
@@ -60,12 +46,10 @@ describe('PUT Event API', () => {
         expect(row.organizer_oid).toBeNull();
         expect(row.title).toBe(eventData.title);
         expect(row.title_fa).toBe(eventData.title_fa);
+        expect(row.description).toBe(eventData.description);
         expect(moment(row.start_date).format('YYYYMMDD')).toBe(eventData.start_date);
         done();
       })
-      .catch(err => {
-        this.fail(lib.helpers.parseServerErrorToString(err));
-        done();
-      });
+      .catch(lib.helpers.errorHandler.bind(this));
   });
 });
