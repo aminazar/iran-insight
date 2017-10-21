@@ -43,7 +43,7 @@ describe("REST API", () => {
     let setup = true;
     beforeEach(done => {
       if (setup) {
-        lib.dbHelpers.create(['person', 'business', 'organization', 'event'])
+        lib.dbHelpers.create()
           .then(() => lib.dbHelpers.addPerson('amin', 'test'))
           .then(id => {
             console.log('id', id);
@@ -107,13 +107,18 @@ describe("REST API", () => {
         done();
       })
     });
-    it("allows admin to list all users", done => {
+    it("allows admin to list all users", function(done) {
+      let thisTest = this;
       req.get(base_url + 'user' + test_query, (err, res) => {
         expect(res.statusCode).toBe(200);
-        let data = JSON.parse(res.body);
-        expect(data.length).toBe(2);
-        expect(data.map(r => r.pid)).toContain(adminPid);
-        expect(data.map(r => r.username)).toContain('admin');
+        try {
+          let data = JSON.parse(res.body);
+          expect(data.length).toBe(2);
+          expect(data.map(r => r.pid)).toContain(adminPid);
+          expect(data.map(r => r.username)).toContain('admin');
+        } catch(e) {
+          thisTest.fail('response is not as expected: ', e);
+        }
         done();
       })
     });
