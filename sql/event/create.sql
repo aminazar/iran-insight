@@ -11,5 +11,6 @@ create table if not exists event(
     start_date date not null,
     end_date date,
     description text,
-    description_fa text
+    description_fa text,
+    constraint has_organizer CHECK(organizer_pid is not null or organizer_oid is not null or organizer_bid is not null)
 )

@@ -76,5 +76,6 @@ router.get('/organization/:oid', apiResponse('Organization', 'select' , false, [
 
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid']));
+router.put('/event', apiResponse('Event', 'saveData', false, ['body']));
 
 module.exports = router;
