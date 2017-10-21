@@ -1,11 +1,10 @@
 const request = require("request");
 const base_url = "http://localhost:3000/api/";
 const test_query = '?test=tEsT';
-const lib = require('../../lib');
-const sql = require('../../sql');
-let req = request.defaults({jar: true});//enabling cookies
-const date = require('../../utils/date');
-const error = require('../../lib/errors.list');
+const lib = require('../../../lib');
+const sql = require('../../../sql');
+const date = require('../../../utils/date');
+const error = require('../../../lib/errors.list');
 
 
 let orgs_info = [{
@@ -60,6 +59,8 @@ describe("organization_lce", () => {
     sql.test.organization_lce.drop()
       .then(sql.test.lce_type.drop)
       .then(sql.test.organization.drop)
+      .then(sql.test.organization_type.drop)
+      .then(sql.test.organization_type.create)
       .then(sql.test.organization.create)
       .then(sql.test.lce_type.create)
       .then(sql.test.organization_lce.create)

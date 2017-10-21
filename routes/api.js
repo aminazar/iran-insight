@@ -82,5 +82,8 @@ router.put('/organization', apiResponse('Organization', 'saveData', false, ['bod
 // Organization LCE API
 router.put('/organization-lce', apiResponse('OrganizationLCE', 'saveData', false, ['body']));
 
+//organization type
+router.put('/organization-type', apiResponse('OrganizationType', 'saveData', false, ['body']));
+
 
 module.exports = router;
