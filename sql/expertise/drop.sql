@@ -1,1 +1,1 @@
-drop table expertise;
+drop table if exists expertise;

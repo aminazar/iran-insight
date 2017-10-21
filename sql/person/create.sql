@@ -1,4 +1,4 @@
-create table person(
+create table if not exists person(
     pid serial not null primary key,
     firstname varchar(20),
     surename varchar(20),

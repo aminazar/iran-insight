@@ -33,16 +33,15 @@ function createOrExist(tableName) {
 
 function prodTablesCreate() {
   return new Promise((resolve, reject) => {
-    [
-      'person',
-      'expertise',
-      'person_expertise',
-      'person_activation_link',
-      'organization_type',
-      'organization',
-      'lce_type',
-      'organization_lce',
-    ].reduce((x, y) => createOrExist(x).then(createOrExist(y)))
+    createOrExist('person')
+      .then(createOrExist('expertise'))
+      .then(createOrExist('person_expertise'))
+      .then(createOrExist('organization_type'))
+      .then(createOrExist('person_activation_link'))
+      .then(createOrExist('organization'))
+      .then(createOrExist('lce_type'))
+      .then(createOrExist('organization_lce'))
+      .then(createOrExist('business'))
       .then(resolve())
       .catch(err => reject(err));
   });
@@ -71,9 +70,7 @@ function adminRowCreate() {
 function setupMainDatabase(msg) {
   console.log(msg);
   prodTablesCreate()
-    .then(() => {
-      return adminRowCreate();
-    })
+    .then(adminRowCreate)
     .then(() => {
       if (env.isDev)
         return dbTestCreate();
@@ -82,7 +79,7 @@ function setupMainDatabase(msg) {
     })
     .then(() => process.exit())
     .catch((err) => {
-      console.log(err.message);
+      console.log(err);
       process.exit();
     });
 }

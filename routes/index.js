@@ -15,7 +15,28 @@ router.all("*",function(req,res,next){
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'Iran Insight' });
 });
 
+router.get('/businsess', (req, res) => {
+  res.render('')
+});
+
+router.get('/organization', (req, res) => {
+  res.render('')
+});
+
+
+router.get('/orgPerson/:oid', (req, res) => {
+  res.render('')
+});
+
+
+router.get('/businsess', (req, res) => {
+  res.render('')
+});
+
+router.get('bizPerson/:bid', (req, res) => {
+  res.render('')
+});
 module.exports = router;

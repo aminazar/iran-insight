@@ -1,1 +1,1 @@
-drop table person_expertise;
+drop table if exists person_expertise;
