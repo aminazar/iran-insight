@@ -24,9 +24,11 @@ module.exports = {
     test: sql('db/test.sql'),
   },
   person: {
-    create: sql('person/create.sql'),
-    drop: sql('person/drop.sql'),
-    get: sql('person/get.sql'),
+    create:     sql('person/create.sql'),
+    drop:       sql('person/drop.sql'),
+    get:        sql('person/get.sql'),
+    orgRep:     sql('person/orgRep.sql'),
+    bizRep:     sql('person/bizRep.sql'),
   },
   expertise: {
     create: sql('expertise/create.sql'),
@@ -75,6 +77,14 @@ module.exports = {
   event: {
     create:     sql('event/create.sql'),
     drop:       sql('event/drop.sql'),
+  },
+  attendance: {
+    create:     sql('attendance/create.sql'),
+    drop:       sql('attendance/drop.sql'),
+  },
+  attendance_type: {
+    create:     sql('attendance_type/create.sql'),
+    drop:       sql('attendance_type/drop.sql'),
   },
 }
 ;

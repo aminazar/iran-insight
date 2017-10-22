@@ -88,5 +88,8 @@ router.put('/organization-type', apiResponse('OrganizationType', 'saveData', fal
 
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid']));
+router.put('/event', apiResponse('Event', 'saveData', false, ['body', 'user.pid']));
+router.post('/event/:eid', apiResponse('Event', 'saveData', false, ['body', 'user.pid', 'params.eid']));
+router.delete('/event/:eid', apiResponse('Event', 'delete', false, ['params.eid', 'user.pid']));
 
 module.exports = router;

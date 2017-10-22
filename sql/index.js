@@ -172,6 +172,23 @@ let tablesWithSqlCreatedByHelpers = [
     idColumn: 'eid',
   },
   {
+    name: 'attendance',
+    insert: true,
+    update: true,
+    select: true,
+    get: true,
+    delete: true,
+    idColumn: 'id',
+  },
+  {
+    name: 'attendance_type',
+    insert: true,
+    update: true,
+    select: true,
+    get: true,
+    delete: true,
+    idColumn: 'id',
+  },
     name: 'organization_type',
     insert: true,
     update: true,
@@ -196,8 +213,6 @@ let tablesWithSqlCreatedByHelpers = [
     delete: true,
     idColumn: 'lce_type_id',
   },
-
-
 ];
 
 tablesWithSqlCreatedByHelpers.forEach((table) => {
