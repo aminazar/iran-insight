@@ -80,10 +80,10 @@ router.get('/organization/:oid', apiResponse('Organization', 'getById', false, [
 router.put('/organization', apiResponse('Organization', 'saveData', false, ['body']));
 
 // Organization LCE API
-router.put('/organization-lce', apiResponse('OrganizationLCE', 'saveData', false, ['body']));
+router.put('/organization-lce', apiResponse('OrganizationLCE', 'temporalUpdate', false, ['body']));
 
 //organization type
-router.put('/organization-type', apiResponse('OrganizationType', 'saveData', false, ['body']));
+router.put('/organization-type', apiResponse('OrganizationType', 'saveData', false, ['body' , 'id']));
 
 
 module.exports = router;

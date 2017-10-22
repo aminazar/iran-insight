@@ -55,6 +55,37 @@ genericUpdate = (tableName, idColumn, isTest) => {
   };
 };
 
+
+genericTemporalUpdate = (tableName, idColumn, isTest) => {
+  let db = chooseDb(tableName, isTest);
+
+  return (data) => {
+    return new Promise((resolve, reject) => {
+
+      let id = data[idColumn];
+
+      if (!id && !data.previous_end_date) { // insert a new record
+        db.one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn).then(res => {
+          resolve(res[idColumn]);
+        }).catch(err => reject(err));
+
+      } else if (id && data.previous_end_date) { // update by insert new row and add end_time for previous start date
+        db.query(env.pgp.helpers.update({current_end_date: data.previous_end_date}, ['current_end_date'], tableName ) + ` where ${idColumn}=` + id + ' returning ' + idColumn).then(updatedId => {
+
+          delete data.id;
+          db.one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn).then(res => {
+            resolve(res[idColumn]);
+          }).catch(err => reject(err));
+
+        }).catch(err => reject(err));
+      }else
+        reject(new Error('arguments are not valid => id and date_time must be empty or valued simultaneously'))
+    });
+
+  };
+};
+
+
 genericSelect = (tableName, isTest) => {
   let db = chooseDb(tableName, isTest);
   return () => {
@@ -116,6 +147,7 @@ let tablesWithSqlCreatedByHelpers = [
     update: true,
     select: false,
     delete: true,
+    temporalUpdate: true,
     idColumn: 'id',
   },
   {
@@ -126,7 +158,6 @@ let tablesWithSqlCreatedByHelpers = [
     delete: true,
     idColumn: 'lce_type_id',
   },
-
 
 
 ];
@@ -157,6 +188,12 @@ tablesWithSqlCreatedByHelpers.forEach((table) => {
     wrappedSQL[table.name].delete = genericDelete(table.name, table.idColumn, false);
     wrappedSQL.test[table.name].delete = genericDelete(table.name, table.idColumn, true);
   }
+  if (table.temporalUpdate) {
+    wrappedSQL[table.name].temporalUpdate = genericTemporalUpdate(table.name, table.idColumn, false);
+    wrappedSQL.test[table.name].temporalUpdate = genericTemporalUpdate(table.name, table.idColumn, true);
+  }
+
+
 });
 
 module.exports = wrappedSQL;
