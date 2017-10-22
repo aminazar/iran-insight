@@ -3,7 +3,7 @@ const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 
 describe('DELETE Event API', () => {
-  let eid = 0, pid = 0, eventData = {title: 'test event', title_fa: 'همایش تست', start_date: '20171010'}, aminJar, aliJar;
+  let eid = 0, pid = 0, eventData = {title: 'test event', title_fa: 'همایش تست', start_date: '20171010'}, aminJar, aliJar, adminJar;
 
   beforeEach(function (done) {
     lib.dbHelpers.create()
@@ -20,6 +20,10 @@ describe('DELETE Event API', () => {
       })
       .then( res =>{
         aliJar = res.rpJar;
+        return lib.dbHelpers.addAndLoginPerson('aDmIn','admin', {})
+      })
+      .then( res =>{
+        adminJar = res.rpJar;
         done();
       })
       .catch(err => {
@@ -70,6 +74,25 @@ describe('DELETE Event API', () => {
       uri: lib.helpers.apiTestURL(`event/${eid}`),
       resolveWithFullResponse: true,
       jar: aminJar,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.event.get({eid: eid})
+      })
+      .then(res => {
+        expect(res.length).toBe(0, '<== length of result, because it is deleted');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it('has an API deleting a single event with EID by admin', function (done) {
+    this.done = done;
+    rp({
+      method: 'DELETE',
+      uri: lib.helpers.apiTestURL(`event/${eid}`),
+      resolveWithFullResponse: true,
+      jar: adminJar,
     })
       .then(res => {
         expect(res.statusCode).toBe(200);

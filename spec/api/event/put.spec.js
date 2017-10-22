@@ -99,7 +99,7 @@ describe('PUT Event API', () => {
       });
   });
 
-  it('admin can insert a single event', function (done) {
+  it('has an insert API by admin', function (done) {
     eventData = {title: 'test event 2', title_fa: 'همایش تست 2', start_date: '20171010'}
     eventData.organizer_pid = pid;
     rp({
