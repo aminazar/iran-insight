@@ -22,14 +22,7 @@ describe("organization type", () => {
   };
 
   beforeEach(done => {
-    sql.test.organization_lce.drop()
-      .then(sql.test.lce_type.drop)
-      .then(sql.test.organization.drop)
-      .then(sql.test.organization_type.drop)
-      .then(sql.test.organization_type.create)
-      .then(sql.test.organization.create)
-      .then(sql.test.lce_type.create)
-      .then(sql.test.organization_lce.create)
+    lib.dbHelpers.create()
       .then(() => {
         done();
       }).catch(err => {
