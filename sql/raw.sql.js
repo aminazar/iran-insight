@@ -61,5 +61,20 @@ module.exports = {
     get: sql('lce_type/get.sql'),
     select: sql('lce_type/select.sql'),
   },
+  person_activation_link: {
+    create:             sql('person_activation_link/create.sql'),
+    drop:               sql('person_activation_link/drop.sql'),
+    deleteByLink:       sql('person_activation_link/deleteByLink.sql'),
+    get:                sql('person_activation_link/get.sql'),
+    getByLink:          sql('person_activation_link/getByLink.sql'),
+  },
+  business: {
+    create:     sql('business/create.sql'),
+    drop:       sql('business/drop.sql'),
+  },
+  event: {
+    create:     sql('event/create.sql'),
+    drop:       sql('event/drop.sql'),
+  },
 }
 ;

@@ -1,18 +1,18 @@
 /**
  * Created by Amin on 01/02/2017.
  */
-const User = require('../../lib/user.model');
+const Person = require('../../lib/person.model');
 const sql  = require('../../sql');
 
-describe("User model",()=>{
+describe("Person model",()=>{
   let pid;
-  let u = new User(true);
-  let newU= new User(true);
+  let u = new Person(true);
+  let newU= new Person(true);
   const username = 'a_alavi';
   const pwd = 'testPwd';
 
   beforeAll(done=>{
-    sql.test.person.drop().then(()=>{}).catch(()=>{});
+    // sql.test.person.drop().then(()=>{}).catch(()=>{});
     sql.test.person.create()
       .then(() => sql.test.person.add({username: username.toLowerCase(), secret: pwd}))
       .then(res=>{
@@ -51,7 +51,7 @@ describe("User model",()=>{
       });
   });
 
-  it("should save user",done=>{
+  it("should save person",done=>{
     u.exportData()
       .then((data)=>{
         expect(data.username).toBe(username.toLowerCase());
@@ -89,7 +89,7 @@ describe("User model",()=>{
       });
   });
 
-  it("should reload the user after saving",done=>{
+  it("should reload the person after saving",done=>{
     newU.load(username.toUpperCase()+'.X',pwd)
       .then(()=>{
         expect(newU.pid).toBe(pid);
@@ -126,7 +126,7 @@ describe("User model",()=>{
   });
 
   it("should login with different letter case of username",done=>{
-    newU = new User(true);
+    newU = new Person(true);
     newU.loginCheck(username.toLowerCase()+'.X',pwd)
       .then(()=>{
         expect(true).toBeTruthy();
@@ -139,7 +139,7 @@ describe("User model",()=>{
   });
 
   it("should login with correct password",done=>{
-    newU = new User(true);
+    newU = new Person(true);
     newU.loginCheck(username+'.x',pwd)
       .then(()=>{
         expect(true).toBeTruthy();
@@ -152,7 +152,7 @@ describe("User model",()=>{
   });
 
   it("should maintain unique name",done=>{
-    u = new User(true);
+    u = new Person(true);
     u.username = username.toLowerCase() + '.x';
     u.password = '123';
     u.save()
@@ -201,12 +201,12 @@ describe("User model",()=>{
     let req = {query: {
       test: 'tEsT',
     }};
-    User.passportOAuthStrategy(req, token, refreshToken, profile, (err, user) => {
+    Person.passportOAuthStrategy(req, token, refreshToken, profile, (err, person) => {
       if(err)
         fail(err);
       else{
-        expect(user).toBeTruthy();
-        pid = user.pid;
+        expect(person).toBeTruthy();
+        pid = person.pid;
       }
 
       done();
@@ -214,7 +214,7 @@ describe("User model",()=>{
   });
 
   it("should get received data from google/facebook/linkedin from database", done => {
-    u = new User(true);
+    u = new Person(true);
     u.load('ali.71hariri@gmail.com', null)
       .then(res => {
         expect(res.pid).toBe(pid);
@@ -226,7 +226,7 @@ describe("User model",()=>{
       })
   });
 
-  it("should update user data when received data from google/facebook/linkedin for existence user email", done => {
+  it("should update person data when received data from google/facebook/linkedin for existence person email", done => {
     //Create simple object like google callback object
     let profile = { id: '111478276625076148179',
       displayName: 'John Smith',
@@ -261,26 +261,29 @@ describe("User model",()=>{
     let req = {query: {
       test: 'tEsT',
     }};
-    User.passportOAuthStrategy(req, token, refreshToken, profile, (err, user) => {
+    Person.passportOAuthStrategy(req, token, refreshToken, profile, (err, person) => {
       if(err)
         fail(err);
       else{
-        expect(user).toBeTruthy();
-        pid = user.pid;
+        expect(person).toBeTruthy();
+        pid = person.pid;
       }
 
       done();
     });
   });
 
-  it("should update user data (received data from google/facebook/linkedin callback)", done => {
-    u = new User(true);
+  it("should update person data (received data from google/facebook/linkedin callback)", done => {
+    u = new Person(true);
     u.load('ali.71hariri@gmail.com', null)
       .then(res => {
         expect(res.pid).toBe(pid);
-        expect(res.display_name).toBe('John Smith');
-        expect(res.firstname).toBe('John');
-        expect(res.surename).toBe('Smith');
+        expect(res.display_name_en).toBe('John Smith');
+        expect(res.display_name_fa).toBe(undefined);
+        expect(res.firstname_en).toBe('John');
+        expect(res.surname_en).toBe('Smith');
+        expect(res.firstname_fa).toBe(undefined);
+        expect(res.surname_fa).toBe(undefined);
         done();
       })
       .catch(err => {
@@ -303,12 +306,12 @@ describe("User model",()=>{
     let req = {query: {
       test: 'tEsT',
     }};
-    User.passportOAuthStrategy(req, token, refreshToken, profile, (err, user) => {
+    Person.passportOAuthStrategy(req, token, refreshToken, profile, (err, person) => {
       if(err)
         fail(err);
       else{
-        expect(user).toBeTruthy();
-        pid = user.pid;
+        expect(person).toBeTruthy();
+        pid = person.pid;
       }
 
       done();
@@ -316,13 +319,16 @@ describe("User model",()=>{
   });
 
   it("should get received data from google/facebook/linkedin from database", done => {
-    u = new User(true);
+    u = new Person(true);
     u.load('js@k.com', null)
       .then(res => {
         expect(res.pid).toBe(pid);
-        expect(res.display_name).toBe('Jack Sparrow');
-        expect(res.firstname).toBe('Jack');
-        expect(res.surename).toBe('Sparrow');
+        expect(res.display_name_en).toBe('Jack Sparrow');
+        expect(res.display_name_fa).toBe(undefined);
+        expect(res.firstname_en).toBe('Jack');
+        expect(res.surname_en).toBe('Sparrow');
+        expect(res.firstname_fa).toBe(undefined);
+        expect(res.surname_fa).toBe(undefined);
         done();
       })
       .catch(err => {

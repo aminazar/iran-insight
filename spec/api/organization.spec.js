@@ -5,83 +5,50 @@ const lib = require('../../lib');
 const sql = require('../../sql');
 let req = request.defaults({jar: true});//enabling cookies
 
-let orgs_info = [{
-  name: 'bent oak systems',
-  name_fa: 'بنتوک سامانه',
-  ceo_pid: 1,
-  org_type_id: 1
-}, {
-  name: 'Iran Insight',
-  name_fa: 'ایران اینسایت',
-  ceo_pid: 2,
-  org_type_id: 1
-}];
-
-
 describe("organization", () => {
   let org;
-
-  let createNewOrg = (org_info) => {
-    org = new lib.Organization(true);
-    org.importData(org_info);
-    return org.save();
-
+  let org_info = {
+    name :'bent oak systems',
+    ceo_pid: 1,
+    org_type_id: 1
   };
-
+  let org_type;
+  let lce_type;
   beforeEach(done => {
-    sql.test.organization_lce.drop()
-      .then(sql.test.organization.drop)
-      .then(sql.test.organization_type.drop)
-      .then(sql.test.organization_type.create)
-      .then(sql.test.organization.create)
+    lib.dbHelpers.create()
       .then(() => {
-        done();
+        org = new lib.Organization(true);
+        org.name = org_info.name;
+        org.ceo_pid = org_info.ceo_pid;
+        org.org_type_id = org_info.org_type_id;
+
+        org.save()
+          .then(id => {
+            org_info.oid = id;
+            done();
+          }).catch(err => {
+          done();
+        });
       }).catch(err => {
       console.log('err ==> ', err.message);
       done();
     });
   });
-  it("/Get list off all orgs", done => {
-
-    createNewOrg(orgs_info[0]).then(createNewOrg(orgs_info[1])).then(id =>{
-      request.get(base_url + `organization` + test_query, function (error, response) {
-        let result = JSON.parse(response.body);
-        expect(response.statusCode).toBe(200);
-        expect(result.length).toBe(2);
-        done();
-      })
-    }).catch(err =>{
-
-      fail(err);
-    });
-
-  });
 
   it("/Get organization name, ceo_pid and org_type_id by oid", done => {
+    request.get(base_url + `organization/${org_info.oid}` + test_query, function (error, response) {
+      let result = JSON.parse(response.body);
 
-    createNewOrg(orgs_info[0]).then(id => {
-      request.get(base_url + `organization/${id}` + test_query, function (error, response) {
-        let result = JSON.parse(response.body);
-        expect(response.statusCode).toBe(200);
-        expect(result[0].name).toBe(orgs_info[0].name);
-        expect(result[0].name_fa).toBe(orgs_info[0].name_fa);
-        expect(result[0].ceo_pid).toBe(orgs_info[0].ceo_pid);
-        expect(result[0].org_type_id).toBe(orgs_info[0].org_type_id);
-        done();
-      })
-    });
-
-  });
-
-  it("/Put new organization", done => {
-
-    request.put(base_url + 'organization' + test_query, {json: true, body: orgs_info[0]}, function (error, response) {
       expect(response.statusCode).toBe(200);
-      expect(response.body.oid).toBeGreaterThan(0);
+      expect(result[0]).toBeTruthy();
+      if(result[0]) {
+        expect(result[0].name).toBe(org_info.name);
+        expect(result[0].ceo_pid).toBe(org_info.ceo_pid);
+        expect(result[0].org_type_id).toBe(org_info.org_type_id);
+      }
+
       done();
-    });
-
+    })
   });
-
 
 });
