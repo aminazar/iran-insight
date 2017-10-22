@@ -7,13 +7,13 @@ const moment = require('moment');
 
 getTimeNow =()=>{
 
-  return moment().format('HH-mm-ss');
+  return moment().format('HH:mm:ss');
 
 };
 
 getGregorianNow = () => {
 
-    return moment().utc().format();
+    return moment().format('YYYY-MM-DD HH:mm:ss');
 };
 
 

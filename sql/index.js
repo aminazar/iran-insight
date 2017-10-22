@@ -51,7 +51,7 @@ genericInsert = (tableName, idColumn, isTest) => {
 genericUpdate = (tableName, idColumn, isTest) => {
   let db = chooseDb(tableName, isTest);
   return (data, id) => {
-    return db.query(env.pgp.helpers.update(data, null, tableName) + ` where ${idColumn}=` + id);
+    return db.query(env.pgp.helpers.update(data, null, tableName) + ` where ${idColumn}=` + id + ' returning ' + idColumn);
   };
 };
 

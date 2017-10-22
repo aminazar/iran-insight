@@ -86,45 +86,7 @@ describe("organization type", () => {
 
   });
 
-  //
-  // it('/Put: create new LCE for existing organization when start date is null and expect error', done => {
-  //   createNewOrg(orgs_info[0]).then(id => {
-  //
-  //     let new_org_lce_info = Object.assign({}, orgs_lce_info[0]);
-  //     new_org_lce_info['oid1'] = id;
-  //     new_org_lce_info['start_date'] = null;
-  //
-  //     request.put(base_url + 'organization-lce' + test_query, {
-  //       json: true,
-  //       body: new_org_lce_info
-  //     }, function (err, res) {
-  //       expect(res.body).toBe(error.emptyStartDateInLCETable.message);
-  //       expect(res.statusCode).toBe(error.emptyStartDateInLCETable.status);
-  //       done();
-  //     });
-  //
-  //   });
-  //
-  // });
-  //
-  //
-  // it('/Put: create new LCE for existing organization when start date (farsi) is null and expect error', done => {
-  //   createNewOrg(orgs_info[0]).then(id => {
-  //
-  //     let new_org_lce_info = Object.assign({}, orgs_lce_info[0]);
-  //     new_org_lce_info['oid1'] = id;
-  //     new_org_lce_info['start_date_fa'] = null;
-  //
-  //     request.put(base_url + 'organization-lce' + test_query, {
-  //       json: true,
-  //       body: new_org_lce_info
-  //     }, function (err, res) {
-  //       expect(res.body).toBe(error.emptyStartDateInLCETable.message);
-  //       expect(res.statusCode).toBe(error.emptyStartDateInLCETable.status);
-  //       done();
-  //     });
-  //
-  //   });
+
 
 
 });
