@@ -1,0 +1,1 @@
+select * from person where lower(username) != 'admin'

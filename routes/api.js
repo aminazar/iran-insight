@@ -52,7 +52,7 @@ router.get('/', function(req, res) {
   res.send('respond with a resource');
 });
 //Login API
-router.post('/login', passport.authenticate('local', {}), apiResponse('User', 'afterLogin', false, [ 'user.username']));
+router.post('/login', passport.authenticate('local', {}), apiResponse('User', 'afterLogin', false, ['user.username']));
 router.post('/loginCheck', apiResponse('User', 'loginCheck', false, ['body.username', 'body.password']));
 router.get('/logout', (req,res)=>{req.logout();res.sendStatus(200)});
 router.get('/validUser',apiResponse('User', 'afterLogin', false, ['user.username']));
