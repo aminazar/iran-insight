@@ -51,9 +51,40 @@ genericInsert = (tableName, idColumn, isTest) => {
 genericUpdate = (tableName, idColumn, isTest) => {
   let db = chooseDb(tableName, isTest);
   return (data, id) => {
-    return db.query(env.pgp.helpers.update(data, null, tableName) + ` where ${idColumn}=` + id);
+    return db.query(env.pgp.helpers.update(data, null, tableName) + ` where ${idColumn}=` + id + ' returning ' + idColumn);
   };
 };
+
+
+genericTemporalUpdate = (tableName, idColumn, isTest) => {
+  let db = chooseDb(tableName, isTest);
+
+  return (data) => {
+    return new Promise((resolve, reject) => {
+
+      let id = data[idColumn];
+
+      if (!id && !data.previous_end_date) { // insert a new record
+        db.one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn).then(res => {
+          resolve(res[idColumn]);
+        }).catch(err => reject(err));
+
+      } else if (id && data.previous_end_date) { // update by insert new row and add end_time for previous start date
+        db.query(env.pgp.helpers.update({current_end_date: data.previous_end_date}, ['current_end_date'], tableName ) + ` where ${idColumn}=` + id + ' returning ' + idColumn).then(updatedId => {
+
+          delete data.id;
+          db.one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn).then(res => {
+            resolve(res[idColumn]);
+          }).catch(err => reject(err));
+
+        }).catch(err => reject(err));
+      }else
+        reject(new Error('arguments are not valid => id and date_time must be empty or valued simultaneously'))
+    });
+
+  };
+};
+
 
 genericSelect = (tableName, isTest) => {
   let db = chooseDb(tableName, isTest);
@@ -140,6 +171,33 @@ let tablesWithSqlCreatedByHelpers = [
     delete: true,
     idColumn: 'eid',
   },
+  {
+    name: 'organization_type',
+    insert: true,
+    update: true,
+    select: false,
+    delete: true,
+    idColumn: 'org_type_id',
+  },
+  {
+    name: 'organization_lce',
+    insert: true,
+    update: true,
+    select: false,
+    delete: true,
+    temporalUpdate: true,
+    idColumn: 'id',
+  },
+  {
+    name: 'lce_type',
+    insert: true,
+    update: true,
+    select: false,
+    delete: true,
+    idColumn: 'lce_type_id',
+  },
+
+
 ];
 
 tablesWithSqlCreatedByHelpers.forEach((table) => {
@@ -178,6 +236,12 @@ tablesWithSqlCreatedByHelpers.forEach((table) => {
     wrappedSQL[table.name].delete = genericDelete(table.name, table.idColumn, false);
     wrappedSQL.test[table.name].delete = genericDelete(table.name, table.idColumn, true);
   }
+  if (table.temporalUpdate) {
+    wrappedSQL[table.name].temporalUpdate = genericTemporalUpdate(table.name, table.idColumn, false);
+    wrappedSQL.test[table.name].temporalUpdate = genericTemporalUpdate(table.name, table.idColumn, true);
+  }
+
+
 });
 
 module.exports = wrappedSQL;
