@@ -11,6 +11,7 @@ describe('GET Event API', () => {
       .then(res => {
         pid = res;
         eventData.organizer_pid = pid;
+        eventData.saved_by = pid;
         return sql.test.event.add(eventData);
       })
       .then(res => {

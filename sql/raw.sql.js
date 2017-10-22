@@ -78,5 +78,13 @@ module.exports = {
     create:     sql('event/create.sql'),
     drop:       sql('event/drop.sql'),
   },
+  attendance: {
+    create:     sql('attendance/create.sql'),
+    drop:       sql('attendance/drop.sql'),
+  },
+  attendance_type: {
+    create:     sql('attendance_type/create.sql'),
+    drop:       sql('attendance_type/drop.sql'),
+  },
 }
 ;
