@@ -3,7 +3,7 @@ const base_url = "http://localhost:3000/api/";
 const test_query = '?test=tEsT';
 const lib = require('../../../lib');
 const sql = require('../../../sql');
-const date = require('../../../utils/date');
+const date = require('../../../utils/date.util');
 const error = require('../../../lib/errors.list');
 
 
