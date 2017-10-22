@@ -76,7 +76,15 @@ router.post('/user/:pid', apiResponse('Person', 'update', true, ['params.pid','b
 router.delete('/user/:pid', apiResponse('Person', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body']));
 // Organization API
-router.get('/organization/:oid', apiResponse('Organization', 'select' , false, ['params.oid']));
+router.get('/organization', apiResponse('Organization', 'getAll', false));
+router.get('/organization/:oid', apiResponse('Organization', 'getById', false, ['params.oid']));
+router.put('/organization', apiResponse('Organization', 'saveData', false, ['body']));
+
+// Organization LCE API
+router.put('/organization-lce', apiResponse('OrganizationLCE', 'temporalUpdate', false, ['body']));
+
+//organization type
+router.put('/organization-type', apiResponse('OrganizationType', 'saveData', false, ['body' , 'id']));
 
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid']));
