@@ -30,7 +30,6 @@ module.exports = {
     isAdmin:    sql('person/isAdmin.sql'),
     orgRep:     sql('person/orgRep.sql'),
     bizRep:     sql('person/bizRep.sql'),
-    isAdmin:    sql('person/isAdmin.sql'),
     getListOfRepresentationRequests: sql('person/getListOfRepresentationRequests.sql'),
     getListOfMembershipRequests: sql('person/getListOfMembershipRequests.sql'),
   },
