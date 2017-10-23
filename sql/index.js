@@ -172,6 +172,15 @@ let tablesWithSqlCreatedByHelpers = [
     idColumn: 'aid',
   },
   {
+    name: 'position_type',
+    insert: true,
+    update: true,
+    select: true,
+    get: true,
+    delete: true,
+    idColumn: 'posid',
+  },
+  {
     name: 'membership',
     insert: true,
     update: true,

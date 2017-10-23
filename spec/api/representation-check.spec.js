@@ -105,15 +105,6 @@ describe("Representation-check API", () => {
         expect(res.statusCode).not.toBe(404);
         expect(res.statusCode).not.toBe(500);
         expect(res.statusCode).toBe(200);
-        // if (resExpect(res, 200)) {
-        //   let data = JSON.parse(res.body);
-        //   expect(data.length).toBe(1);
-        //   expect(data[0].pid).toBe(uid);
-        //   expect(data[0].username).toBe('amin');
-        //   console.log('==>',typeof data);
-        //   console.log(data);
-        //   console.log('==>',typeof res.body);
-        // }
         done();
       })
     });
@@ -132,18 +123,6 @@ describe("Representation-check API", () => {
       });
     });
 
-    // it("tears down", () => {
-    //   teardown = true;
-    //   expect(teardown).toBeTruthy();
-    // });
-    // afterEach((done) => {
-    //   if (uid && teardown)
-    //     sql.test.person.drop().then(() => done()).catch(err => {
-    //       console.log(err.message);
-    //       done()
-    //     });
-    //   else done();
-    // });
   });
 
 });

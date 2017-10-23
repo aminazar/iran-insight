@@ -87,8 +87,8 @@ router.put('/organization-lce', apiResponse('OrganizationLCE', 'temporalUpdate',
 router.put('/organization-type', apiResponse('OrganizationType', 'saveData', false, ['body' , 'id']));
 
 //representation check API
-router.get('/user/checkifrep',apiResponse('Person','findRepRequests',true, ['user.username']));
-router.get('/user/checkifuser',apiResponse('Person','findMemRequests',false, ['user.username']));
+router.get('/user/checkIfRep',apiResponse('Person','findRepRequests',true, ['user.username']));
+router.get('/user/checkIfUser',apiResponse('Person','findMemRequests',false, ['user.username']));
 //
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid']));
