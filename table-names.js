@@ -8,5 +8,7 @@ module.exports = [ // Name tables in order of dependency
   'organization',
   'lce_type',
   'organization_lce',
+  'association',
+  'membership',
   'event',
 ];

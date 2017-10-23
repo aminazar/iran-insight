@@ -79,7 +79,8 @@ router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body
 router.get('/organization/:oid', apiResponse('Organization', 'select' , false, ['params.oid']));
 
 //representation check API
-router.get('/user/checkifrep',apiResponse('User','findRepRequests',true, ['user.username']));
+router.get('/user/checkifrep',apiResponse('Person','findRepRequests',true, ['user.username']));
+router.get('/user/checkifuser',apiResponse('Person','findMemRequests',false, ['user.username']));
 //
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid']));
