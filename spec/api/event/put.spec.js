@@ -8,7 +8,7 @@ describe('PUT Event API', () => {
 
   beforeEach(function (done) {
     lib.dbHelpers.create()
-      .then(() => lib.dbHelpers.addAndLoginPerson('amin', '123456', {}, true))
+      .then(() => lib.dbHelpers.addAndLoginPerson('amin', '123456', {}))
       .then(res => {
         pid = res.pid;
         aminJar = res.rpJar;
