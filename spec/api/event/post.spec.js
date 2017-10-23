@@ -4,7 +4,8 @@ const sql = require('../../../sql/index');
 const moment = require('moment');
 
 describe('POST Event API', () => {
-  let eid = 0, pid = 0, eventData = {title: 'test event', title_fa: 'همایش تست', start_date: '20171010'}, aminJar, aliJar, adminJar;
+  let eid = 0, pid = 0, aliPid = 0, eventData = {title: 'test event', title_fa: 'همایش تست', start_date: '20171010'},
+    aminJar, aliJar, adminJar;
 
   beforeEach(function (done) {
     lib.dbHelpers.create()
@@ -18,13 +19,14 @@ describe('POST Event API', () => {
       })
       .then(res => {
         eid = +res.eid;
-        return lib.dbHelpers.addAndLoginPerson('ali','654321', {})
+        return lib.dbHelpers.addAndLoginPerson('ali', '654321', {})
       })
-      .then( res => {
+      .then(res => {
         aliJar = res.rpJar;
-        return lib.dbHelpers.addAndLoginPerson('aDmIn','admin', {})
+        aliPid = res.pid;
+        return lib.dbHelpers.addAndLoginPerson('aDmIn', 'admin', {})
       })
-      .then( res =>{
+      .then(res => {
         adminJar = res.rpJar;
         done();
       })
@@ -34,7 +36,7 @@ describe('POST Event API', () => {
       });
   });
 
-  it('errors on unauthenticated delete attempt', function(done) {
+  it('errors on unauthenticated delete attempt', function (done) {
     eventData.title = 'tested event 1';
     rp({
       method: 'POST',
@@ -51,7 +53,7 @@ describe('POST Event API', () => {
       });
   });
 
-  it('errors on unauthorised delete attempt', function(done) {
+  it('errors on unauthorised delete attempt', function (done) {
     eventData.title = 'tested event 2';
     rp({
       method: 'POST',
@@ -64,6 +66,24 @@ describe('POST Event API', () => {
         done();
       })
       .catch(err => {
+        expect(err.statusCode).toBe(403);
+        done();
+      });
+  });
+
+  it('errors on trying to hijack event record', function (done) {
+    eventData.organizer_pid = aliPid;
+    rp({
+      method: 'POST',
+      form: eventData,
+      uri: lib.helpers.apiTestURL(`event/${eid}`),
+      jar: aliJar,
+    })
+      .then(() => {
+        this.fail('permitted hijacking a record');
+        done()
+      })
+      .catch( err => {
         expect(err.statusCode).toBe(403);
         done();
       });
