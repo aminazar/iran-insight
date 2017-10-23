@@ -13,6 +13,7 @@ describe('PUT Event API', () => {
         pid = res.pid;
         aminJar = res.rpJar;
         eventData.organizer_pid = pid;
+        eventData.saved_by = pid;
         return lib.dbHelpers.addAndLoginPerson('ali','654321', {})
       })
       .then( res => {

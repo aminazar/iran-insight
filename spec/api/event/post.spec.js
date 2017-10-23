@@ -14,6 +14,7 @@ describe('POST Event API', () => {
         pid = res.pid;
         aminJar = res.rpJar;
         eventData.organizer_pid = pid;
+        eventData.saved_by = pid;
         return sql.test.event.add(eventData);
       })
       .then(res => {
