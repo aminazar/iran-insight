@@ -62,6 +62,27 @@ genericSelect = (tableName, isTest) => {
   };
 };
 
+genericConditionalSelect = (tableName, isTest, whereColumns=[], nullColumns=[], notNullColumns=[]) => {
+  let db = chooseDb(tableName, isTest);
+  let whereClause = whereColumns ? whereColumns.concat(nullColumns).concat(notNullColumns).map(col => col + (nullColumns.includes(col) ? ' is null' : notNullColumns.includes(col)? ' is not null' : '=${' + col + '}')).join(' and ') : '';
+  let query = `select * from ${tableName}${whereClause ? ' where ' + whereClause : ''}`;
+  return (constraints) => {
+    return db.any(query, constraints);
+  };
+};
+
+genericGet = (tableName, isTest) => {
+  return (constraints) => {
+    return genericConditionalSelect(
+      tableName,
+      isTest,
+      Object.keys(constraints).filter(r => constraints[r] !== null && constraints[r] !== 'NOT NULL'),
+      Object.keys(constraints).filter(r => constraints[r] === null),
+      Object.keys(constraints).filter(r => constraints[r] === 'NOT NULL')
+    )(constraints);
+  }
+};
+
 genericDelete = (tableName, idColumn, isTest) => {
   let db = chooseDb(tableName, isTest);
   return (id) => {
@@ -101,8 +122,24 @@ let tablesWithSqlCreatedByHelpers = [
     select: false,
     delete: true,
     idColumn: 'oid',
-  }
-
+  },
+  {
+    name: 'person_activation_link',
+    insert: true,
+    update: true,
+    select: true,
+    delete: true,
+    idColumn: 'pid',
+  },
+  {
+    name: 'event',
+    insert: true,
+    update: true,
+    select: true,
+    get: true,
+    delete: true,
+    idColumn: 'eid',
+  },
 ];
 
 tablesWithSqlCreatedByHelpers.forEach((table) => {
@@ -125,6 +162,16 @@ tablesWithSqlCreatedByHelpers.forEach((table) => {
   if (table.select) {
     wrappedSQL[table.name].select = genericSelect(table.name, false);
     wrappedSQL.test[table.name].select = genericSelect(table.name, true);
+  }
+
+  if (table.conditionalSelect) {
+    wrappedSQL[table.name].conditionalSelect = (columns, nullColumns) => genericConditionalSelect(table.name, false, columns, nullColumns);
+    wrappedSQL.test[table.name].conditionalSelect = (columns, nullColumns) => genericConditionalSelect(table.name, true, columns, nullColumns);
+  }
+
+  if(table.get) {
+    wrappedSQL[table.name].get = genericGet(table.name, false);
+    wrappedSQL.test[table.name].get = genericGet(table.name, true);
   }
 
   if (table.delete) {

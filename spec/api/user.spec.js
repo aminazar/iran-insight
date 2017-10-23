@@ -10,7 +10,7 @@ let resExpect = (res, statusCode) => {
     let jres;
     try {
       jres = JSON.parse(res.body);
-    } catch(e) {
+    } catch (e) {
       console.log('Unexpected server response:', res.body);
       return false;
     }
@@ -39,33 +39,20 @@ describe("REST API", () => {
   describe("user", () => {
     let pid;
     let adminPid;
-    let u;
-    let a;
-    let teardown = false;
     let setup = true;
     beforeEach(done => {
       if (setup) {
-        sql.test.person.drop().then(() => {
-        }).catch(() => {
-        });
-        u = new lib.User(true);
-        u.username = 'amin';
-        u.password = 'test';
-        sql.test.person.create()
-          .then(() => {
-            u.save()
-              .then(id => {
-                pid = id;
-                setup = false;
-                a = new lib.User(true);
-                a.username = 'Admin';
-                a.password = 'atest';
-                a.save()
-                  .then(aid => {
-                    adminPid = aid;
-                    done();
-                  })
-              })
+        lib.dbHelpers.create()
+          .then(() => lib.dbHelpers.addPerson('amin', 'test'))
+          .then(id => {
+            console.log('id', id);
+            pid = id;
+            setup = false;
+            return lib.dbHelpers.addPerson('Admin', 'atest')
+          })
+          .then(aid => {
+            adminPid = aid;
+            done();
           })
           .catch(err => {
             console.log(err.message);
@@ -119,13 +106,18 @@ describe("REST API", () => {
         done();
       })
     });
-    it("allows admin to list all users", done => {
+    it("allows admin to list all users", function(done) {
+      let thisTest = this;
       req.get(base_url + 'user' + test_query, (err, res) => {
         expect(res.statusCode).toBe(200);
-        let data = JSON.parse(res.body);
-        expect(data.length).toBe(2);
-        expect(data.map(r => r.pid)).toContain(adminPid);
-        expect(data.map(r => r.username)).toContain('admin');
+        try {
+          let data = JSON.parse(res.body);
+          expect(data.length).toBe(2);
+          expect(data.map(r => r.pid)).toContain(adminPid);
+          expect(data.map(r => r.username)).toContain('admin');
+        } catch(e) {
+          thisTest.fail('response is not as expected: ', e);
+        }
         done();
       })
     });
@@ -228,18 +220,6 @@ describe("REST API", () => {
         expect(res.statusCode).toBe(403);
         done();
       });
-    });
-    it("tears down", () => {
-      teardown = true;
-      expect(teardown).toBeTruthy();
-    });
-    afterEach((done) => {
-      if (pid && teardown)
-        sql.test.person.drop().then(() => done()).catch(err => {
-          console.log(err.message);
-          done()
-        });
-      else done();
     });
   })
 });

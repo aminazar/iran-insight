@@ -52,30 +52,36 @@ router.get('/', function(req, res) {
   res.send('respond with a resource');
 });
 //Login API
-router.post('/login', passport.authenticate('local', {}), apiResponse('User', 'afterLogin', false, ['user.username']));
-router.post('/loginCheck', apiResponse('User', 'loginCheck', false, ['body.username', 'body.password']));
+router.post('/login', passport.authenticate('local', {}), apiResponse('Person', 'afterLogin', false, [ 'user.username']));
+router.post('/loginCheck', apiResponse('Person', 'loginCheck', false, ['body.username', 'body.password']));
 router.get('/logout', (req,res)=>{req.logout();res.sendStatus(200)});
-router.get('/validUser',apiResponse('User', 'afterLogin', false, ['user.username']));
+router.get('/validUser',apiResponse('Person', 'afterLogin', false, ['user.username']));
 
 //Authentication API
 router.get('/login/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login', 'profile', 'email']}));
-router.get('/login/google/callback', passport.authenticate('google', {}), apiResponse('User', 'afterLogin', false, ['user.username']));
+router.get('/login/google/callback', passport.authenticate('google', {}), apiResponse('Person', 'afterLogin', false, ['user.username']));
 router.get('/login/facebook', passport.authenticate('facebook'));
-router.get('/login/facebook/callback', passport.authenticate('facebook'), apiResponse('User', 'afterLogin', false, ['user.username']));
+router.get('/login/facebook/callback', passport.authenticate('facebook'), apiResponse('Person', 'afterLogin', false, ['user.username']));
 router.get('/login/linkedin', passport.authenticate('linkedin', { scope: ['r_basicprofile', 'r_emailaddress'] }));
-router.get('/login/linkedin/callback', passport.authenticate('linkedin', {}), apiResponse('User', 'afterLogin', false, ['user.username']));
+router.get('/login/linkedin/callback', passport.authenticate('linkedin', {}), apiResponse('Person', 'afterLogin', false, ['user.username']));
 
-//User API
-router.put('/user', apiResponse('User', 'insert', true, ['body']));
-router.get('/user', apiResponse('User', 'select', true));
-router.post('/user/:pid', apiResponse('User', 'update', true, ['params.pid','body']));
-router.delete('/user/:pid', apiResponse('User', 'delete', true, ['params.pid']));
-router.put('/user/message', apiResponse('User', 'socketHandler', false, ['body']));
+//Person API
+router.put('/user/register', apiResponse('Person', 'registration', false, ['body']));
+router.get('/user/activate/link/:link', apiResponse('Person', 'checkActiveLink', false, ['params.link']));
+router.post('/user/auth/local/:link', apiResponse('Person', 'completeAuth', false, ['params.link', 'body']));
+
+router.put('/user', apiResponse('Person', 'insert', true, ['body']));
+router.get('/user', apiResponse('Person', 'select', true));
+router.post('/user/:pid', apiResponse('Person', 'update', true, ['params.pid','body']));
+router.delete('/user/:pid', apiResponse('Person', 'delete', true, ['params.pid']));
+router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body']));
 // Organization API
 router.get('/organization/:oid', apiResponse('Organization', 'select' , false, ['params.oid']));
 
 //representation check API
 router.get('/user/checkifrep',apiResponse('User','findRepRequests',true, ['user.username']));
 //
+//Events API
+router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid']));
 
 module.exports = router;

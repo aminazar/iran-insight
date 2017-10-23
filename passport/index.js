@@ -12,13 +12,13 @@ let LinkedInStrategy = require('passport-linkedin').Strategy;
 let setup = (app) => {
   app.use(passport.initialize());
   app.use(passport.session());
-  passport.serializeUser(lib.User.serialize);
-  passport.deserializeUser(lib.User.deserialize);
+  passport.serializeUser(lib.Person.serialize);
+  passport.deserializeUser(lib.Person.deserialize);
   passport.use(new LocalStrategy(
     {
       passReqToCallback: true,
     },
-    lib.User.passportLocalStrategy
+    lib.Person.passportLocalStrategy
   ));
 
   passport.use(new GoogleStrategy({
@@ -26,7 +26,7 @@ let setup = (app) => {
     clientSecret: authDetails.googleAuth.clientSecret,
     callbackURL: authDetails.googleAuth.callBackURL,
     passReqToCallback: true,
-  }, lib.User.passportOAuthStrategy));
+  }, lib.Person.passportOAuthStrategy));
 
   passport.use(new FacebookStrategy({
     clientID: authDetails.facebookAuth.clientID,
@@ -35,7 +35,7 @@ let setup = (app) => {
     profileFields:  ['id', 'email', 'gender', 'name'],
     enableProof: true,
     passReqToCallback: true
-  }, lib.User.passportOAuthStrategy));
+  }, lib.Person.passportOAuthStrategy));
 
   passport.use(new LinkedInStrategy({
     consumerKey: authDetails.linkedinAuth.clientID,
@@ -43,7 +43,7 @@ let setup = (app) => {
     callbackURL: authDetails.linkedinAuth.callBackURL,
     profileFields: ['id', 'first-name', 'last-name', 'email-address', 'headline'],
     passReqToCallback: true
-  }, lib.User.passportOAuthStrategy));
+  }, lib.Person.passportOAuthStrategy));
 };
 
 module.exports = {
