@@ -10,11 +10,15 @@ function apiResponse(className, functionName, adminOnly=false, reqFuncs=[]){
     let len=path.length;
     for (let i=0; i<len; i++){
       if(typeof obj === 'undefined') {
-        let err = new Error(`Bad request: request.${pathStr} is not found at '${path[i]}'`);
-        err.status = 400;
-        throw(err);
+        if(path[i - 1] && path[i - 1][0]==='?') {
+          return undefined;
+        } else {
+          let err = new Error(`Bad request: request.${pathStr} is not found at '${path[i - 1]}'`);
+          err.status = 400;
+          throw(err);
+        }
       }
-      obj = obj[path[i]];
+      obj = obj[ (path[i][0]==='?') ? path[i].substring(1) : path[i]];
     }
     return obj;
   };
@@ -97,7 +101,7 @@ router.get('/user/checkIfRep',apiResponse('Person','findRepRequests',true, ['use
 router.get('/user/checkIfUser',apiResponse('Person','findMemRequests',false, ['user.username']));
 //
 //Events API
-router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid']));
+router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid','?user.pid']));
 router.put('/event', apiResponse('Event', 'saveData', false, ['body', 'user.pid']));
 router.post('/event/:eid', apiResponse('Event', 'saveData', false, ['body', 'user.pid', 'params.eid']));
 router.delete('/event/:eid', apiResponse('Event', 'delete', false, ['params.eid', 'user.pid']));
