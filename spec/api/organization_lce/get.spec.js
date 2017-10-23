@@ -117,5 +117,5 @@ describe("organization_lce", () => {
 
   });
 
-}
+});
 

@@ -1,10 +1,22 @@
--- Using 'assoc' table, we need to figure out if a user is representative of an organization
--- It is not doing so at the moment because assoc is not defined yet
 select
-    *
+    association.aid,
+    membership.mid
 from
-    person, organization
+    person
+join
+    association
+on
+    association.pid = person.pid
+join
+    membership
+on
+    membership.assoc_id = association.aid
+    and membership.is_active = true
+    and membership.is_representative = true
+join
+    organization
+on
+    association.oid = organization.oid
+    and organization.oid = ${oid}
 where
     person.pid = ${pid}
-    and organiztion.oid = ${oid}
-    and 1=0 -- for now we want to return empty dataset, but if there is real representative, then one row should be returned
