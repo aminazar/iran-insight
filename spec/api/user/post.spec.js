@@ -44,23 +44,12 @@ describe("POST user API", () => {
   //
   // });
   //
-  // it("user should has not access to change business profile", done => {
-  //
-  // });
-  //
   // it("user should has not access to change organization profile", done => {
   //
   // });
   //
-  // it("representative should update business profile", done => {
-  //
-  // });
   //
   // it("representative should update organization profile", done => {
-  //
-  // });
-  //
-  // it("admin should update business/organiztion/user profile", done => {
   //
   // });
 });

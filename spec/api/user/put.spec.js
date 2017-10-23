@@ -40,26 +40,6 @@ describe("PUT user API", () => {
       })
   });
 
-  xit("representative should add business profile", function(done) {
-    this.done = done;
-    rp({
-      method: 'put',
-      form: {
-        name: '',
-        type: '',
-        foundation_date: '',
-        your_position: '',
-      },
-      uri: lib.helpers.apiTestURL(`business/profile`),
-      jar: repObj.jar
-    })
-      .then(res => {
-        expect(res.statusCode).toBe(200);
-        done();
-      })
-      .catch(lib.helpers.errorHandler.bind(this));
-  });
-
   xit("representative should add organization profile", function(done) {
     this.done = done;
     rp({
@@ -79,9 +59,6 @@ describe("PUT user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  // it("admin should can access to add business", done => {
-  //
-  // });
   //
   // it("admin should can access to add organization", done => {
   //

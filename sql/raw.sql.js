@@ -86,9 +86,9 @@ module.exports = {
     drop:       sql('position_type/drop.sql'),
   },
   membership: {
-    create:     sql('membership/create.sql'),
-    drop:       sql('membership/drop.sql'),
-    isRepresentative: sql('membership/isRepresentative.sql'),
+    create:                   sql('membership/create.sql'),
+    drop:                     sql('membership/drop.sql'),
+    isRepresentativeOrAdmin:  sql('membership/isRepresentativeOrAdmin.sql'),
   },
   event: {
     create:     sql('event/create.sql'),
