@@ -85,7 +85,7 @@ describe("Test auth APIs", () => {
     });
   }, 10000);
 
-  it("should semi register user locally (no email)", (done) => {
+  it("should semi register user locally (no email)", function(done) {
     request.put({
       url: base_url + '/user/register' + test_query,
       form: {email: '', display_name: 'ali'}
@@ -98,7 +98,7 @@ describe("Test auth APIs", () => {
     });
   });
 
-  it("should semi register user locally (no display_name)", (done) => {
+  it("should semi register user locally (no display_name)", function(done) {
     request.put({
       url: base_url + '/user/register' + test_query,
       form: {email: 'alireza@bentoak.systems'}
@@ -111,7 +111,7 @@ describe("Test auth APIs", () => {
     });
   });
 
-  it("should get error for incorrect email address pattern", (done) => {
+  it("should get error for incorrect email address pattern", function(done) {
     request.put({
       url: base_url + '/user/register' + test_query,
       form: {email: '123', display_name: 'ali'}
@@ -125,7 +125,7 @@ describe("Test auth APIs", () => {
     });
   });
 
-  it("should semi register user locally (complete data)", (done) => {
+  it("should semi register user locally (complete data)", function(done) {
     let outerContext = this;
     username = 'alireza@bentoak.systems';
     request.put({
@@ -152,7 +152,7 @@ describe("Test auth APIs", () => {
     });
   }, 6000);
 
-  it("should choose password then click on activation link from mail", (done) => {
+  it("should choose password then click on activation link from mail", function(done) {
     let outerContext = this;
     sql.test.person_activation_link.get({username: username})
       .then(res => {
@@ -173,7 +173,7 @@ describe("Test auth APIs", () => {
       });
   });
 
-  it("should show suitable message when activation link not found", (done) => {
+  it("should show suitable message when activation link not found", function(done) {
     request.get(base_url + 'user/activate/link/123' + test_query, (err, res) => {
       if(err)
         this.fail(err);
@@ -186,7 +186,7 @@ describe("Test auth APIs", () => {
     })
   });
 
-  it("should choose password for themselves", (done) => {
+  it("should choose password for themselves", function(done) {
     let outerContext = this;
     sql.test.person_activation_link.get({username: username})
       .then(res => {
@@ -223,7 +223,7 @@ describe("Test auth APIs", () => {
       })
   });
 
-  it("should login with username and password (Local Authentication)", (done) => {
+  it("should login with username and password (Local Authentication)", function(done) {
     request.post({
       url: base_url + 'login' + test_query,
       form: {

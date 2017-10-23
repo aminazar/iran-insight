@@ -2,7 +2,7 @@
   "development": {
     "initDb":   "postgres",
     "database": "iran-insight",
-    "pgConnection": "postgres://postgres:13311231@localhost:5432/"
+    "pgConnection": "postgres://postgres:13311231@localhost:5432/",
     "mailConfig": {
       "host": "smtp.mailgun.org",
       "port": "465",
