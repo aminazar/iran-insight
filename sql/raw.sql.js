@@ -27,6 +27,7 @@ module.exports = {
     create:     sql('person/create.sql'),
     drop:       sql('person/drop.sql'),
     get:        sql('person/get.sql'),
+    isAdmin:    sql('person/isAdmin.sql'),
     orgRep:     sql('person/orgRep.sql'),
     bizRep:     sql('person/bizRep.sql'),
   },
@@ -81,6 +82,9 @@ module.exports = {
   attendance: {
     create:     sql('attendance/create.sql'),
     drop:       sql('attendance/drop.sql'),
+    personUnattends: sql('attendance/person-unattend.sql'),
+    bizUnattends: sql('attendance/biz-unattend.sql'),
+    orgUnattends: sql('attendance/org-unattend.sql'),
   },
   attendance_type: {
     create:     sql('attendance_type/create.sql'),
