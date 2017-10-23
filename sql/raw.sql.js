@@ -77,6 +77,10 @@ module.exports = {
     create:     sql('association/create.sql'),
     drop:       sql('association/drop.sql'),
   },
+  position_type: {
+    create:     sql('position_type/create.sql'),
+    drop:       sql('position_type/drop.sql'),
+  },
   membership: {
     create:     sql('membership/create.sql'),
     drop:       sql('membership/drop.sql'),
