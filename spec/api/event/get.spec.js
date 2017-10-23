@@ -11,10 +11,11 @@ describe('GET Event API', () => {
       .then(res => {
         pid = res;
         eventData.organizer_pid = pid;
+        eventData.saved_by = pid;
         return sql.test.event.add(eventData);
       })
       .then(res => {
-        eid = res.eid;
+        eid = +res.eid;
         done();
       })
       .catch(err => {
@@ -42,7 +43,7 @@ describe('GET Event API', () => {
         done();
       })
       .catch(err => {
-        this.fail(lib.helpers.parseServerError(err));
+        this.fail(lib.helpers.parseServerErrorToString(err));
         done();
       });
   });
