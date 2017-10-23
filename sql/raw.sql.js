@@ -30,6 +30,7 @@ module.exports = {
     isAdmin:    sql('person/isAdmin.sql'),
     orgRep:     sql('person/orgRep.sql'),
     bizRep:     sql('person/bizRep.sql'),
+    isAdmin:    sql('person/isAdmin.sql'),
     getListOfRepresentationRequests: sql('person/getListOfRepresentationRequests.sql'),
     getListOfMembershipRequests: sql('person/getListOfMembershipRequests.sql'),
   },
@@ -88,6 +89,7 @@ module.exports = {
   membership: {
     create:     sql('membership/create.sql'),
     drop:       sql('membership/drop.sql'),
+    isRepresentative: sql('membership/isRepresentative.sql'),
   },
   event: {
     create:     sql('event/create.sql'),
