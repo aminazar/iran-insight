@@ -142,6 +142,10 @@ describe("Test auth APIs", () => {
         sql.test.person_activation_link.get({username: username})
           .then(res => {
             expect(res.length).toBeGreaterThan(0);
+            return sql.test.person.get({username: username});
+          })
+          .then(res => {
+            expect(res[0].is_user).toBe(false);
             done();
           })
           .catch(err => {
@@ -150,7 +154,7 @@ describe("Test auth APIs", () => {
           });
       }
     });
-  }, 6000);
+  }, 15000);
 
   it("should choose password then click on activation link from mail", function(done) {
     let outerContext = this;
@@ -224,6 +228,7 @@ describe("Test auth APIs", () => {
   });
 
   it("should login with username and password (Local Authentication)", function(done) {
+    username = 'alireza@bentoak.systems';
     request.post({
       url: base_url + 'login' + test_query,
       form: {
@@ -239,4 +244,99 @@ describe("Test auth APIs", () => {
       done();
     })
   });
+
+  it("should authenticated user by open-auth authenticate with local", function (done) {
+    username = 'ali.71hariri@gmail.com';
+
+    //Insert user as authenticated user with open-auth
+    sql.test.person.add({
+      pid: 100,
+      username: username,
+      secret: null,
+      firstname_en: 'Alireza',
+      firstname_fa: null,
+      surname_en: 'Hariri',
+      surname_fa: null,
+      display_name_en: 'Alireza Hariri',
+      display_name_fa: null,
+      is_user: true,
+    })
+      .then(res => {
+        request.put({
+          url: base_url + '/user/register' + test_query,
+          form: {email: username, display_name: 'ali'}
+        }, (err, res) => {
+          if(err){
+            this.fail(err);
+            done();
+          }
+          else{
+            expect(res.statusCode).toBe(500);
+            expect(res.body).toBe('Email is exist');
+            done();
+          }
+        });
+      })
+      .catch(err => {
+        this.fail(err);
+        done();
+      })
+  });
+
+  it("should authenticated user by open-auth get activation link as forgot password/activation", function (done) {
+    username = 'ali.71hariri@gmail.com';
+    request.post({
+      url: base_url + '/user/auth/link' + test_query,
+      form: {email: username}
+    }, (err, res) => {
+      if(err){
+        this.fail(err);
+        done();
+      }
+      else{
+        expect(res.statusCode).toBe(200);
+        console.log(res.body);
+        // expect(JSON.parse(res.body)).toBe('Email is sent');
+        done();
+      }
+    })
+  }, 10000);
+
+  it("should authenticated user by open-auth choose password for her/his", function (done) {
+    let outerContext = this;
+    sql.test.person_activation_link.get({username: username})
+      .then(res => {
+        req.post({
+          url: base_url + 'user/auth/local/' + res[0].link + test_query,
+          form: {
+            username: username,
+            password: '123456789'
+          }
+        }, (err, res) => {
+          if(err){
+            outerContext.fail(err);
+            done();
+          }
+          else{
+            expect(res.statusCode).toBe(200);
+            sql.test.person.get({username: username})
+              .then(res => {
+                expect(res[0].display_name_en).toBe('Alireza Hariri');
+                expect(res[0].secret).not.toBe(null);
+                expect(res[0].secret).not.toBe(undefined);
+                expect(res[0].is_user).toBe(true);
+                done();
+              })
+              .catch(er => {
+                outerContext.fail(er);
+                done();
+              });
+          }
+        })
+      })
+      .catch(err => {
+        this.fail(err);
+        done();
+      })
+  }, 10000);
 });

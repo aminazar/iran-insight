@@ -40,7 +40,7 @@ describe("PUT user API", () => {
       })
   });
 
-  it("representative should add business profile", function(done) {
+  xit("representative should add business profile", function(done) {
     this.done = done;
     rp({
       method: 'put',
@@ -60,7 +60,7 @@ describe("PUT user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("representative should add organization profile", function(done) {
+  xit("representative should add organization profile", function(done) {
     this.done = done;
     rp({
       method: 'put',
