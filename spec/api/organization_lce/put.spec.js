@@ -65,7 +65,7 @@ describe('PUT: organization lce', () => {
     }, org_lce_info[0]);
 
     createLCE_Type(lce_type)
-      .then(createOrg(org))
+      .then(() =>createOrg(org))
       .then(() => {
 
         let inserted_lce_id;
@@ -103,7 +103,7 @@ describe('PUT: organization lce', () => {
     let org_lce = Object.assign({oid1: 1, lce_type_id: 1}, org_lce_info[0]);
 
     createLCE_Type(lce_type)
-      .then(createOrg(org))
+      .then(()=> createOrg(org))
       .then(() => {
 
         rp({
@@ -133,7 +133,7 @@ describe('PUT: organization lce', () => {
     let org_lce = Object.assign({start_date: '2017-09-08 10:00:00', lce_type_id: 1}, org_lce_info[0]);
 
     createLCE_Type(lce_type)
-      .then(createOrg(org))
+      .then(()=> createOrg(org))
       .then(() => {
 
         rp({
@@ -163,7 +163,7 @@ describe('PUT: organization lce', () => {
     let org_lce = Object.assign({oid1: 1, start_date: '2017-09-08 10:00:00'}, org_lce_info[0]);
 
     createLCE_Type(lce_type)
-      .then(createOrg(org))
+      .then(() => createOrg(org))
       .then(() => {
 
         rp({
@@ -192,8 +192,8 @@ describe('PUT: organization lce', () => {
     let org_lce2 = Object.assign({oid1: 1, start_date: '2017-09-08 10:00:00', lce_type_id: 1}, org_lce_info[0]);
 
     createLCE_Type(lce_type)
-      .then(createOrg(org))
-      .then(createOrg_LCE(org_lce1))
+      .then(() => createOrg(org))
+      .then(() => createOrg_LCE(org_lce1))
       .then(() => {
 
         rp({

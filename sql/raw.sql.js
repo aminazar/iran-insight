@@ -45,7 +45,7 @@ module.exports = {
   organization: {
     create: sql('organization/create.sql'),
     drop: sql('organization/drop.sql'),
-    getById: sql('organization/get_by_oId.sql'),
+    getById: sql('organization/get_by_id.sql'),
     getAll: sql('organization/get_all.sql'),
   },
   organization_lce: {

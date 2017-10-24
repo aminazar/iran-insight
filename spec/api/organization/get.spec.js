@@ -64,7 +64,7 @@ describe("organization", () => {
   it("/Get : get an existing organization joined with its type", done => {
 
     createNewOrgType(orgs_type_info[0])
-      .then(createNewOrg(orgs_info[0]))
+      .then(()=> createNewOrg(orgs_info[0]))
       .then(() => {
         request.get(base_url + `organization/${orgs_info[0].oid}` + test_query, function (error, response) {
           let result = JSON.parse(response.body);
