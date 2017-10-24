@@ -92,6 +92,7 @@ router.put('/organization/profile', apiResponse('Organization', 'setProfile', fa
 
 // Organization LCE API
 router.put('/organization-lce', apiResponse('OrganizationLCE', 'saveData', false, ['body']));
+router.get('/organization-lce/:oid', apiResponse('OrganizationLCE', 'getByOid', false, ['params.oid']));
 
 //organization type
 router.put('/organization-type', apiResponse('OrganizationType', 'saveData', false, ['body' , 'id']));
