@@ -62,6 +62,34 @@ let assoc_info = [
     oid : null,
     start_date : null,
     end_date : null
+  },{
+    aid : 2,
+    pid : 1,
+    bid : 2,
+    oid : null,
+    start_date : null,
+    end_date : null
+  },{
+    aid : 3,
+    pid : 1,
+    bid : null,
+    oid : 50,
+    start_date : null,
+    end_date : null
+  },{
+    aid : 4,
+    pid : 3,
+    bid : null,
+    oid : 51,
+    start_date : null,
+    end_date : null
+  },{
+    aid : 5,
+    pid : 3,
+    bid : 3,
+    oid : null,
+    start_date : null,
+    end_date : null
   }];
 
 let bus_info = [{
@@ -76,11 +104,59 @@ let bus_info = [{
   url: null,
   general_stats: null,
   financial_stats: null
+},{
+  bid: 2,
+  name: 'snap',
+  name_fa: 'اسنپ',
+  ceo_pid : 3,
+  org_type_id: 101,
+  address: null,
+  address_fa: null,
+  tel: null,
+  url: null,
+  general_stats: null,
+  financial_stats: null
+},{
+  bid: 3,
+  name: 'tapsi',
+  name_fa: 'تپسی',
+  ceo_pid : 3,
+  org_type_id: 101,
+  address: null,
+  address_fa: null,
+  tel: null,
+  url: null,
+  general_stats: null,
+  financial_stats: null
 }];
 
 let mem_info = [{
   mid : 1,
   assoc_id : 1,
+  is_active : false,
+  is_representative : true,
+  position_id : null
+},{
+  mid : 2,
+  assoc_id : 2,
+  is_active : false,
+  is_representative : true,
+  position_id : null
+},{
+  mid : 3,
+  assoc_id : 3,
+  is_active : false,
+  is_representative : true,
+  position_id : null
+},{
+  mid : 4,
+  assoc_id : 4,
+  is_active : false,
+  is_representative : true,
+  position_id : null
+},{
+  mid : 5,
+  assoc_id : 5,
   is_active : false,
   is_representative : true,
   position_id : null
@@ -138,9 +214,19 @@ describe("Admin can get all representation requests from users and send them act
         .then(() =>createNewOrg(orgs_info[1]))
         .then(() => createNewOrg(orgs_info[2]))
         .then(() => createNewBusiness(bus_info[0]))
+        .then(() => createNewBusiness(bus_info[1]))
+        .then(() => createNewBusiness(bus_info[2]))
         .then(() =>  createNewAssociation(assoc_info[0]))
+        .then(() =>  createNewAssociation(assoc_info[1]))
+        .then(() =>  createNewAssociation(assoc_info[2]))
+        .then(() =>  createNewAssociation(assoc_info[3]))
+        .then(() =>  createNewAssociation(assoc_info[4]))
+        .then(() =>  createNewMembership(mem_info[0]))
+        .then(() =>  createNewMembership(mem_info[1]))
+        .then(() =>  createNewMembership(mem_info[2]))
+        .then(() =>  createNewMembership(mem_info[3]))
         .then(()=>{
-          createNewMembership(mem_info[0])
+          createNewMembership(mem_info[4])
           done();
         })
         .catch(err => {
@@ -187,6 +273,13 @@ describe("Admin can get all representation requests from users and send them act
     });
   });
 
+  it("should not be able to get list of rep requests bofore login ", done =>{
+    req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+      expect(res.statusCode).toBe(403);
+      done();
+    })
+  });
+
   it("should logins as representative of a business", done=>{
     req.post({
       url: base_url + 'login' + test_query,
@@ -212,6 +305,10 @@ describe("Admin can get all representation requests from users and send them act
       expect(res.statusCode).not.toBe(404);
       expect(res.statusCode).not.toBe(500);
       expect(res.statusCode).toBe(200);
+      let data = JSON.parse(res.body);
+      expect(data.length).toBe(2);
+      console.log(typeof data);
+      console.log(data);
       done();
     })
   });
