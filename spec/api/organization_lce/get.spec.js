@@ -4,16 +4,16 @@ const sql = require('../../../sql/index');
 const moment = require('moment-timezone');
 const date = require('../../../utils/date.util');
 
-
 describe('Get: organization lce', () => {
   let createOrg_LCE = (org_lce) => {
+
     return sql.test.organization_lce.add(org_lce);
   };
 
   let createOrg = (org) => {
-
     return sql.test.organization.add(org);
   };
+
   let createLCE_Type = (lce_type) => {
 
     return sql.test.lce_type.add(lce_type);
@@ -74,40 +74,40 @@ describe('Get: organization lce', () => {
     let org_lce3 = {oid1: 2, start_date: '2017-09-11 10:00:00', lce_type_id: 3};
 
     createLCE_Type(lce_type1)
-      .then(createLCE_Type(lce_type2))
-      .then(createLCE_Type(lce_type3))
-      .then(createOrg(org1))
-      .then(createOrg(org2))
-      .then(createOrg_LCE(org_lce1))
-      .then(createOrg_LCE(org_lce2))
-      .then(createOrg_LCE(org_lce3))
+      .then(() => createLCE_Type(lce_type2))
+      .then(() => createLCE_Type(lce_type3))
+      .then(() => createOrg(org1))
+      .then(() => createOrg(org2))
+      .then(() => createOrg_LCE(org_lce1))
+      .then(() => createOrg_LCE(org_lce2))
+      .then(() => createOrg_LCE(org_lce3))
       .then(() => {
-
-        rp({
-          method: 'Get',
+        return rp({
+          method: 'GET',
           uri: lib.helpers.apiTestURL(`organization-lce/1`),
           resolveWithFullResponse: true,
         })
-          .then(res => {
-            expect(res.statusCode).toBe(200);
-
-            let data = JSON.parse(res.body);
-
-            expect(data.length).toBe(2);
-            expect(data[0]['lce_name']).toBe(lce_type_info[0].name);
-            expect(data[0]['lce_name_fa']).toBe(lce_type_info[0].name_fa);
-            expect(data[1]['lce_name']).toBe(lce_type_info[1].name);
-            expect(data[1]['lce_name_fa']).toBe(lce_type_info[1].name_fa);
-            expect(data[1]['org2_name']).toBe(org_info[1].name);
-            expect(data[1]['org2_name_fa']).toBe(org_info[1].name_fa);
-
-            done();
-          })
-          .catch(err => {
-            this.fail(lib.helpers.parseServerErrorToString(err));
-            done();
-          });
       })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
 
+        let data = JSON.parse(res.body);
+
+        expect(data.length).toBe(2);
+        if (data.length) {
+          expect(data[0]['lce_name']).toBe(lce_type_info[0].name);
+          expect(data[0]['lce_name_fa']).toBe(lce_type_info[0].name_fa);
+          expect(data[1]['lce_name']).toBe(lce_type_info[1].name);
+          expect(data[1]['lce_name_fa']).toBe(lce_type_info[1].name_fa);
+          expect(data[1]['org2_name']).toBe(org_info[1].name);
+          expect(data[1]['org2_name_fa']).toBe(org_info[1].name_fa);
+        }
+
+        done();
+      })
+      .catch(err => {
+        this.fail(lib.helpers.parseServerErrorToString(err));
+        done();
+      });
   });
 });
