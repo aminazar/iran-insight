@@ -27,8 +27,11 @@ module.exports = {
     create:     sql('person/create.sql'),
     drop:       sql('person/drop.sql'),
     get:        sql('person/get.sql'),
+    isAdmin:    sql('person/isAdmin.sql'),
     orgRep:     sql('person/orgRep.sql'),
     bizRep:     sql('person/bizRep.sql'),
+    getListOfRepresentationRequests: sql('person/getListOfRepresentationRequests.sql'),
+    getListOfMembershipRequests: sql('person/getListOfMembershipRequests.sql'),
   },
   expertise: {
     create: sql('expertise/create.sql'),
@@ -74,6 +77,19 @@ module.exports = {
     create:     sql('business/create.sql'),
     drop:       sql('business/drop.sql'),
   },
+  association: {
+    create:     sql('association/create.sql'),
+    drop:       sql('association/drop.sql'),
+  },
+  position_type: {
+    create:     sql('position_type/create.sql'),
+    drop:       sql('position_type/drop.sql'),
+  },
+  membership: {
+    create:     sql('membership/create.sql'),
+    drop:       sql('membership/drop.sql'),
+    isRepresentative: sql('membership/isRepresentative.sql'),
+  },
   event: {
     create:     sql('event/create.sql'),
     drop:       sql('event/drop.sql'),
@@ -81,6 +97,9 @@ module.exports = {
   attendance: {
     create:     sql('attendance/create.sql'),
     drop:       sql('attendance/drop.sql'),
+    personUnattends: sql('attendance/person-unattend.sql'),
+    bizUnattends: sql('attendance/biz-unattend.sql'),
+    orgUnattends: sql('attendance/org-unattend.sql'),
   },
   attendance_type: {
     create:     sql('attendance_type/create.sql'),
