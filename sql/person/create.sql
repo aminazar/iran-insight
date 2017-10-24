@@ -6,6 +6,12 @@ create table if not exists person(
     surname_fa varchar(20),
     username varchar(25) not null unique,
     secret varchar(200),
+    image varchar(300),
+    address_en varchar(500),
+    address_fa varchar(500),
+    phone_no varchar(20),
+    mobile_no varchar(20),
+    birth_date date,
     is_user boolean default true,
     display_name_en varchar(30),
     display_name_fa varchar(30)

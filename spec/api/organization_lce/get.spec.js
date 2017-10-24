@@ -40,7 +40,7 @@ let orgs_lce_info = [{
   description_fa: 'تغییر مدیریت',
 }];
 
-xdescribe("organization_lce", () => {
+describe("organization_lce", () => {
 
   let createNewOrg_LCE = (org_lce_info) => {
     return sql.test.organization_lce.add(org_lce_info);
@@ -117,5 +117,5 @@ xdescribe("organization_lce", () => {
 
   });
 
-})
+});
 
