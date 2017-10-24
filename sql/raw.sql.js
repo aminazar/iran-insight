@@ -27,6 +27,7 @@ module.exports = {
     create:     sql('person/create.sql'),
     drop:       sql('person/drop.sql'),
     get:        sql('person/get.sql'),
+    isAdmin:    sql('person/isAdmin.sql'),
     orgRep:     sql('person/orgRep.sql'),
     bizRep:     sql('person/bizRep.sql'),
     getListOfRepresentationRequests: sql('person/getListOfRepresentationRequests.sql'),

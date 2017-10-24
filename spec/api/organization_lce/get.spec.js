@@ -40,7 +40,7 @@ let orgs_lce_info = [{
   description_fa: 'تغییر مدیریت',
 }];
 
-describe("organization_lce", () => {
+xdescribe("organization_lce", () => {
 
   let createNewOrg_LCE = (org_lce_info) => {
     return sql.test.organization_lce.add(org_lce_info);
@@ -61,7 +61,7 @@ describe("organization_lce", () => {
     });
   });
 
-  it("/Get list off orgs_lce and check lce org name by org_id", done => {
+  xit("/Get list off orgs_lce and check lce org name by org_id", done => {
 
     createNewOrg(orgs_info[0]).then(org_id => {
 
@@ -88,7 +88,7 @@ describe("organization_lce", () => {
 
   });
 
-  it("/Get organization name, ceo_pid and org_type_id by oid", done => {
+  xit("/Get organization name, ceo_pid and org_type_id by oid", done => {
     request.get(base_url + `organization/${org_info.oid}` + test_query, function (error, response) {
       let result = JSON.parse(response.body);
       expect(response.statusCode).toBe(200);
@@ -114,8 +114,6 @@ describe("organization_lce", () => {
       expect(response.body.oid).toBeGreaterThan(0);
       done();
     });
-
   });
-
-}
+});
 

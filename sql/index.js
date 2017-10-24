@@ -241,6 +241,15 @@ let tablesWithSqlCreatedByHelpers = [
     delete: true,
     idColumn: 'lce_type_id',
   },
+  {
+    name: 'business',
+    insert: true,
+    update: true,
+    select: true,
+    get: true,
+    delete: true,
+    idColumn: 'bid',
+  },
 ];
 
 tablesWithSqlCreatedByHelpers.forEach((table) => {

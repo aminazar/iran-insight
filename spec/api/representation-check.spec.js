@@ -21,108 +21,213 @@ let resExpect = (res, statusCode) => {
   return true;
 };
 
-describe("Representation-check API", () => {
-  describe("root", () => {
-    it("returns 'respond with a resource'", done => {
-      request.get(base_url, function (error, response) {
-        expect(response.body).toBe("respond with a resource");
-        done();
-      })
+
+let orgs_info = [
+  {
+    oid: 50,
+    name: 'IT Ministry',
+    name_fa: 'وزارت ارتباطات',
+    ceo_pid: 2,
+    org_type_id: 100
+  }, {
+    oid: 51,
+    name: 'bent oak systems',
+    name_fa: 'بنتوک سامانه',
+    ceo_pid: 3,
+    org_type_id: 101
+  }, {
+    oid: 52,
+    name: 'Iran Insight',
+    name_fa: 'ایران اینسایت',
+    ceo_pid: 2,
+    org_type_id: null
+  }];
+
+let orgs_type_info = [{
+  org_type_id: 100,
+  name: 'governmental',
+  name_fa: 'دولتی'
+}, {
+  org_type_id: 101,
+  name: 'non-governmental',
+  name_fa: 'غیر دولتی'
+}];
+
+
+let assoc_info = [
+  {
+    aid : 1,
+    pid : 3,
+    bid : 1,
+    oid : null,
+    start_date : null,
+    end_date : null
+  }];
+
+let bus_info = [{
+  bid: 1,
+  name: 'burgista app',
+  name_fa: 'برگیستا',
+  ceo_pid : 2,
+  org_type_id: 100,
+  address: null,
+  address_fa: null,
+  tel: null,
+  url: null,
+  general_stats: null,
+  financial_stats: null
+}];
+
+let mem_info = [{
+  mid : 1,
+  assoc_id : 1,
+  is_active : false,
+  is_representative : true,
+  position_id : null
+}]
+
+describe("Admin can get all representation requests from users and send them activation E-mail if they are right.", () => {
+  let setup = true;
+
+  let createNewOrg = (org_info) => {
+
+    return sql.test.organization.add(org_info);
+  };
+
+  let createNewOrgType = (org_type_info) => {
+
+    return sql.test.organization_type.add(org_type_info);
+  };
+
+  let createNewBusiness = (bus_info) => {
+
+    return sql.test.business.add(bus_info);
+  };
+
+  let createNewMembership = (mem_info) => {
+
+    return sql.test.membership.add(mem_info);
+  };
+
+  let createNewAssociation = (bus_info) => {
+
+    return sql.test.association.add(bus_info);
+  };
+
+
+  beforeEach(done => {
+    if (setup) {
+      lib.dbHelpers.create()
+        .then(() => lib.dbHelpers.addPerson('amin', 'test'))
+        .then(id => {
+          console.log('id', id);
+          pid1 = id;
+          setup = false;
+          return lib.dbHelpers.addPerson('Admin', 'atest')
+        })
+        .then(aid => {
+          adminPid = aid;
+          return lib.dbHelpers.addPerson('Reza', 'test')
+        })
+        .then(id =>{
+          pid2 = id;
+          createNewOrgType(orgs_type_info[0])
+        })
+        .then(() => createNewOrg(orgs_info[0]))
+        .then(() => createNewOrgType(orgs_type_info[1]))
+        .then(() =>createNewOrg(orgs_info[1]))
+        .then(() => createNewOrg(orgs_info[2]))
+        .then(() => createNewBusiness(bus_info[0]))
+        .then(() =>  createNewAssociation(assoc_info[0]))
+        .then(()=>{
+          createNewMembership(mem_info[0])
+          done();
+        })
+        .catch(err => {
+          console.log(err.message);
+          done();
+        });
+    }
+    else {
+      done();
+    }
+  });
+
+  // it("should loginCheck for user correctly", done =>{
+  //   request.post({
+  //     url: base_url + 'loginCheck' + test_query,
+  //     form: {username: 'amin', password: 'test'}
+  //   } ,(err, res) => {
+  //     expect(res.statusCode).toBe(200);
+  //     done();
+  // })
+  // });
+
+  it("logins as amin", done => {
+    req.post({
+      url: base_url + 'login' + test_query,
+      form: {username: 'amin', password: 'test'}
+    }, (err, res) => {
+      expect(res.statusCode).toBe(200);
+      done();
+    })
+  });
+
+  it("amin (a user exept admin) should not be able to get representation requests", done =>{
+    req.get(base_url + 'user/checkifrep' +test_query , (err, res) => {
+      expect(res.statusCode).toBe(403);
+      done();
+    })
+  });
+
+  it("logs out a user(amin)", done => {
+    req.get(base_url + 'logout' + test_query, (err, res) => {
+      expect(res.statusCode).toBe(200);
+      done();
     });
   });
-  describe("Admin can get all representation requests from users and send them activation E-mail if they are right.", () => {
-    let setup = true;
-    beforeEach(done => {
-      if (setup) {
-        lib.dbHelpers.create()
-          .then(() => lib.dbHelpers.addPerson('amin', 'test'))
-          .then(id => {
-            console.log('id', id);
-            pid = id;
-            setup = false;
-            return lib.dbHelpers.addPerson('Admin', 'atest')
-          })
-          .then(aid => {
-            adminPid = aid;
-            done();
-          })
-          .catch(err => {
-            console.log(err.message);
-            done();
-          });
-      }
-      else {
-        done();
-      }
+
+  it("should logins as representative of a business", done=>{
+    req.post({
+      url: base_url + 'login' + test_query,
+      form: {username: 'amin', password: 'test'}
+    }, (err, res) => {
+      expect(res.statusCode).toBe(200);
+      done();
+    })
+  })
+
+  it("logins as admin", done => {
+    req.post({
+      url: base_url + 'login' + test_query,
+      form: {username: 'admin', password: 'atest'}
+    }, (err, res) => {
+      expect(res.statusCode).toBe(200);
+      done();
+    })
+  });
+
+  it("admin should get all representation requests from users and send activation E-mail to them if they are right", done =>{
+    req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+      expect(res.statusCode).not.toBe(404);
+      expect(res.statusCode).not.toBe(500);
+      expect(res.statusCode).toBe(200);
+      done();
+    })
+  });
+
+  it("logs out a user(admin)", done => {
+    req.get(base_url + 'logout' + test_query, (err, res) => {
+      expect(res.statusCode).toBe(200);
+      done();
     });
+  });
 
-    // it("should loginCheck for user correctly", done =>{
-    //   request.post({
-    //     url: base_url + 'loginCheck' + test_query,
-    //     form: {username: 'amin', password: 'test'}
-    //   } ,(err, res) => {
-    //     expect(res.statusCode).toBe(200);
-    //     done();
-    // })
-    // });
-
-    it("logins as amin", done => {
-      req.post({
-        url: base_url + 'login' + test_query,
-        form: {username: 'amin', password: 'test'}
-      }, (err, res) => {
-        expect(res.statusCode).toBe(200);
-        done();
-      })
+  it("logs out a user(admin) - checking it happened", done => {
+    req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+      expect(res.statusCode).toBe(403);
+      done();
     });
-
-    it("amin (a user exept admin) should not be able to get representation requests", done =>{
-      req.get(base_url + 'user/checkifrep' +test_query , (err, res) => {
-        expect(res.statusCode).toBe(403);
-        done();
-      })
-    });
-
-    it("logs out a user(amin)", done => {
-      req.get(base_url + 'logout' + test_query, (err, res) => {
-        expect(res.statusCode).toBe(200);
-        done();
-      });
-    });
-
-    it("logins as admin", done => {
-      req.post({
-        url: base_url + 'login' + test_query,
-        form: {username: 'admin', password: 'atest'}
-      }, (err, res) => {
-        expect(res.statusCode).toBe(200);
-        done();
-      })
-    });
-
-    it("admin should get all representation requests from users and send activation E-mail to them if they are right", done =>{
-      req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
-        expect(res.statusCode).not.toBe(404);
-        expect(res.statusCode).not.toBe(500);
-        expect(res.statusCode).toBe(200);
-        done();
-      })
-    });
-
-    it("logs out a user(admin)", done => {
-      req.get(base_url + 'logout' + test_query, (err, res) => {
-        expect(res.statusCode).toBe(200);
-        done();
-      });
-    });
-
-    it("logs out a user(admin) - checking it happened", done => {
-      req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
-        expect(res.statusCode).toBe(403);
-        done();
-      });
-    });
-
   });
 
 });

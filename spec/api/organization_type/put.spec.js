@@ -79,7 +79,4 @@ describe("organization type", () => {
 
   });
 
-
-
-
 });

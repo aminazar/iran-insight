@@ -41,7 +41,7 @@ let orgs_lce_info = [{
 }];
 
 
-describe("organization_lce", () => {
+xdescribe("organization_lce", () => {
 
 
   let createNewOrg_LCE = (org_lce_info) => {
@@ -64,7 +64,7 @@ describe("organization_lce", () => {
     });
   });
 
-  it('/Put: create first LCE for organization and return inserted LCE id', done => {
+  xit('/Put: create first LCE for organization and return inserted LCE id', done => {
 
     let new_org_info = Object.assign({}, orgs_info[0]);
     new_org_info.oid = 1;
