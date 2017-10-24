@@ -18,7 +18,7 @@ describe("POST user API", () => {
 
   beforeEach(done => {
     lib.dbHelpers.create()
-      .then(() => lib.dbHelpers.addAndLoginPerson('admin@mail.com', 'admin123'))
+      .then(() => lib.dbHelpers.addAndLoginPerson('admin', 'admin123'))
       .then(res => {
         adminObj.pid = res.pid;
         adminObj.jar = res.rpJar;
@@ -32,6 +32,9 @@ describe("POST user API", () => {
       .then(res => {
         normalUserObj.pid = res.pid;
         normalUserObj.jar = res.rpJar;
+        return lib.dbHelpers.addOrganizationWithRep(repObj.pid, 'MTN');
+      })
+      .then(res => {
         done();
       })
       .catch(err => {
@@ -40,7 +43,7 @@ describe("POST user API", () => {
       })
   });
 
-  it("should get error when no pid set in data object", function (done) {
+  it("should get error when no pid defined in data object", function (done) {
     rp({
       method: 'post',
       form: {
@@ -133,19 +136,88 @@ describe("POST user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  // it("admin should add a user", function(done) {
-  //
-  // });
+  it("admin should add a user", function(done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      form: {
+        username: 'john@mail.com',
+        firstname_en: 'John',
+        phone_no: '987',
+        mobile_no: '+2-987',
+        is_user: true,
+      },
+      uri: lib.helpers.apiTestURL('user/profile/new'),
+      jar: adminObj.jar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.person.get({username: 'john@mail.com'});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].firstname_en).toBe('John');
+        expect(res[0].is_user).toBe(false);
+        expect(res[0].username).toBe('john@mail.com');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
 
-  // it("representative should add a user", function(done) {
-  //
-  // });
+  it("representative should add a user (just username and display_name accept)", function(done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      form: {
+        username: 'asghar@mail.com',
+        firstname_en: 'Asghar',
+        display_name_fa: 'اصغر آقا',
+        phone_no: '0912',
+        is_user: true,
+      },
+      uri: lib.helpers.apiTestURL('user/profile/new'),
+      jar: repObj.jar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.person.get({username: 'asghar@mail.com'});
+      })
+      .then(res => {
+        expect(res[0].display_name_en).toBe(null);
+        expect(res[0].display_name_fa).toBe('اصغر آقا');
+        expect(res[0].is_user).toBe(false);
+        expect(res[0].phone_no).toBe(null);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
 
-    // it("representative should not be able to modify a user", function (done) {
-    //
-    // });
-
-  // it("not related representative should not access to modify/add user profile", function (done) {
-  //
-  // });
+  it("representative should not be able to modify a user", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      form: {
+        pid: normalUserObj.pid,
+        username: 'ali@mail.com',
+        firstname_en: 'علی',
+        display_name_fa: 'علی آقا',
+        phone_no: '09129998800',
+        is_user: true,
+      },
+      uri: lib.helpers.apiTestURL('user/profile/ali@mail.com'),
+      jar: repObj.jar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        this.fail('Representative can modify user profile');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(500);
+        expect(err.error).toBe('Cannot modify user general profile');
+        done();
+      });
+  });
 });

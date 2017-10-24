@@ -77,7 +77,7 @@ router.post('/user/auth/link', apiResponse('Person', 'sendActivationMail', false
 
 router.put('/user', apiResponse('Person', 'insert', true, ['body']));
 router.get('/user', apiResponse('Person', 'select', true));
-router.post('/user/:pid', apiResponse('Person', 'update', true, ['params.pid','body']));
+// router.post('/user/:pid', apiResponse('Person', 'update', true, ['params.pid','body']));
 router.post('/user/profile/:username', apiResponse('Person', 'setProfile', false, ['params.username', 'user.username', 'user.pid', 'body']));
 router.delete('/user/:pid', apiResponse('Person', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body']));
