@@ -49,13 +49,13 @@ let modExp = {
   organization: {
     create: sql('organization/create.sql'),
     drop: sql('organization/drop.sql'),
-    getById: sql('organization/get_by_id.sql'),
+    getById: sql('organization/get_by_oId.sql'),
     getAll: sql('organization/get_all.sql'),
   },
   organization_lce: {
     create: sql('organization_lce/create.sql'),
     drop: sql('organization_lce/drop.sql'),
-    getById: sql('organization_lce/get_by_id.sql'),
+    getByOId: sql('organization_lce/get_by_oId.sql'),
     select: sql('organization_lce/select.sql'),
   },
   person_activation_link: {
