@@ -6,9 +6,13 @@ const QueryFile = env.pgp.QueryFile;
 const path = require('path');
 
 // Helper for linking to external query files:
-function sql(file) {
+function sql(file, fixedArgs) {
   let fullPath = path.join(__dirname, file); // generating full path;
-  return new QueryFile(fullPath, {minify: true, debug: env.isDev});
+  let QF = new QueryFile(fullPath, {minify: !env.isDev, debug: env.isDev});
+  if(!fixedArgs)
+    return QF;
+  else
+    return {query: QF, fixedArgs: fixedArgs};
 }
 
 /*
@@ -17,7 +21,7 @@ function sql(file) {
  * Put the SQL files for any new table/schema in a new directory
  * Use the same direcoty name for nesting the queries here.
  */
-module.exports = {
+let modExp = {
   db: {
     create: sql('db/create.sql'),
     drop: sql('db/drop.sql'),
@@ -54,18 +58,6 @@ module.exports = {
     getById: sql('organization_lce/get_by_id.sql'),
     select: sql('organization_lce/select.sql'),
   },
-  organization_type: {
-    create: sql('organization_type/create.sql'),
-    drop: sql('organization_type/drop.sql'),
-    get: sql('organization_type/get.sql'),
-    select: sql('organization_type/select.sql'),
-  },
-  lce_type: {
-    create: sql('lce_type/create.sql'),
-    drop: sql('lce_type/drop.sql'),
-    get: sql('lce_type/get.sql'),
-    select: sql('lce_type/select.sql'),
-  },
   person_activation_link: {
     create:             sql('person_activation_link/create.sql'),
     drop:               sql('person_activation_link/drop.sql'),
@@ -80,10 +72,6 @@ module.exports = {
   association: {
     create:     sql('association/create.sql'),
     drop:       sql('association/drop.sql'),
-  },
-  position_type: {
-    create:     sql('position_type/create.sql'),
-    drop:       sql('position_type/drop.sql'),
   },
   membership: {
     create:     sql('membership/create.sql'),
@@ -101,9 +89,24 @@ module.exports = {
     bizUnattends: sql('attendance/biz-unattend.sql'),
     orgUnattends: sql('attendance/org-unattend.sql'),
   },
-  attendance_type: {
-    create:     sql('attendance_type/create.sql'),
-    drop:       sql('attendance_type/drop.sql'),
-  },
-}
-;
+};
+
+// Template-generated tables
+
+// type tables
+[
+  'attendance',
+  'position',
+  'lce',
+  'organization',
+  'business',
+].forEach(t => {
+  let typeTableName = t + '_type';
+  modExp[typeTableName] = {
+    create:     sql('type/create.sql', {tableName: typeTableName}),
+    drop:       sql('type/drop.sql', {tableName: typeTableName}),
+    getByName:  sql('type/getByName.sql', {tableName: typeTableName}),
+  }
+});
+
+module.exports = modExp;

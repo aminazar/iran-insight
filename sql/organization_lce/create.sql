@@ -8,7 +8,7 @@ CREATE TABLE if not exists  organization_lce(
     current_end_date timestamp without time zone , -- null means unfinished current lce
     description varchar (200),
     description_fa varchar(200),
-    lce_type_id integer references lce_type(lce_type_id),
+    lce_type_id integer references lce_type(id),
   CONSTRAINT previous_end_date_and_current_start_in_sequence
   CHECK (previous_end_date <= current_start_date),
   CONSTRAINT current_start_and_end_dates_in_sequence
