@@ -2,7 +2,6 @@ const rp = require("request-promise");
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 const moment = require('moment-timezone');
-const date = require('../../../utils/date.util');
 
 
 describe('PUT: organization lce', () => {
@@ -59,7 +58,11 @@ describe('PUT: organization lce', () => {
 
     let lce_type = Object.assign({lce_type_id: 1}, lce_type_info[0]);
     let org = Object.assign({oid: 1}, org_info[0]);
-    let org_lce = Object.assign({oid1: 1, start_date: '2017-09-08 10:00:00', lce_type_id: 1}, org_lce_info[0]);
+    let org_lce = Object.assign({
+      oid1: 1,
+      start_date: moment.utc('2017-09-08 10:00:00').format(),
+      lce_type_id: 1
+    }, org_lce_info[0]);
 
     createLCE_Type(lce_type)
       .then(createOrg(org))
@@ -82,8 +85,8 @@ describe('PUT: organization lce', () => {
             expect(row.id).toBe(inserted_lce_id);
             expect(row.oid1).toBe(org_lce.oid1);
             expect(row.lce_type_id).toBe(org_lce.lce_type_id);
-            console.log('==> ' , row.start_date);
-            expect(moment.tz(row.start_date, 'Asia/Tehran').format('YYYY-MM-DD HH:mm:ss')).toBe(org_lce.start_date);
+
+            expect(moment.utc(row.start_date).format()).toBe(moment.utc(org_lce.start_date).format());
             done();
           })
           .catch(err => {
@@ -93,123 +96,124 @@ describe('PUT: organization lce', () => {
       })
 
   });
-  // it('create LCE for organization when start date is null and Expect error', function (done) {
-  //
-  //   let lce_type = Object.assign({lce_type_id: 1}, lce_type_info[0]);
-  //   let org = Object.assign({oid: 1}, org_info[0]);
-  //   let org_lce = Object.assign({oid1: 1, lce_type_id: 1}, org_lce_info[0]);
-  //
-  //   createLCE_Type(lce_type)
-  //     .then(createOrg(org))
-  //     .then(() => {
-  //
-  //       rp({
-  //         method: 'PUT',
-  //         form: org_lce,
-  //         uri: lib.helpers.apiTestURL(`organization-lce`),
-  //         resolveWithFullResponse: true,
-  //       })
-  //         .then(res => {
-  //           this.fail('did not failed when lce start date is missing');
-  //           done();
-  //         })
-  //         .catch(err => {
-  //           expect(err.statusCode).toBe(500);
-  //           expect(lib.helpers.parseServerErrorToString(err)).toContain('start_date');
-  //           expect(lib.helpers.parseServerErrorToString(err)).toContain('not-null constraint');
-  //           done();
-  //         });
-  //     })
-  //
-  // });
-  //
-  // it('create LCE for organization when oid 1 is null and Expect error', function (done) {
-  //
-  //   let lce_type = Object.assign({lce_type_id: 1}, lce_type_info[0]);
-  //   let org = Object.assign({oid: 1}, org_info[0]);
-  //   let org_lce = Object.assign({start_date: '2017-09-08 10:00:00', lce_type_id: 1}, org_lce_info[0]);
-  //
-  //   createLCE_Type(lce_type)
-  //     .then(createOrg(org))
-  //     .then(() => {
-  //
-  //       rp({
-  //         method: 'PUT',
-  //         form: org_lce,
-  //         uri: lib.helpers.apiTestURL(`organization-lce`),
-  //         resolveWithFullResponse: true,
-  //       })
-  //         .then(res => {
-  //           this.fail('did not failed when oid1 is missing');
-  //           done();
-  //         })
-  //         .catch(err => {
-  //           expect(err.statusCode).toBe(500);
-  //           expect(lib.helpers.parseServerErrorToString(err)).toContain('oid1');
-  //           expect(lib.helpers.parseServerErrorToString(err)).toContain('not-null constraint');
-  //           done();
-  //         });
-  //     })
-  //
-  // });
-  //
-  // it('create LCE for organization when lce_type_id is null and Expect error', function (done) {
-  //
-  //   let lce_type = Object.assign({lce_type_id: 1}, lce_type_info[0]);
-  //   let org = Object.assign({oid: 1}, org_info[0]);
-  //   let org_lce = Object.assign({oid1: 1, start_date: '2017-09-08 10:00:00'}, org_lce_info[0]);
-  //
-  //   createLCE_Type(lce_type)
-  //     .then(createOrg(org))
-  //     .then(() => {
-  //
-  //       rp({
-  //         method: 'PUT',
-  //         form: org_lce,
-  //         uri: lib.helpers.apiTestURL(`organization-lce`),
-  //         resolveWithFullResponse: true,
-  //       })
-  //         .then(res => {
-  //           this.fail('did not failed when lce_type_id is missing');
-  //           done();
-  //         })
-  //         .catch(err => {
-  //           expect(err.statusCode).toBe(500);
-  //           expect(lib.helpers.parseServerErrorToString(err)).toContain('lce_type_id');
-  //           expect(lib.helpers.parseServerErrorToString(err)).toContain('not-null constraint');
-  //           done();
-  //         });
-  //     })
-  //
-  // });
-  // it('create duplicate LCE for organization and expect Error => same oid1, start_date and lce_type_id', function (done) {
-  //
-  //   let lce_type = Object.assign({lce_type_id: 1}, lce_type_info[0]);
-  //   let org = Object.assign({oid: 1}, org_info[0]);
-  //   let org_lce1 = Object.assign({oid1: 1, start_date: '2017-09-08 10:00:00' , lce_type_id:1}, org_lce_info[0]);
-  //   let org_lce2 = Object.assign({oid1: 1, start_date: '2017-09-08 10:00:00',lce_type_id:1}, org_lce_info[0]);
-  //
-  //   createLCE_Type(lce_type)
-  //     .then(createOrg(org))
-  //     .then(createOrg_LCE(org_lce1))
-  //     .then(() => {
-  //
-  //       rp({
-  //         method: 'PUT',
-  //         form: org_lce2,
-  //         uri: lib.helpers.apiTestURL(`organization-lce`),
-  //         resolveWithFullResponse: true,
-  //       })
-  //         .then(res => {
-  //           this.fail('did not failed when 2 lce are duplicate');
-  //           done();
-  //         })
-  //         .catch(err => {
-  //           expect(err.statusCode).toBe(500);
-  //           expect(lib.helpers.parseServerErrorToString(err)).toContain('duplicate_records');
-  //           done();
-  //         });
-  //     })
-  //
-  // });
+  it('create LCE for organization when start date is null and Expect error', function (done) {
+
+    let lce_type = Object.assign({lce_type_id: 1}, lce_type_info[0]);
+    let org = Object.assign({oid: 1}, org_info[0]);
+    let org_lce = Object.assign({oid1: 1, lce_type_id: 1}, org_lce_info[0]);
+
+    createLCE_Type(lce_type)
+      .then(createOrg(org))
+      .then(() => {
+
+        rp({
+          method: 'PUT',
+          form: org_lce,
+          uri: lib.helpers.apiTestURL(`organization-lce`),
+          resolveWithFullResponse: true,
+        })
+          .then(res => {
+            this.fail('did not failed when lce start date is missing');
+            done();
+          })
+          .catch(err => {
+            expect(err.statusCode).toBe(500);
+            expect(lib.helpers.parseServerErrorToString(err)).toContain('start_date');
+            expect(lib.helpers.parseServerErrorToString(err)).toContain('not-null constraint');
+            done();
+          });
+      })
+
+  });
+
+  it('create LCE for organization when oid 1 is null and Expect error', function (done) {
+
+    let lce_type = Object.assign({lce_type_id: 1}, lce_type_info[0]);
+    let org = Object.assign({oid: 1}, org_info[0]);
+    let org_lce = Object.assign({start_date: '2017-09-08 10:00:00', lce_type_id: 1}, org_lce_info[0]);
+
+    createLCE_Type(lce_type)
+      .then(createOrg(org))
+      .then(() => {
+
+        rp({
+          method: 'PUT',
+          form: org_lce,
+          uri: lib.helpers.apiTestURL(`organization-lce`),
+          resolveWithFullResponse: true,
+        })
+          .then(res => {
+            this.fail('did not failed when oid1 is missing');
+            done();
+          })
+          .catch(err => {
+            expect(err.statusCode).toBe(500);
+            expect(lib.helpers.parseServerErrorToString(err)).toContain('oid1');
+            expect(lib.helpers.parseServerErrorToString(err)).toContain('not-null constraint');
+            done();
+          });
+      })
+
+  });
+
+  it('create LCE for organization when lce_type_id is null and Expect error', function (done) {
+
+    let lce_type = Object.assign({lce_type_id: 1}, lce_type_info[0]);
+    let org = Object.assign({oid: 1}, org_info[0]);
+    let org_lce = Object.assign({oid1: 1, start_date: '2017-09-08 10:00:00'}, org_lce_info[0]);
+
+    createLCE_Type(lce_type)
+      .then(createOrg(org))
+      .then(() => {
+
+        rp({
+          method: 'PUT',
+          form: org_lce,
+          uri: lib.helpers.apiTestURL(`organization-lce`),
+          resolveWithFullResponse: true,
+        })
+          .then(res => {
+            this.fail('did not failed when lce_type_id is missing');
+            done();
+          })
+          .catch(err => {
+            expect(err.statusCode).toBe(500);
+            expect(lib.helpers.parseServerErrorToString(err)).toContain('lce_type_id');
+            expect(lib.helpers.parseServerErrorToString(err)).toContain('not-null constraint');
+            done();
+          });
+      });
+  });
+  it('create duplicate LCE for organization and expect Error => same oid1, start_date and lce_type_id', function (done) {
+
+    let lce_type = Object.assign({lce_type_id: 1}, lce_type_info[0]);
+    let org = Object.assign({oid: 1}, org_info[0]);
+    let org_lce1 = Object.assign({oid1: 1, start_date: '2017-09-08 10:00:00', lce_type_id: 1}, org_lce_info[0]);
+    let org_lce2 = Object.assign({oid1: 1, start_date: '2017-09-08 10:00:00', lce_type_id: 1}, org_lce_info[0]);
+
+    createLCE_Type(lce_type)
+      .then(createOrg(org))
+      .then(createOrg_LCE(org_lce1))
+      .then(() => {
+
+        rp({
+          method: 'PUT',
+          form: org_lce2,
+          uri: lib.helpers.apiTestURL(`organization-lce`),
+          resolveWithFullResponse: true,
+        })
+          .then(res => {
+            this.fail('did not failed when 2 lce are duplicate');
+            done();
+          })
+          .catch(err => {
+            expect(err.statusCode).toBe(500);
+            expect(lib.helpers.parseServerErrorToString(err)).toContain('duplicate_records');
+            done();
+          });
+      })
+
+  });
+
+
 });
