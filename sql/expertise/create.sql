@@ -3,5 +3,6 @@ create table if not exists expertise(
     name_en varchar(30) not null,
     name_fa varchar(30) not null,
     type_en varchar(20) not null,
-    type_fa varchar(20) not null
+    type_fa varchar(20) not null,
+    is_education boolean not null
 );

@@ -58,7 +58,7 @@ describe("POST user API", () => {
         done();
       })
       .catch(err => {
-        expect(err.statusCode).toBe(500);
+        expect(err.statusCode).toBe(404);
         expect(err.error).toBe('No person id found');
         done();
       });
@@ -215,7 +215,7 @@ describe("POST user API", () => {
         done();
       })
       .catch(err => {
-        expect(err.statusCode).toBe(500);
+        expect(err.statusCode).toBe(403);
         expect(err.error).toBe('Cannot modify user general profile');
         done();
       });

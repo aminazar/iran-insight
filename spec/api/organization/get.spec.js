@@ -67,6 +67,7 @@ describe("organization", () => {
       .then(createNewOrg(orgs_info[0]))
       .then(() => {
         request.get(base_url + `organization/${orgs_info[0].oid}` + test_query, function (error, response) {
+          console.log(response.body);
           let result = JSON.parse(response.body);
           expect(response.statusCode).toBe(200);
           expect(result.length).toBe(1);
