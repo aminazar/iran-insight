@@ -155,6 +155,14 @@ let tablesWithSqlCreatedByHelpers = [
     idColumn: 'oid',
   },
   {
+    name: 'business',
+    insert: true,
+    update: true,
+    select: false,
+    delete: true,
+    idColumn: 'bid',
+  },
+  {
     name: 'person_activation_link',
     insert: true,
     update: true,

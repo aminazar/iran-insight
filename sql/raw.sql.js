@@ -88,6 +88,7 @@ module.exports = {
   membership: {
     create:     sql('membership/create.sql'),
     drop:       sql('membership/drop.sql'),
+    isRepresentative: sql('membership/isRepresentative.sql'),
   },
   event: {
     create:     sql('event/create.sql'),
@@ -96,6 +97,9 @@ module.exports = {
   attendance: {
     create:     sql('attendance/create.sql'),
     drop:       sql('attendance/drop.sql'),
+    personUnattends: sql('attendance/person-unattend.sql'),
+    bizUnattends: sql('attendance/biz-unattend.sql'),
+    orgUnattends: sql('attendance/org-unattend.sql'),
   },
   attendance_type: {
     create:     sql('attendance_type/create.sql'),

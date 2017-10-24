@@ -10,11 +10,15 @@ function apiResponse(className, functionName, adminOnly=false, reqFuncs=[]){
     let len=path.length;
     for (let i=0; i<len; i++){
       if(typeof obj === 'undefined') {
-        let err = new Error(`Bad request: request.${pathStr} is not found at '${path[i]}'`);
-        err.status = 400;
-        throw(err);
+        if(path[i - 1] && path[i - 1][0]==='?') {
+          return undefined;
+        } else {
+          let err = new Error(`Bad request: request.${pathStr} is not found at '${path[i - 1]}'`);
+          err.status = 400;
+          throw(err);
+        }
       }
-      obj = obj[path[i]];
+      obj = obj[ (path[i][0]==='?') ? path[i].substring(1) : path[i]];
     }
     return obj;
   };
@@ -69,16 +73,22 @@ router.get('/login/linkedin/callback', passport.authenticate('linkedin', {}), ap
 router.put('/user/register', apiResponse('Person', 'registration', false, ['body']));
 router.get('/user/activate/link/:link', apiResponse('Person', 'checkActiveLink', false, ['params.link']));
 router.post('/user/auth/local/:link', apiResponse('Person', 'completeAuth', false, ['params.link', 'body']));
+router.post('/user/auth/link', apiResponse('Person', 'sendActivationMail', false, ['body.email']));
 
 router.put('/user', apiResponse('Person', 'insert', true, ['body']));
 router.get('/user', apiResponse('Person', 'select', true));
 router.post('/user/:pid', apiResponse('Person', 'update', true, ['params.pid','body']));
 router.delete('/user/:pid', apiResponse('Person', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body']));
+
+//Business API
+router.put('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.username']));
+
 // Organization API
 router.get('/organization', apiResponse('Organization', 'getAll', false));
 router.get('/organization/:oid', apiResponse('Organization', 'getById', false, ['params.oid']));
 router.put('/organization', apiResponse('Organization', 'saveData', false, ['body']));
+router.put('/organization/profile', apiResponse('Organization', 'setProfile', false, ['body', 'user.username']));
 
 // Organization LCE API
 router.put('/organization-lce', apiResponse('OrganizationLCE', 'temporalUpdate', false, ['body']));
@@ -92,9 +102,17 @@ router.get('/user/checkIfUser',apiResponse('Person','findMemRequests',false, ['u
 
 //
 //Events API
-router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid']));
+router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid','?user.pid']));
 router.put('/event', apiResponse('Event', 'saveData', false, ['body', 'user.pid']));
 router.post('/event/:eid', apiResponse('Event', 'saveData', false, ['body', 'user.pid', 'params.eid']));
 router.delete('/event/:eid', apiResponse('Event', 'delete', false, ['params.eid', 'user.pid']));
+
+//Attendance API
+router.put('/personAttends/:eid', apiResponse('Attendance', 'personAttends', false, ['params.eid', 'body', 'user.pid']));
+router.delete('/personAttends/:eid', apiResponse('Attendance', 'personUnattends', false, ['params.eid', 'user.pid']));
+router.put('/bizAttends/:eid/:bid', apiResponse('Attendance', 'bizAttends', false, ['params.eid', 'body', 'params.bid', 'user.pid']));
+router.delete('/bizAttends/:eid/:bid', apiResponse('Attendance', 'bizUnattends', false, ['params.eid', 'params.bid', 'user.pid']));
+router.put('/orgAttends/:eid/:oid', apiResponse('Attendance', 'orgAttends', false, ['params.eid', 'body', 'params.oid', 'user.pid']));
+router.delete('/orgAttends/:eid/:oid', apiResponse('Attendance', 'orgUnattends', false, ['params.eid', 'params.oid', 'user.pid']));
 
 module.exports = router;
