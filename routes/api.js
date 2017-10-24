@@ -91,7 +91,8 @@ router.put('/organization', apiResponse('Organization', 'saveData', false, ['bod
 router.put('/organization/profile', apiResponse('Organization', 'setProfile', false, ['body', 'user.username']));
 
 // Organization LCE API
-router.put('/organization-lce', apiResponse('OrganizationLCE', 'temporalUpdate', false, ['body']));
+router.put('/organization-lce', apiResponse('OrganizationLCE', 'saveData', false, ['body']));
+router.get('/organization-lce/:oid', apiResponse('OrganizationLCE', 'getByOid', false, ['params.oid']));
 
 //organization type
 router.put('/organization-type', apiResponse('OrganizationType', 'saveData', false, ['body' , 'id']));
