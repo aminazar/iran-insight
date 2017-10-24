@@ -182,8 +182,8 @@ describe("Test auth APIs", () => {
       if(err)
         this.fail(err);
       else{
-        expect(res.statusCode).toBe(500);
-        expect(res.body).toBe('This activation link is expired');
+        expect(res.statusCode).toBe(404);
+        expect(res.body).toBe('Link is expired');
       }
 
       done();

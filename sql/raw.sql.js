@@ -49,7 +49,7 @@ let modExp = {
   organization: {
     create: sql('organization/create.sql'),
     drop: sql('organization/drop.sql'),
-    getById: sql('organization/get_by_oId.sql'),
+    getById: sql('organization/get_by_id.sql'),
     getAll: sql('organization/get_all.sql'),
   },
   organization_lce: {
@@ -66,17 +66,18 @@ let modExp = {
     getByLink:          sql('person_activation_link/getByLink.sql'),
   },
   business: {
-    create:     sql('business/create.sql'),
-    drop:       sql('business/drop.sql'),
+    create: sql('business/create.sql'),
+    drop: sql('business/drop.sql'),
+    get: sql('business/get.sql'),
   },
   association: {
     create:     sql('association/create.sql'),
     drop:       sql('association/drop.sql'),
   },
   membership: {
-    create:     sql('membership/create.sql'),
-    drop:       sql('membership/drop.sql'),
-    isRepresentative: sql('membership/isRepresentative.sql'),
+    create:                   sql('membership/create.sql'),
+    drop:                     sql('membership/drop.sql'),
+    isRepresentativeOrAdmin:  sql('membership/isRepresentativeOrAdmin.sql'),
   },
   event: {
     create:     sql('event/create.sql'),

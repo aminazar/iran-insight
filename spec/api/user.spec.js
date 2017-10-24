@@ -121,54 +121,54 @@ describe("REST API", () => {
         done();
       })
     });
-    it("allows admin to update a username", done => {
-      req.post({url: base_url + 'user/' + pid + test_query, form: {username: 'aminazar'}}, (err, res) => {
-        expect(res.statusCode).toBe(200);
-        done();
-      })
-    });
-    it("allows admin to update a username - checking that update happened", done => {
-      req.post({
-        url: base_url + 'loginCheck' + test_query,
-        form: {username: 'aminazar', password: 'test'}
-      }, (err, res) => {
-        expect(res.statusCode).toBe(200);
-        done();
-      })
-    });
-    it("allows admin to update a password", done => {
-      req.post({url: base_url + 'user/' + pid + test_query, form: {password: 'test2'}}, (err, res) => {
-        expect(res.statusCode).toBe(200);
-        done();
-      })
-    });
-    it("allows admin to update a password - checking that update happened", done => {
-      req.post({
-        url: base_url + 'loginCheck' + test_query,
-        form: {username: 'aminazar', password: 'test2'}
-      }, (err, res) => {
-        expect(res.statusCode).toBe(200);
-        done();
-      })
-    });
-    it("allows admin to update both username and password", done => {
-      req.post({
-        url: base_url + 'user/' + pid + test_query,
-        form: {username: 'amin2', password: 'test3'}
-      }, (err, res) => {
-        expect(res.statusCode).toBe(200);
-        done();
-      })
-    });
-    it("allows admin to update both username and password - checking that update happened", done => {
-      req.post({
-        url: base_url + 'loginCheck' + test_query,
-        form: {username: 'amin2', password: 'test3'}
-      }, (err, res) => {
-        expect(res.statusCode).toBe(200);
-        done();
-      })
-    });
+    // it("allows admin to update a username", done => {
+    //   req.post({url: base_url + 'user/' + pid + test_query, form: {username: 'aminazar'}}, (err, res) => {
+    //     expect(res.statusCode).toBe(200);
+    //     done();
+    //   })
+    // });
+    // it("allows admin to update a username - checking that update happened", done => {
+    //   req.post({
+    //     url: base_url + 'loginCheck' + test_query,
+    //     form: {username: 'aminazar', password: 'test'}
+    //   }, (err, res) => {
+    //     expect(res.statusCode).toBe(200);
+    //     done();
+    //   })
+    // });
+    // it("allows admin to update a password", done => {
+    //   req.post({url: base_url + 'user/' + pid + test_query, form: {password: 'test2'}}, (err, res) => {
+    //     expect(res.statusCode).toBe(200);
+    //     done();
+    //   })
+    // });
+    // it("allows admin to update a password - checking that update happened", done => {
+    //   req.post({
+    //     url: base_url + 'loginCheck' + test_query,
+    //     form: {username: 'aminazar', password: 'test2'}
+    //   }, (err, res) => {
+    //     expect(res.statusCode).toBe(200);
+    //     done();
+    //   })
+    // });
+    // it("allows admin to update both username and password", done => {
+    //   req.post({
+    //     url: base_url + 'user/' + pid + test_query,
+    //     form: {username: 'amin2', password: 'test3'}
+    //   }, (err, res) => {
+    //     expect(res.statusCode).toBe(200);
+    //     done();
+    //   })
+    // });
+    // it("allows admin to update both username and password - checking that update happened", done => {
+    //   req.post({
+    //     url: base_url + 'loginCheck' + test_query,
+    //     form: {username: 'amin2', password: 'test3'}
+    //   }, (err, res) => {
+    //     expect(res.statusCode).toBe(200);
+    //     done();
+    //   })
+    // });
     it("allows admin to delete a user", done => {
       req.delete({
         url: base_url + 'user/' + pid + test_query,

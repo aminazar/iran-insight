@@ -183,7 +183,7 @@ let tablesWithSqlCreatedByHelpers = [
     name: 'business',
     insert: true,
     update: true,
-    select: false,
+    select: true,
     delete: true,
     idColumn: 'bid',
   },
