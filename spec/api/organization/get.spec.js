@@ -27,11 +27,11 @@ let orgs_info = [
   }];
 
 let orgs_type_info = [{
-  org_type_id: 100,
+  id: 100,
   name: 'governmental',
   name_fa: 'دولتی'
 }, {
-  org_type_id: 101,
+  id: 101,
   name: 'non-governmental',
   name_fa: 'غیر دولتی'
 }];
@@ -64,9 +64,10 @@ describe("organization", () => {
   it("/Get : get an existing organization joined with its type", done => {
 
     createNewOrgType(orgs_type_info[0])
-      .then(createNewOrg(orgs_info[0]))
+      .then(() => createNewOrg(orgs_info[0]))
       .then(() => {
         request.get(base_url + `organization/${orgs_info[0].oid}` + test_query, function (error, response) {
+          console.log(response.body);
           let result = JSON.parse(response.body);
           expect(response.statusCode).toBe(200);
           expect(result.length).toBe(1);
@@ -82,7 +83,7 @@ describe("organization", () => {
 
   });
 
-  it("/Get : get an existing organization with null org_type_id and expect null (farsi) name for org type in result", done => {
+  it("/Get : get an existing organization with null org_type_id and expect null (farsi) name for org type in result", function(done) {
 
     let new_org_info = Object.assign({}, orgs_info[0]);
     new_org_info.org_type_id = null;
@@ -99,6 +100,7 @@ describe("organization", () => {
         });
       }).catch(err => {
       throw new Error(err);
+      done();
 
     });
 

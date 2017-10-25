@@ -4,7 +4,7 @@ create table if not exists business(
     name varchar(50) not null unique,
     name_fa varchar(50) not null unique,
     ceo_pid integer references person(pid),
-    org_type_id integer references organization_type(org_type_id),
+    biz_type_id integer references business_type(id),
     address varchar(255),
     address_fa varchar(255),
 --    geo_location geography,

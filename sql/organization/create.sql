@@ -3,6 +3,5 @@ CREATE TABLE if not exists organization(
     name varchar(50) not null unique,
     name_fa varchar(50) not null unique,
     ceo_pid integer,
-    org_type_id integer
---    org_type_id integer references organization_type(org_type_id)
+    org_type_id integer references organization_type(id)
 )

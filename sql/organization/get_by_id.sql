@@ -7,5 +7,5 @@ ot.name_fa as org_type_fa
 
 FROM organization as o
 LEFT JOIN organization_type as ot
-ON o.org_type_id = ot.org_type_id
+ON o.org_type_id = ot.id
 where o.oid = ${oid};

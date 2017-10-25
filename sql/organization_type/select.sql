@@ -1,1 +1,0 @@
-select org_type_id,name from organization_type

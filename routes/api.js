@@ -77,12 +77,13 @@ router.post('/user/auth/link', apiResponse('Person', 'sendActivationMail', false
 
 router.put('/user', apiResponse('Person', 'insert', true, ['body']));
 router.get('/user', apiResponse('Person', 'select', true));
-router.post('/user/:pid', apiResponse('Person', 'update', true, ['params.pid','body']));
+// router.post('/user/:pid', apiResponse('Person', 'update', true, ['params.pid','body']));
+router.post('/user/profile/:username', apiResponse('Person', 'setProfile', false, ['params.username', 'user.username', 'user.pid', 'body']));
 router.delete('/user/:pid', apiResponse('Person', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body']));
 
 //Business API
-router.put('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.username']));
+router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.username', 'user.pid']));
 
 // Organization API
 router.get('/organization', apiResponse('Organization', 'getAll', false));
@@ -91,7 +92,8 @@ router.put('/organization', apiResponse('Organization', 'saveData', false, ['bod
 router.put('/organization/profile', apiResponse('Organization', 'setProfile', false, ['body', 'user.username']));
 
 // Organization LCE API
-router.put('/organization-lce', apiResponse('OrganizationLCE', 'temporalUpdate', false, ['body']));
+router.put('/organization-lce', apiResponse('OrganizationLCE', 'saveData', false, ['body']));
+router.get('/organization-lce/:oid', apiResponse('OrganizationLCE', 'getByOid', false, ['params.oid']));
 
 //organization type
 router.put('/organization-type', apiResponse('OrganizationType', 'saveData', false, ['body' , 'id']));
