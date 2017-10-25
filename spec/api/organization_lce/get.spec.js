@@ -116,8 +116,7 @@ describe('Get: organization lce', () => {
 
         expect(data.length).toBe(2);
         if (data.length) {
-          expect(data[0]['lce_name']).toBe(lce_type_info[0].name);
-          expect(data[0]['lce_name_fa']).toBe(lce_type_info[0].name_fa);
+
           expect(data[1]['lce_name']).toBe(lce_type_info[1].name);
           expect(data[1]['lce_name_fa']).toBe(lce_type_info[1].name_fa);
           expect(data[1]['org2_name']).toBe(org_info[1].name);
