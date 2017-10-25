@@ -44,11 +44,11 @@ let orgs_info = [
   }];
 
 let orgs_type_info = [{
-  org_type_id: 100,
+  id: 100,
   name: 'governmental',
   name_fa: 'دولتی'
 }, {
-  org_type_id: 101,
+  id: 101,
   name: 'non-governmental',
   name_fa: 'غیر دولتی'
 }];
@@ -90,14 +90,21 @@ let assoc_info = [
     oid : null,
     start_date : null,
     end_date : null
+  },{
+    aid : 6,
+    pid : null,
+    bid : 2,
+    oid : 52,
+    start_date : null,
+    end_date : null
   }];
 
-let bus_info = [{
+let biz_info = [{
   bid: 1,
   name: 'burgista app',
   name_fa: 'برگیستا',
   ceo_pid : 2,
-  org_type_id: 100,
+  biz_type_id: 200,
   address: null,
   address_fa: null,
   tel: null,
@@ -109,7 +116,7 @@ let bus_info = [{
   name: 'snap',
   name_fa: 'اسنپ',
   ceo_pid : 3,
-  org_type_id: 101,
+  biz_type_id: 201,
   address: null,
   address_fa: null,
   tel: null,
@@ -121,13 +128,23 @@ let bus_info = [{
   name: 'tapsi',
   name_fa: 'تپسی',
   ceo_pid : 3,
-  org_type_id: 101,
+  biz_type_id: 201,
   address: null,
   address_fa: null,
   tel: null,
   url: null,
   general_stats: null,
   financial_stats: null
+}];
+
+let biz_type_info = [{
+  id: 200,
+  name: 'start_up',
+  name_fa: 'استارت آپ'
+}, {
+  id: 201,
+  name: 'sicence_base',
+  name_fa: 'دانش بنیان'
 }];
 
 let mem_info = [{
@@ -175,9 +192,14 @@ describe("Admin can get all representation requests from users and send them act
     return sql.test.organization_type.add(org_type_info);
   };
 
-  let createNewBusiness = (bus_info) => {
+  let createNewBizType = (biz_type_info) => {
 
-    return sql.test.business.add(bus_info);
+    return sql.test.business_type.add(biz_type_info);
+  };
+
+  let createNewBusiness = (biz_info) => {
+
+    return sql.test.business.add(biz_info);
   };
 
   let createNewMembership = (mem_info) => {
@@ -185,9 +207,9 @@ describe("Admin can get all representation requests from users and send them act
     return sql.test.membership.add(mem_info);
   };
 
-  let createNewAssociation = (bus_info) => {
+  let createNewAssociation = (biz_info) => {
 
-    return sql.test.association.add(bus_info);
+    return sql.test.association.add(biz_info);
   };
 
 
@@ -213,14 +235,17 @@ describe("Admin can get all representation requests from users and send them act
         .then(() => createNewOrgType(orgs_type_info[1]))
         .then(() =>createNewOrg(orgs_info[1]))
         .then(() => createNewOrg(orgs_info[2]))
-        .then(() => createNewBusiness(bus_info[0]))
-        .then(() => createNewBusiness(bus_info[1]))
-        .then(() => createNewBusiness(bus_info[2]))
+        .then(() => createNewBizType(biz_type_info[0]))
+        .then(() => createNewBusiness(biz_info[0]))
+        .then(() => createNewBizType(biz_type_info[1]))
+        .then(() => createNewBusiness(biz_info[1]))
+        .then(() => createNewBusiness(biz_info[2]))
         .then(() =>  createNewAssociation(assoc_info[0]))
         .then(() =>  createNewAssociation(assoc_info[1]))
         .then(() =>  createNewAssociation(assoc_info[2]))
         .then(() =>  createNewAssociation(assoc_info[3]))
         .then(() =>  createNewAssociation(assoc_info[4]))
+        .then(() =>  createNewAssociation(assoc_info[5]))
         .then(() =>  createNewMembership(mem_info[0]))
         .then(() =>  createNewMembership(mem_info[1]))
         .then(() =>  createNewMembership(mem_info[2]))
@@ -230,7 +255,7 @@ describe("Admin can get all representation requests from users and send them act
           done();
         })
         .catch(err => {
-          console.log(err.message);
+          console.log('===> ',err.message);
           done();
         });
     }
@@ -307,8 +332,10 @@ describe("Admin can get all representation requests from users and send them act
       expect(res.statusCode).toBe(200);
       let data = JSON.parse(res.body);
       expect(data.length).toBe(2);
-      console.log(typeof data);
       console.log(data);
+      // let x[] = res.forEach( el => {
+      //
+      // })
       done();
     })
   });

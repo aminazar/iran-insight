@@ -6,7 +6,7 @@ const raw = require("../../sql/raw.sql");
 const sql = require('../../sql');
 const path = require('path');
 
-describe("SQL library",()=>{
+xdescribe("SQL library",()=>{
   describe("Raw SQLs",()=> {
     let testSQLElementClassName = (query, table) => it(`should consist of QueryFile objects for table '${table}' and query '${query}'`, () =>
       expect(raw[table][query].constructor.name).toBe('QueryFile')
