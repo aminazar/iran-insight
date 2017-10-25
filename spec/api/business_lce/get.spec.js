@@ -86,13 +86,13 @@ describe('Get: organization lce', () => {
     let lce_type2 = Object.assign({id: 2, suggested_by: pid2}, lce_type_info[1]);
     let lce_type3 = Object.assign({id: 3, suggested_by: pid3}, lce_type_info[2]);
 
-    let org1 = Object.assign({oid: 1, ceo_pid: pid1, org_type_id: 1}, org_info[0]);
-    let org2 = Object.assign({oid: 2, ceo_pid: pid2,org_type_id: 2}, org_info[1]);
-    let org_lce1 = {oid1: 1, start_date: '2017-09-09 10:00:00', lce_type_id: 1};
-    let org_lce2 = {oid1: 1, oid2: 2, start_date: '2017-09-10 10:00:00', lce_type_id: 2};
-    let org_lce3 = {oid1: 2, start_date: '2017-09-11 10:00:00', lce_type_id: 3};
+    let org1 = Object.assign({bid: 1, ceo_pid: pid1, org_type_id: 1}, org_info[0]);
+    let org2 = Object.assign({bid: 2, ceo_pid: pid2,org_type_id: 2}, org_info[1]);
+    let org_lce1 = {bid1: 1, start_date: '2017-09-09 10:00:00', lce_type_id: 1};
+    let org_lce2 = {bid1: 1, bid2: 2, start_date: '2017-09-10 10:00:00', lce_type_id: 2};
+    let org_lce3 = {bid1: 2, start_date: '2017-09-11 10:00:00', lce_type_id: 3};
 
-      createOrg_Type(org_type1)
+    createOrg_Type(org_type1)
       .then(() => createOrg_Type(org_type2))
       .then(() => createLCE_Type(lce_type1))
       .then(() => createLCE_Type(lce_type2))

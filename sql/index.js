@@ -23,16 +23,41 @@ let usingFunction = query => {
 
   return res;
 };
+let templateGeneratedTables = [];
 
 for (let table in rawSql) {
   wrappedSQL[table] = {};
   wrappedSQL.test[table] = {};
+
   for (let query in rawSql[table]) {
-    wrappedSQL[table][query] = (data) => {
-      return ((table === 'db' ? env.initDb : env.db)[usingFunction(query)])(rawSql[table][query], data);
+    let dataTransform = d => d;
+    if (rawSql[table][query].fixedArgs) {
+
+      if(!templateGeneratedTables.includes(table))
+        templateGeneratedTables.push(table);
+
+      let fixedArgs = rawSql[table][query].fixedArgs;
+      let q = rawSql[table][query].query;
+      dataTransform = d => {
+        if (d.constructor.name === 'Array') {
+          d = {};
+        }
+        for(let key in fixedArgs) {
+          d[key] = fixedArgs[key];
+        }
+
+        return d;
+      };
+      rawSql[table][query] = q;
+    }
+
+    wrappedSQL[table][query] = (table === 'db') ? (data) => {
+      return (env.initDb[usingFunction(query)])(rawSql[table][query], dataTransform(data));
+    } : (data) => {
+      return (env.db[usingFunction(query)])(rawSql[table][query], dataTransform(data));
     };
     wrappedSQL.test[table][query] = (data) => {
-      return (env.testDb[usingFunction(query)])(rawSql[table][query], data);
+      return (env.testDb[usingFunction(query)])(rawSql[table][query], dataTransform(data));
     };
   }
 }
@@ -70,7 +95,7 @@ genericTemporalUpdate = (tableName, idColumn, isTest) => {
         }).catch(err => reject(err));
 
       } else if (id && data.previous_end_date) { // update by insert new row and add end_time for previous start date
-        db.query(env.pgp.helpers.update({current_end_date: data.previous_end_date}, ['current_end_date'], tableName ) + ` where ${idColumn}=` + id + ' returning ' + idColumn).then(updatedId => {
+        db.query(env.pgp.helpers.update({current_end_date: data.previous_end_date}, ['current_end_date'], tableName) + ` where ${idColumn}=` + id + ' returning ' + idColumn).then(updatedId => {
 
           delete data.id;
           db.one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn).then(res => {
@@ -78,7 +103,7 @@ genericTemporalUpdate = (tableName, idColumn, isTest) => {
           }).catch(err => reject(err));
 
         }).catch(err => reject(err));
-      }else
+      } else
         reject(new Error('arguments are not valid => id and date_time must be empty or valued simultaneously'))
     });
 
@@ -93,9 +118,9 @@ genericSelect = (tableName, isTest) => {
   };
 };
 
-genericConditionalSelect = (tableName, isTest, whereColumns=[], nullColumns=[], notNullColumns=[]) => {
+genericConditionalSelect = (tableName, isTest, whereColumns = [], nullColumns = [], notNullColumns = []) => {
   let db = chooseDb(tableName, isTest);
-  let whereClause = whereColumns ? whereColumns.concat(nullColumns).concat(notNullColumns).map(col => col + (nullColumns.includes(col) ? ' is null' : notNullColumns.includes(col)? ' is not null' : '=${' + col + '}')).join(' and ') : '';
+  let whereClause = whereColumns ? whereColumns.concat(nullColumns).concat(notNullColumns).map(col => col + (nullColumns.includes(col) ? ' is null' : notNullColumns.includes(col) ? ' is not null' : '=${' + col + '}')).join(' and ') : '';
   let query = `select * from ${tableName}${whereClause ? ' where ' + whereClause : ''}`;
   return (constraints) => {
     return db.any(query, constraints);
@@ -158,7 +183,7 @@ let tablesWithSqlCreatedByHelpers = [
     name: 'business',
     insert: true,
     update: true,
-    select: false,
+    select: true,
     delete: true,
     idColumn: 'bid',
   },
@@ -178,15 +203,6 @@ let tablesWithSqlCreatedByHelpers = [
     get: true,
     delete: true,
     idColumn: 'aid',
-  },
-  {
-    name: 'position_type',
-    insert: true,
-    update: true,
-    select: true,
-    get: true,
-    delete: true,
-    idColumn: 'posid',
   },
   {
     name: 'membership',
@@ -216,23 +232,6 @@ let tablesWithSqlCreatedByHelpers = [
     idColumn: 'id',
   },
   {
-    name: 'attendance_type',
-    insert: true,
-    update: true,
-    select: true,
-    get: true,
-    delete: true,
-    idColumn: 'id',
-  },
-  {
-    name: 'organization_type',
-    insert: true,
-    update: true,
-    select: false,
-    delete: true,
-    idColumn: 'org_type_id',
-  },
-  {
     name: 'organization_lce',
     insert: true,
     update: true,
@@ -242,14 +241,27 @@ let tablesWithSqlCreatedByHelpers = [
     idColumn: 'id',
   },
   {
-    name: 'lce_type',
+    name: 'business_lce',
     insert: true,
     update: true,
     select: false,
     delete: true,
-    idColumn: 'lce_type_id',
-  },
-];
+    get: true,
+    idColumn: 'id',
+  }
+].concat(templateGeneratedTables
+  .map(tableName => {
+    return {
+      name: tableName,
+      insert: true,
+      update: true,
+      select: true,
+      get: true,
+      delete: true,
+      idColumn: 'id',
+    }
+  }
+));
 
 tablesWithSqlCreatedByHelpers.forEach((table) => {
   if (!wrappedSQL[table])
@@ -278,7 +290,7 @@ tablesWithSqlCreatedByHelpers.forEach((table) => {
     wrappedSQL.test[table.name].conditionalSelect = (columns, nullColumns) => genericConditionalSelect(table.name, true, columns, nullColumns);
   }
 
-  if(table.get) {
+  if (table.get) {
     wrappedSQL[table.name].get = genericGet(table.name, false);
     wrappedSQL.test[table.name].get = genericGet(table.name, true);
   }

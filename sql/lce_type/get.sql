@@ -1,1 +1,0 @@
-select * from lce_type where lower(name)=lower(${name})
