@@ -36,7 +36,7 @@ describe('Get: business lce', () => {
 
   let lce_type_info = [{
     name: 'management change',
-    name_fa: 'تغییر میدیرت',
+    name_fa: 'تغییر مدیریت',
     active: true,
   },
     {
