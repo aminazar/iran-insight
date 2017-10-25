@@ -84,7 +84,7 @@ router.delete('/user/:pid', apiResponse('Person', 'delete', true, ['params.pid']
 router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body']));
 
 //Expertise API
-router.put('/expertise', apiResponse('Expertise', 'addExpertise', false, ['body']));
+router.put('/expertise', apiResponse('Expertise', 'addExpertise', true, ['body']));
 
 //Business API
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.username', 'user.pid']));

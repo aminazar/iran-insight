@@ -332,6 +332,8 @@ describe("POST user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
+
+
   it("admin should add expertise for specific user (expertise is exist)", function (done) {
     this.done = done;
     let expertiseId = null;
