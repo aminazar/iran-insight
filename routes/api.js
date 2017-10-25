@@ -110,6 +110,7 @@ router.put('/organization-type', apiResponse('OrganizationType', 'saveData', fal
 router.get('/user/checkIfRep',apiResponse('Person','findRepRequests',true));
 router.get('/user/checkIfUser',apiResponse('Person','findMemRequests',false, ['user.username']));
 
+
 //
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid','?user.pid']));

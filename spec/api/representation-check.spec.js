@@ -264,15 +264,6 @@ describe("Admin can get all representation requests from users and send them act
     }
   });
 
-  // it("should loginCheck for user correctly", done =>{
-  //   request.post({
-  //     url: base_url + 'loginCheck' + test_query,
-  //     form: {username: 'amin', password: 'test'}
-  //   } ,(err, res) => {
-  //     expect(res.statusCode).toBe(200);
-  //     done();
-  // })
-  // });
 
   it("logins as amin", done => {
     req.post({
@@ -333,9 +324,6 @@ describe("Admin can get all representation requests from users and send them act
       let data = JSON.parse(res.body);
       expect(data.length).toBe(2);
       console.log(data);
-      // let x[] = res.forEach( el => {
-      //
-      // })
       done();
     })
   });
