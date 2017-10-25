@@ -36,6 +36,7 @@ let modExp = {
     bizRep:     sql('person/bizRep.sql'),
     getListOfRepresentationRequests: sql('person/getListOfRepresentationRequests.sql'),
     getListOfMembershipRequests: sql('person/getListOfMembershipRequests.sql'),
+    getPersonExpertise: sql('person/getPersonExpertise.sql'),
   },
   expertise: {
     create: sql('expertise/create.sql'),
@@ -44,8 +45,8 @@ let modExp = {
   person_expertise: {
     create: sql('person_expertise/create.sql'),
     drop: sql('person_expertise/drop.sql'),
+    getByIds: sql('person_expertise/getByIds.sql'),
   },
-
   organization: {
     create: sql('organization/create.sql'),
     drop: sql('organization/drop.sql'),

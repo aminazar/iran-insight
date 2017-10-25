@@ -36,7 +36,7 @@ describe("POST Business API", () => {
           normalUserObj.pid = res.pid;
           normalUserObj.jar = res.rpJar;
           return sql.test.organization_type.add({
-            org_type_id: 101,
+            id: 101,
             name: 'non-governmental',
             name_fa: 'غیر دولتی',
           });
@@ -62,7 +62,7 @@ describe("POST Business API", () => {
         name: 'ZoodFood',
         name_fa: 'زودفود',
         ceo_pid: repObj.pid,
-        org_type_id: 101,
+        biz_type_id: 101,
         address: 'Tehran - Iran',
         address_fa: 'ایران - تهران',
         tel: '+123-9876',
