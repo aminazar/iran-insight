@@ -3,5 +3,6 @@ CREATE TABLE if not exists ${tableName~}(
     name varchar(50) not null unique,
     name_fa varchar(50) not null unique,
     suggested_by integer references person(pid),
+    ${extraSQL^}
     active boolean not null default false
 )

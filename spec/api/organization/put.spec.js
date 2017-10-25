@@ -1,115 +1,250 @@
-const request = require("request");
-const base_url = "http://localhost:3000/api/";
-const test_query = '?test=tEsT';
+const rp = require("request-promise");
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
-const error = require('../../../lib/errors.list');
-
-let orgs_info = [{
-  name: 'bent oak systems',
-  name_fa: 'بنتوک سامانه',
-  ceo_pid: 1,
-  org_type_id: null
-}, {
-  name: 'Iran Insight',
-  name_fa: 'ایران اینسایت',
-  ceo_pid: 2,
-  org_type_id: null
-}];
-
-let orgs_type_info = [{
-  name: 'governmental',
-  name_fa: 'دولتی'
-}, {
-  name: 'non-governmental',
-  name_fa: 'غیر دولتی'
-}];
+const moment = require('moment-timezone');
 
 
-describe("organization", () => {
+describe('PUT: organization lce', () => {
 
-  let createNewOrg = (org_info) => {
-    let org = new lib.Organization(true);
-    return org.saveData(org_info);
+  let pid1,pid2,pid3;
+
+  let createLCE_Type = (lce_type) => {
+
+    return sql.test.lce_type.add(lce_type);
+  };
+
+  let createOrg_Type = (org_type) => {
+    return sql.test.organization_type.add(org_type);
 
   };
 
-  let createNewOrgType = (org_type_info) => {
-    let orgType = new lib.OrganizationType(true);
-    return orgType.saveData(org_type_info);
+  let createOrg = (org) => {
 
+    return sql.test.organization.add(org);
   };
 
-  beforeEach(done => {
+  let createOrg_LCE = (org_lce) => {
+    return sql.test.organization_lce.add(org_lce);
+  };
+
+  let org_info = [{
+    name: 'bent oak systems',
+    name_fa: 'بنتوک سامانه',
+  }, {
+    name: 'Iran Insight',
+    name_fa: 'ایران اینسایت',
+  }];
+
+  let lce_type_info = [{
+    name: 'management change',
+    name_fa: 'تغییر میدیرت',
+    active: true,
+  },
+    {
+      name: 'merge',
+      name_fa: 'ادغام',
+      active: true,
+    }];
+
+  let org_type_info = [{
+    name: 'governmental',
+    name_fa: 'دولتی',
+    active: true,
+  }, {
+    name: 'non-governmental',
+    name_fa: 'غیر دولتی',
+    active: true,
+  }];
+
+  beforeEach(function (done) {
     lib.dbHelpers.create()
+      .then(() => lib.dbHelpers.addAndLoginPerson('ehsan', '123123123', {}))
+      .then(res => {
+        pid1 = res.pid;
+        return lib.dbHelpers.addAndLoginPerson('ali', '654321', {})
+      })
+      .then(res => {
+        pid2 = res.pid;
+        return lib.dbHelpers.addAndLoginPerson('admin', 'admin', {})
+      })
+      .then(res => {
+        pid3 = res.pid;
+        done();
+      })
+      .catch(err => {
+        console.error('Setup failure:', err);
+        done();
+      });
+  });
+
+
+  it('create LCE for organization and return inserted LCE id', function (done) {
+
+    let org_type = Object.assign({id: 1, suggested_by: pid1}, org_type_info[0]);
+    let lce_type = Object.assign({id: 1, suggested_by: pid1}, org_type_info[0]);
+    let org = Object.assign({oid: 1, ceo_pid: pid1 ,org_type_id : 1}, org_info[0]);
+    let org_lce = {
+      oid1: 1,
+      start_date: moment.utc('2017-09-08 10:00:00').format(),
+      lce_type_id: 1
+    };
+
+    createOrg_Type(org_type)
+      .then(() => createLCE_Type(lce_type))
+      .then(() => createOrg(org))
       .then(() => {
-        done();
-      }).catch(err => {
-      console.log('err ==> ', err.message);
-      done();
-    });
-  });
 
-  it("/Put : create new organization and return its id", done => {
+        let inserted_lce_id;
+        rp({
+          method: 'PUT',
+          form: org_lce,
+          uri: lib.helpers.apiTestURL(`organization-lce`),
+          resolveWithFullResponse: true,
+        })
+          .then(res => {
+            inserted_lce_id = +res.body;
+            expect(res.statusCode).toBe(200);
+            return sql.test.organization_lce.get({id: inserted_lce_id});
+          })
+          .then(res => {
+            let row = res[0];
+            expect(row.id).toBe(inserted_lce_id);
+            expect(row.oid1).toBe(org_lce.oid1);
+            expect(row.lce_type_id).toBe(org_lce.lce_type_id);
 
-    createNewOrgType(orgs_type_info[0]).then(id => {
-      let new_org_info = Object.assign({}, orgs_info[0]);
-
-      new_org_info.org_type_id = id;
-      request.put(base_url + 'organization' + test_query, {json: true, body: new_org_info}, function (error, response) {
-        expect(response.statusCode).toBe(200);
-        expect(response.body).toBeGreaterThan(0);
-        done();
+            expect(moment.utc(row.start_date).format()).toBe(moment.utc(org_lce.start_date).format());
+            done();
+          })
+          .catch(err => {
+            this.fail(lib.helpers.parseServerErrorToString(err));
+            done();
+          });
       });
+  });
 
-    });
+  it('create LCE for organization when start date is null and Expect error', function (done) {
+
+    let org_type = Object.assign({id: 1, suggested_by: pid1}, org_type_info[0]);
+    let lce_type = Object.assign({id: 1, suggested_by: pid1}, org_type_info[0]);
+    let org = Object.assign({oid: 1, ceo_pid: pid1,org_type_id : 1}, org_info[0]);
+    let org_lce = {oid1: 1, lce_type_id: 1};
+
+    createOrg_Type(org_type)
+      .then(() => createLCE_Type(lce_type))
+      .then(() => createOrg(org))
+      .then(() => {
+        rp({
+          method: 'PUT',
+          form: org_lce,
+          uri: lib.helpers.apiTestURL(`organization-lce`),
+          resolveWithFullResponse: true,
+        })
+          .then(res => {
+            this.fail('did not failed when lce start date is missing');
+            done();
+          })
+          .catch(err => {
+            expect(err.statusCode).toBe(500);
+            expect(lib.helpers.parseServerErrorToString(err)).toContain('start_date');
+            expect(lib.helpers.parseServerErrorToString(err)).toContain('not-null constraint');
+            done();
+          });
+      })
 
   });
 
+  it('create LCE for organization when oid 1 is null and Expect error', function (done) {
 
-  it('/Put: create new organization when name is null and expect error  ', done => {
+    let org_type = Object.assign({id: 1, suggested_by: pid1}, org_type_info[0]);
+    let lce_type = Object.assign({id: 1, suggested_by: pid1}, lce_type_info[0]);
+    let org = Object.assign({oid: 1, ceo_pid: pid1,org_type_id : 1}, org_info[0]);
+    let org_lce = {start_date: '2017-09-08 10:00:00', lce_type_id: 1};
 
-    createNewOrgType(orgs_type_info[0]).then(id => {
+    createOrg_Type(org_type)
+      .then(() => createLCE_Type(lce_type))
+      .then(() => createOrg(org))
+      .then(() => {
+        rp({
+          method: 'PUT',
+          form: org_lce,
+          uri: lib.helpers.apiTestURL(`organization-lce`),
+          resolveWithFullResponse: true,
+        })
+          .then(res => {
+            this.fail('did not failed when oid1 is missing');
+            done();
+          })
+          .catch(err => {
+            expect(err.statusCode).toBe(500);
+            expect(lib.helpers.parseServerErrorToString(err)).toContain('oid1');
+            expect(lib.helpers.parseServerErrorToString(err)).toContain('not-null constraint');
+            done();
+          });
+      })
 
-      let new_org_info = Object.assign({}, orgs_info[0]);
-      new_org_info.org_type_id = id;
-      new_org_info.name = null;
+  });
 
-      request.put(base_url + 'organization' + test_query, {
-        json: true,
-        body: new_org_info
-      }, function (err, res) {
-        expect(res.body).toBe(error.emptyOrgName.message);
-        expect(res.statusCode).toBe(error.emptyOrgName.status);
-        done();
+  it('create LCE for organization when lce_type_id is null and Expect error', function (done) {
+
+    let org_type = Object.assign({id: 1, suggested_by: pid1}, org_type_info[0]);
+    let lce_type = Object.assign({id: 1, suggested_by: pid1}, lce_type_info[0]);
+    let org = Object.assign({oid: 1, ceo_pid: pid1, org_type_id: 1}, org_info[0]);
+    let org_lce = {oid1: 1, start_date: '2017-09-08 10:00:00'};
+
+    createOrg_Type(org_type)
+      .then(() => createLCE_Type(lce_type))
+      .then(() => createOrg(org))
+      .then(() => {
+        rp({
+          method: 'PUT',
+          form: org_lce,
+          uri: lib.helpers.apiTestURL(`organization-lce`),
+          resolveWithFullResponse: true,
+        })
+          .then(res => {
+            this.fail('did not failed when lce_type_id is missing');
+            done();
+          })
+          .catch(err => {
+            expect(err.statusCode).toBe(500);
+            expect(lib.helpers.parseServerErrorToString(err)).toContain('lce_type_id');
+            expect(lib.helpers.parseServerErrorToString(err)).toContain('not-null constraint');
+            done();
+          });
       });
+  });
+  it('create duplicate LCE for organization and expect Error => same oid1, start_date and lce_type_id', function (done) {
 
-    });
+    let org_type = Object.assign({id: 1, suggested_by: pid1}, org_type_info[0]);
+    let lce_type = Object.assign({id: 1, suggested_by: pid1}, lce_type_info[0]);
+    let org = Object.assign({oid: 1, ceo_pid: pid1 , org_type_id: 1}, org_info[0]);
+    let org_lce1 = {oid1: 1, start_date: '2017-09-08 10:00:00', lce_type_id: 1};
+    let org_lce2 = {oid1: 1, start_date: '2017-09-08 10:00:00', lce_type_id: 1};
 
+    createOrg_Type(org_type)
+      .then(() => createLCE_Type(lce_type))
+      .then(() => createOrg(org))
+      .then(() => createOrg_LCE(org_lce1))
+      .then(() => {
+
+        rp({
+          method: 'PUT',
+          form: org_lce2,
+          uri: lib.helpers.apiTestURL(`organization-lce`),
+          resolveWithFullResponse: true,
+        })
+          .then(res => {
+            this.fail('did not failed when 2 lce are duplicate');
+            done();
+          })
+          .catch(err => {
+            expect(err.statusCode).toBe(500);
+            expect(lib.helpers.parseServerErrorToString(err)).toContain('org_duplicate_records');
+            done();
+          });
+      })
 
   });
-
-
-  it('/Put: create new organization when name (farsi) is null and expect error  ', done => {
-    createNewOrgType(orgs_type_info[0]).then(id => {
-
-      let new_org_info = Object.assign({}, orgs_info[0]);
-      new_org_info.org_type_id = id;
-      new_org_info.name_fa = null;
-
-      request.put(base_url + 'organization' + test_query, {
-        json: true,
-        body: new_org_info
-      }, function (err, res) {
-        expect(res.body).toBe(error.emptyOrgName.message);
-        expect(res.statusCode).toBe(error.emptyOrgName.status);
-        done();
-      });
-
-    });
-
-  });
-
 
 
 });

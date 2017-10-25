@@ -85,6 +85,12 @@ router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body
 //Business API
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.username', 'user.pid']));
 
+// Organization LCE API
+router.put('/business-lce', apiResponse('BusinessLCE', 'saveData', false, ['body']));
+router.get('/business-lce/:bid', apiResponse('BusinessLCE', 'getByBid', false, ['params.bid']));
+
+
+
 // Organization API
 router.get('/organization', apiResponse('Organization', 'getAll', false));
 router.get('/organization/:oid', apiResponse('Organization', 'getById', false, ['params.oid']));
@@ -94,6 +100,8 @@ router.put('/organization/profile', apiResponse('Organization', 'setProfile', fa
 // Organization LCE API
 router.put('/organization-lce', apiResponse('OrganizationLCE', 'saveData', false, ['body']));
 router.get('/organization-lce/:oid', apiResponse('OrganizationLCE', 'getByOid', false, ['params.oid']));
+
+
 
 //organization type
 router.put('/organization-type', apiResponse('OrganizationType', 'saveData', false, ['body' , 'id']));
