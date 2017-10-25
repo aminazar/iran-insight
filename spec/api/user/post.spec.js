@@ -16,6 +16,56 @@ describe("POST user API", () => {
     jar: null,
   };
 
+  let addBusiness = (bizIsActive = true, ceo_id = null, name, name_fa, name_type, name_fa_type) => {
+    return new Promise((resolve, reject) => {
+      sql.test.business_type.add({
+        name: name_type ? name_type : 'Transport',
+        name_fa: name_fa_type ? name_fa_type : 'حمل و نقل',
+        suggested_by: adminObj.pid,
+        active: bizIsActive,
+      })
+        .then(res => {
+          sql.test.business.add({
+            name: name ? name : 'Snapp',
+            name_fa: name_fa ? name_fa : 'اسنپ',
+            ceo_pid: ceo_id,
+            biz_type_id: res.id,
+            address: null,
+            address_fa: null,
+            tel: null,
+            url: null,
+            general_stats: null,
+            financial_stats: null,
+          });
+        })
+        .then(res => {
+          resolve(res);
+        })
+        .catch(err => reject(err));
+    });
+  };
+
+  let addOrganization = (organIsActive = true, ceo_id = null) => {
+    return new Promise((resolve, reject) => {
+      sql.test.organization_type.add({
+        name: 'governmental',
+        name_fa: 'دولتی',
+        suggested_by: adminObj.pid,
+        active: organIsActive,
+      })
+        .then(res => {
+          return sql.test.organization.add({
+            name: 'Planning and Budget',
+            name_fa: 'برنامه ریزی و بودجه',
+            ceo_pid: ceo_id,
+            org_type_id: res.id
+          })
+        })
+        .then(res => resolve(res))
+        .catch(err => reject(err));
+    })
+  };
+
   beforeEach(done => {
     lib.dbHelpers.create()
       .then(() => lib.dbHelpers.addAndLoginPerson('admin', 'admin123'))
@@ -367,5 +417,71 @@ describe("POST user API", () => {
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
-  })
+  });
+
+  it("user should ask admin to be representative of biz or org", function (done) {
+    this.done = done;
+    addBusiness()
+      .then((res) => {
+        return rp({
+          method: 'post',
+          body: {
+            biz: [res.bid],
+          },
+          uri: lib.helpers.apiTestURL('user/ask/rep'),
+          jar: normalUserObj.jar,
+          json: true,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("representative of one biz or org can ask admin to be representative of another biz or org", function (done) {
+    this.done = done;
+    let bid1, oid;
+    addBusiness()
+      .then(res => {
+
+      })
+      .then(res => {
+        bid = res.bid;
+        return addOrganization();
+      })
+      .then(res => {
+        oid = res.oid;
+        rp({
+          method: 'post',
+          body: {
+            biz: [bid],
+            org: [oid],
+          },
+          uri: lib.helpers.apiTestURL('user/ask/rep'),
+          jar: repObj.jar,
+          json: true,
+          resolveWithFullResponse: true,
+        });
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("representative of one biz or org cannot ask admin to be representative of same biz or org", function (done) {
+
+  });
+
+  it("no more than one representative for one biz or org", function (done) {
+
+  });
+
+  it("user cannot ask to be representative of inactive biz or org", function (done) {
+
+  });
 });
