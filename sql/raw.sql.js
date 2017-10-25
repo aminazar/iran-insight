@@ -103,10 +103,11 @@ let modExp = {
   'business',
 ].forEach(t => {
   let typeTableName = t + '_type';
+  let extraSQL = t==='lce' ? `is_killer boolean default false,` : '';
   modExp[typeTableName] = {
-    create:     sql('type/create.sql', {tableName: typeTableName}),
-    drop:       sql('type/drop.sql', {tableName: typeTableName}),
-    getByName:  sql('type/getByName.sql', {tableName: typeTableName}),
+    create:     sql('type/create.sql', {tableName: typeTableName, extraSQL}),
+    drop:       sql('type/drop.sql', {tableName: typeTableName, extraSQL}),
+    getByName:  sql('type/getByName.sql', {tableName: typeTableName, extraSQL}),
   }
 });
 
