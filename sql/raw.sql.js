@@ -84,6 +84,9 @@ let modExp = {
     create:                   sql('membership/create.sql'),
     drop:                     sql('membership/drop.sql'),
     isRepresentativeOrAdmin:  sql('membership/isRepresentativeOrAdmin.sql'),
+    getWithAssoc:             sql('membership/getWithAssoc.sql'),
+    getWithLimitedAssoc:      sql('membership/getWithLimitedAssoc.sql'),
+    repPendingUsers:          sql('membership/repPendingUsers.sql'),
   },
   event: {
     create:     sql('event/create.sql'),
