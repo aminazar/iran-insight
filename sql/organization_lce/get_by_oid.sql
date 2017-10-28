@@ -26,6 +26,6 @@ from (
         on temp.oid2 = o.oid
 ) as lce
 left outer join lce_type as lt
-on lt.lce_type_id = lce.lce_type_id;
+on lt.id = lce.lce_type_id;
 
     

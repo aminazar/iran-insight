@@ -9,7 +9,7 @@ const path = require('path');
 function sql(file, fixedArgs) {
   let fullPath = path.join(__dirname, file); // generating full path;
   let QF = new QueryFile(fullPath, {minify: !env.isDev, debug: env.isDev});
-  if(!fixedArgs)
+  if (!fixedArgs)
     return QF;
   else
     return {query: QF, fixedArgs: fixedArgs};
@@ -56,7 +56,7 @@ let modExp = {
   organization_lce: {
     create: sql('organization_lce/create.sql'),
     drop: sql('organization_lce/drop.sql'),
-    getByOId: sql('organization_lce/get_by_oId.sql'),
+    getByOId: sql('organization_lce/get_by_oid.sql'),
     select: sql('organization_lce/select.sql'),
   },
   person_activation_link: {
@@ -70,6 +70,12 @@ let modExp = {
     create: sql('business/create.sql'),
     drop: sql('business/drop.sql'),
     get: sql('business/get.sql'),
+  },
+  business_lce: {
+    create: sql('business_lce/create.sql'),
+    drop: sql('business_lce/drop.sql'),
+    getByBId: sql('business_lce/get_by_bid.sql'),
+    select: sql('business_lce/select.sql'),
   },
   association: {
     create:     sql('association/create.sql'),

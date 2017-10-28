@@ -185,6 +185,7 @@ let tablesWithSqlCreatedByHelpers = [
     update: true,
     select: true,
     delete: true,
+    get: true,
     idColumn: 'bid',
   },
   {
@@ -241,13 +242,14 @@ let tablesWithSqlCreatedByHelpers = [
     idColumn: 'id',
   },
   {
-    name: 'lce_type',
+    name: 'business_lce',
     insert: true,
     update: true,
     select: false,
     delete: true,
-    idColumn: 'lce_type_id',
-  },
+    get: true,
+    idColumn: 'id',
+  }
 ].concat(templateGeneratedTables
   .map(tableName => {
     return {
