@@ -3,6 +3,8 @@ const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 
 describe("POST user API", () => {
+  let orgObj = {};
+
   let adminObj = {
     pid: null,
     jar: null
@@ -25,7 +27,7 @@ describe("POST user API", () => {
         active: bizIsActive,
       })
         .then(res => {
-          sql.test.business.add({
+          return sql.test.business.add({
             name: name ? name : 'Snapp',
             name_fa: name_fa ? name_fa : 'اسنپ',
             ceo_pid: ceo_id,
@@ -68,7 +70,9 @@ describe("POST user API", () => {
 
   beforeEach(done => {
     lib.dbHelpers.create()
-      .then(() => lib.dbHelpers.addAndLoginPerson('admin', 'admin123'))
+      .then(() => {
+        return lib.dbHelpers.addAndLoginPerson('admin', 'admin123');
+      })
       .then(res => {
         adminObj.pid = res.pid;
         adminObj.jar = res.rpJar;
@@ -85,6 +89,7 @@ describe("POST user API", () => {
         return lib.dbHelpers.addOrganizationWithRep(repObj.pid, 'MTN');
       })
       .then(res => {
+        orgObj = res;
         done();
       })
       .catch(err => {
@@ -98,8 +103,9 @@ describe("POST user API", () => {
       method: 'post',
       form: {
         firstname_en: 'ali',
+        target_username: 'ali@mail.com'
       },
-      uri: lib.helpers.apiTestURL('user/profile/ali@mail.com'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: normalUserObj.jar,
       resolveWithFullResponse: true
     })
@@ -130,9 +136,10 @@ describe("POST user API", () => {
         mobile_no: '+1-123',
         birth_date: new Date(1993,10,10),
         display_name_en: 'A^2',
-        display_name_fa: 'علی آقا'
+        display_name_fa: 'علی آقا',
+        target_username: 'ali@mail.com',
       },
-      uri: lib.helpers.apiTestURL('user/profile/ali@mail.com'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: normalUserObj.jar,
       resolveWithFullResponse: true
     })
@@ -163,9 +170,10 @@ describe("POST user API", () => {
         phone_no: '123',
         mobile_no: '+1-123',
         is_user: false,
-        username: 'asghar@mail.com'
+        username: 'asghar@mail.com',
+        target_username: 'ali@mail.com',
       },
-      uri: lib.helpers.apiTestURL('user/profile/ali@mail.com'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: normalUserObj.jar,
       resolveWithFullResponse: true
     })
@@ -197,7 +205,7 @@ describe("POST user API", () => {
         mobile_no: '+2-987',
         is_user: true,
       },
-      uri: lib.helpers.apiTestURL('user/profile/new'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: adminObj.jar,
       resolveWithFullResponse: true
     })
@@ -226,7 +234,7 @@ describe("POST user API", () => {
         phone_no: '0912',
         is_user: true,
       },
-      uri: lib.helpers.apiTestURL('user/profile/new'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: repObj.jar,
       resolveWithFullResponse: true
     })
@@ -255,8 +263,9 @@ describe("POST user API", () => {
         display_name_fa: 'علی آقا',
         phone_no: '09129998800',
         is_user: true,
+        target_username: 'ali@mail.com',
       },
-      uri: lib.helpers.apiTestURL('user/profile/ali@mail.com'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: repObj.jar,
       resolveWithFullResponse: true
     })
@@ -425,63 +434,90 @@ describe("POST user API", () => {
       .then((res) => {
         return rp({
           method: 'post',
-          body: {
-            biz: [res.bid],
+          form: {
+            bid: res.bid,
           },
-          uri: lib.helpers.apiTestURL('user/ask/rep'),
+          uri: lib.helpers.apiTestURL('membership/introducing/rep'),
           jar: normalUserObj.jar,
-          json: true,
           resolveWithFullResponse: true,
         })
       })
       .then(res => {
         expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid: res.body});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].is_representative).toBe(true);
+        expect(res[0].is_active).toBe(false);
+        expect(res[0].position_id).toBe(null);
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
-  });
+  }, 6000);
 
   it("representative of one biz or org can ask admin to be representative of another biz or org", function (done) {
     this.done = done;
-    let bid1, oid;
-    addBusiness()
-      .then(res => {
-
-      })
-      .then(res => {
-        bid = res.bid;
-        return addOrganization();
-      })
+    let oid = null, po_id = null;
+    addOrganization()
       .then(res => {
         oid = res.oid;
-        rp({
+        return sql.test.position_type.add({
+          name: 'Manager',
+          name_fa: 'مدیر عامل',
+          suggested_by: adminObj.pid,
+          active: true,
+        })
+      })
+      .then(res => {
+        po_id = res.id;
+        return rp({
           method: 'post',
-          body: {
-            biz: [bid],
-            org: [oid],
+          form: {
+            oid: oid,
+            position_id: po_id,
+            start_date: new Date(2010, 10, 10)
           },
-          uri: lib.helpers.apiTestURL('user/ask/rep'),
+          uri: lib.helpers.apiTestURL('membership/introducing/rep'),
           jar: repObj.jar,
-          json: true,
           resolveWithFullResponse: true,
         });
       })
       .then(res => {
         expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid: res.body});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].is_active).toBe(false);
+        expect(res[0].is_representative).toBe(true);
+        expect(res[0].position_id).not.toBe(null);
+        expect(res[0].position_id).toBe(po_id);
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("representative of one biz or org cannot ask admin to be representative of same biz or org", function (done) {
-
-  });
-
-  it("no more than one representative for one biz or org", function (done) {
-
-  });
-
-  it("user cannot ask to be representative of inactive biz or org", function (done) {
-
+  it("representative of one biz or org cannot ask admin to be representative of same biz or org (no more than one representative for a org/biz)", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        oid: orgObj.oid,
+      },
+      uri: lib.helpers.apiTestURL('membership/introducing/rep'),
+      jar: repObj.jar,
+      json: true,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        fail('Representative of organization ask to be representative of it again');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(500);
+        expect(err.error).toBe('this organization or business already has representative');
+        done();
+      });
   });
 });

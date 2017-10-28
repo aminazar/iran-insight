@@ -5,5 +5,5 @@ create table if not exists membership(
     is_representative boolean default false not null,
     position_id integer references position_type(id),
     constraint associd_position_is_unique
-        unique(assoc_id, position),
+        unique(assoc_id, position_id)
 );

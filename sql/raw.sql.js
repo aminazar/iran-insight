@@ -79,6 +79,9 @@ let modExp = {
     create:                   sql('membership/create.sql'),
     drop:                     sql('membership/drop.sql'),
     isRepresentativeOrAdmin:  sql('membership/isRepresentativeOrAdmin.sql'),
+    getBizRep:                sql('membership/getBizRep.sql'),
+    getOrgRep:                sql('membership/getOrgRep.sql'),
+    get:                      sql('membership/get.sql'),
   },
   event: {
     create:     sql('event/create.sql'),
@@ -90,6 +93,10 @@ let modExp = {
     personUnattends: sql('attendance/person-unattend.sql'),
     bizUnattends: sql('attendance/biz-unattend.sql'),
     orgUnattends: sql('attendance/org-unattend.sql'),
+  },
+  administrator: {
+    create:     sql('administrator/create.sql'),
+    drop:       sql('administrator/drop.sql'),
   },
 };
 
