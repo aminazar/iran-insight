@@ -225,7 +225,10 @@ describe("Admin can get all representation requests from users and send them act
         })
         .then(aid => {
           adminPid = aid;
-          return lib.dbHelpers.addPerson('Reza', 'test')
+          return lib.dbHelpers.addAdmin(adminPid);
+        })
+        .then(res => {
+          return lib.dbHelpers.addPerson('Reza', 'test');
         })
         .then(id =>{
           pid2 = id;
@@ -321,6 +324,7 @@ describe("Admin can get all representation requests from users and send them act
       expect(res.statusCode).not.toBe(404);
       expect(res.statusCode).not.toBe(500);
       expect(res.statusCode).toBe(200);
+      console.log('========>res:aaa: ', res.body);
       let data = JSON.parse(res.body);
       expect(data.length).toBe(2);
       console.log(data);

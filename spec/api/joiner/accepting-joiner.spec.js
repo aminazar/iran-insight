@@ -41,9 +41,9 @@ describe('PUT Joiner API', () => {
       })
       .then(res => {
         adminJar = res.rpJar;
-
-        done();
+        return lib.dbHelpers.addAdmin(res.pid);
       })
+      .then(res => done())
       .catch(err => {
         console.error('Setup failure:', err);
         done();

@@ -9,7 +9,7 @@ create table if not exists membership(
     CONSTRAINT mem_start_and_end_dates_in_sequence
     CHECK (start_time < end_time),
     CONSTRAINT mem_duplicate_records
-    UNIQUE (assoc_id, position_id, start_time)
+    UNIQUE (assoc_id, position_id, start_time),
     CONSTRAINT associd_position_is_unique
         UNIQUE (assoc_id, position_id)
 );
