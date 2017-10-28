@@ -36,6 +36,13 @@ let modExp = {
     bizRep:     sql('person/bizRep.sql'),
     getListOfRepresentationRequests: sql('person/getListOfRepresentationRequests.sql'),
     getListOfMembershipRequests: sql('person/getListOfMembershipRequests.sql'),
+    getPersonExpertise: sql('person/getPersonExpertise.sql'),
+    getAdmins:  sql('person/getAdmins.sql'),
+  },
+  administrators: {
+    create:     sql('administrators/create.sql'),
+    getById:     sql('administrators/getById.sql'),
+    drop:         sql('administrators/drop.sql'),
   },
   expertise: {
     create: sql('expertise/create.sql'),
@@ -44,8 +51,8 @@ let modExp = {
   person_expertise: {
     create: sql('person_expertise/create.sql'),
     drop: sql('person_expertise/drop.sql'),
+    getByIds: sql('person_expertise/getByIds.sql'),
   },
-
   organization: {
     create: sql('organization/create.sql'),
     drop: sql('organization/drop.sql'),
@@ -87,6 +94,9 @@ let modExp = {
     getWithAssoc:             sql('membership/getWithAssoc.sql'),
     getWithLimitedAssoc:      sql('membership/getWithLimitedAssoc.sql'),
     repPendingUsers:          sql('membership/repPendingUsers.sql'),
+    getBizRep:                sql('membership/getBizRep.sql'),
+    getOrgRep:                sql('membership/getOrgRep.sql'),
+    get:                      sql('membership/get.sql'),
   },
   event: {
     create:     sql('event/create.sql'),

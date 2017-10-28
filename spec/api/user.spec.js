@@ -52,8 +52,9 @@ describe("REST API", () => {
           })
           .then(aid => {
             adminPid = aid;
-            done();
+            return lib.dbHelpers.addAdmin(adminPid);
           })
+          .then(res => done())
           .catch(err => {
             console.log(err.message);
             done();

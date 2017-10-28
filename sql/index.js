@@ -156,12 +156,17 @@ let tablesWithSqlCreatedByHelpers = [
     idColumn: 'pid',
   },
   {
+    name: 'administrators',
+    insert: true,
+    idColumn: 'admin_id',
+  },
+  {
     name: 'expertise',
     insert: true,
     update: true,
     select: true,
     delete: true,
-    idColumn: 'pid',
+    idColumn: 'expertise_id',
   },
   {
     name: 'person_expertise',
@@ -169,7 +174,7 @@ let tablesWithSqlCreatedByHelpers = [
     update: true,
     select: true,
     delete: true,
-    idColumn: 'expertise_id',
+    idColumn: 'peid',
   },
   {
     name: 'organization',

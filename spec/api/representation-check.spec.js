@@ -225,7 +225,10 @@ describe("Admin can get all representation requests from users and send them act
         })
         .then(aid => {
           adminPid = aid;
-          return lib.dbHelpers.addPerson('Reza', 'test')
+          return lib.dbHelpers.addAdmin(adminPid);
+        })
+        .then(res => {
+          return lib.dbHelpers.addPerson('Reza', 'test');
         })
         .then(id =>{
           pid2 = id;

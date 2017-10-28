@@ -3,6 +3,8 @@ const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 
 describe("POST user API", () => {
+  let orgObj = {};
+
   let adminObj = {
     pid: null,
     jar: null
@@ -16,12 +18,68 @@ describe("POST user API", () => {
     jar: null,
   };
 
+  let addBusiness = (bizIsActive = true, ceo_id = null, name, name_fa, name_type, name_fa_type) => {
+    return new Promise((resolve, reject) => {
+      sql.test.business_type.add({
+        name: name_type ? name_type : 'Transport',
+        name_fa: name_fa_type ? name_fa_type : 'حمل و نقل',
+        suggested_by: adminObj.pid,
+        active: bizIsActive,
+      })
+        .then(res => {
+          return sql.test.business.add({
+            name: name ? name : 'Snapp',
+            name_fa: name_fa ? name_fa : 'اسنپ',
+            ceo_pid: ceo_id,
+            biz_type_id: res.id,
+            address: null,
+            address_fa: null,
+            tel: null,
+            url: null,
+            general_stats: null,
+            financial_stats: null,
+          });
+        })
+        .then(res => {
+          resolve(res);
+        })
+        .catch(err => reject(err));
+    });
+  };
+
+  let addOrganization = (organIsActive = true, ceo_id = null) => {
+    return new Promise((resolve, reject) => {
+      sql.test.organization_type.add({
+        name: 'governmental',
+        name_fa: 'دولتی',
+        suggested_by: adminObj.pid,
+        active: organIsActive,
+      })
+        .then(res => {
+          return sql.test.organization.add({
+            name: 'Planning and Budget',
+            name_fa: 'برنامه ریزی و بودجه',
+            ceo_pid: ceo_id,
+            org_type_id: res.id
+          })
+        })
+        .then(res => resolve(res))
+        .catch(err => reject(err));
+    })
+  };
+
   beforeEach(done => {
     lib.dbHelpers.create()
-      .then(() => lib.dbHelpers.addAndLoginPerson('admin', 'admin123'))
+      .then(() => {
+        return lib.dbHelpers.addAndLoginPerson('alireza@bentoak.systems', 'admin123');
+      })
       .then(res => {
         adminObj.pid = res.pid;
         adminObj.jar = res.rpJar;
+
+        return lib.dbHelpers.addAdmin(res.pid);
+      })
+      .then(() => {
         return lib.dbHelpers.addAndLoginPerson('rep@mail.com', 'rep123');
       })
       .then(res => {
@@ -35,6 +93,7 @@ describe("POST user API", () => {
         return lib.dbHelpers.addOrganizationWithRep(repObj.pid, 'MTN');
       })
       .then(res => {
+        orgObj = res;
         done();
       })
       .catch(err => {
@@ -49,7 +108,7 @@ describe("POST user API", () => {
       form: {
         firstname_en: 'ali',
       },
-      uri: lib.helpers.apiTestURL('user/profile/ali@mail.com'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: normalUserObj.jar,
       resolveWithFullResponse: true
     })
@@ -80,9 +139,9 @@ describe("POST user API", () => {
         mobile_no: '+1-123',
         birth_date: new Date(1993,10,10),
         display_name_en: 'A^2',
-        display_name_fa: 'علی آقا'
+        display_name_fa: 'علی آقا',
       },
-      uri: lib.helpers.apiTestURL('user/profile/ali@mail.com'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: normalUserObj.jar,
       resolveWithFullResponse: true
     })
@@ -113,9 +172,9 @@ describe("POST user API", () => {
         phone_no: '123',
         mobile_no: '+1-123',
         is_user: false,
-        username: 'asghar@mail.com'
+        username: 'asghar@mail.com',
       },
-      uri: lib.helpers.apiTestURL('user/profile/ali@mail.com'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: normalUserObj.jar,
       resolveWithFullResponse: true
     })
@@ -147,7 +206,7 @@ describe("POST user API", () => {
         mobile_no: '+2-987',
         is_user: true,
       },
-      uri: lib.helpers.apiTestURL('user/profile/new'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: adminObj.jar,
       resolveWithFullResponse: true
     })
@@ -176,7 +235,7 @@ describe("POST user API", () => {
         phone_no: '0912',
         is_user: true,
       },
-      uri: lib.helpers.apiTestURL('user/profile/new'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: repObj.jar,
       resolveWithFullResponse: true
     })
@@ -206,7 +265,7 @@ describe("POST user API", () => {
         phone_no: '09129998800',
         is_user: true,
       },
-      uri: lib.helpers.apiTestURL('user/profile/ali@mail.com'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: repObj.jar,
       resolveWithFullResponse: true
     })
@@ -217,6 +276,247 @@ describe("POST user API", () => {
       .catch(err => {
         expect(err.statusCode).toBe(403);
         expect(err.error).toBe('Cannot modify user general profile');
+        done();
+      });
+  });
+
+  xit("user should add expertise (expertise is not exist)", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      form: {
+        pid: normalUserObj.pid,
+        name_en: 'Web Programming',
+        name_fa: 'برنامه نویسی وب',
+        type_en: 'Programming',
+        type_fa: 'برنامه نویسی',
+        start_date: new Date(2015, 2, 2),
+        is_education: false,
+      },
+      uri: lib.helpers.apiTestURL('user/expertise/ali@mail.com'),
+      jar: normalUserObj.jar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.person.getPersonExpertise({username: 'ali@mail.com'});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].name_en).toBe('Web Programming');
+        expect(res[0].is_education).toBe(false);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  xit("user should add expertise (expertise is exist)", function (done) {
+    this.done = done;
+    let expertiseId = null;
+    sql.test.expertise.add({
+      name_en: 'Computer Science - Artificial Intelligence',
+      name_fa: 'علوم کامپیوتر - هوش مصنوعی',
+      type_en: 'Master Education',
+      type_fa: 'تحصیلات تکمیلی',
+      is_education: true,
+    })
+      .then(res => {
+        expertiseId = res.expertise_id;
+        return rp({
+          method: 'post',
+          form: {
+            expertise_id: expertiseId,
+            pid: normalUserObj.pid,
+            start_date: new Date(),
+          },
+          uri: lib.helpers.apiTestURL('user/expertise/ali@mail.com'),
+          jar: normalUserObj.jar,
+          resolveWithFullResponse: true
+        });
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.person_expertise.select();
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].pid).toBe(normalUserObj.pid);
+        expect(res[0].expertise_id).toBe(expertiseId);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  xit("user should be able to update expertise", function (done) {
+    this.done = done;
+    let expertiseId = null;
+    sql.test.expertise.add({
+      name_en: 'Computer Science - Artificial Intelligence',
+      name_fa: 'علوم کامپیوتر - هوش مصنوعی',
+      type_en: 'Master Education',
+      type_fa: 'تحصیلات تکمیلی',
+      is_education: true,
+    })
+      .then(res => {
+        expertiseId = res.expertise_id;
+        return sql.test.person_expertise.add({
+          pid: normalUserObj.pid,
+          expertise_id: expertiseId,
+          start_date: new Date()
+        });
+      })
+      .then(res => {
+        return rp({
+          method: 'post',
+          form: {
+            peid: res.peid,
+            expertise_id: expertiseId,
+            pid: normalUserObj.pid,
+          },
+          uri: lib.helpers.apiTestURL('user/expertise/ali@mail.com'),
+          jar: normalUserObj.jar,
+          resolveWithFullResponse: true
+        });
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.person_expertise.select();
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].pid).toBe(normalUserObj.pid);
+        expect(res[0].expertise_id).toBe(expertiseId);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  xit("admin should add expertise for specific user (expertise is exist)", function (done) {
+    this.done = done;
+    let expertiseId = null;
+    sql.test.expertise.add({
+      name_en: 'Computer Science - Artificial Intelligence',
+      name_fa: 'علوم کامپیوتر - هوش مصنوعی',
+      type_en: 'Master Education',
+      type_fa: 'تحصیلات تکمیلی',
+      is_education: true,
+    })
+      .then(res => {
+        expertiseId = res.expertise_id;
+        return rp({
+          method: 'post',
+          form: {
+            expertise_id: expertiseId,
+            pid: normalUserObj.pid,
+            start_date: new Date(),
+          },
+          uri: lib.helpers.apiTestURL('user/expertise/ali@mail.com'),
+          jar: adminObj.jar,
+          resolveWithFullResponse: true
+        });
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.person_expertise.select();
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].pid).toBe(normalUserObj.pid);
+        expect(res[0].expertise_id).toBe(expertiseId);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("user should ask admin to be representative of biz or org", function (done) {
+    this.done = done;
+    addBusiness()
+      .then((res) => {
+        return rp({
+          method: 'post',
+          form: {
+            bid: res.bid,
+          },
+          uri: lib.helpers.apiTestURL('membership/introducing/rep'),
+          jar: normalUserObj.jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid: res.body});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].is_representative).toBe(true);
+        expect(res[0].is_active).toBe(false);
+        expect(res[0].position_id).toBe(null);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  }, 6000);
+
+  it("representative of one biz or org can ask admin to be representative of another biz or org", function (done) {
+    this.done = done;
+    let oid = null, po_id = null;
+    addOrganization()
+      .then(res => {
+        oid = res.oid;
+        return sql.test.position_type.add({
+          name: 'Manager',
+          name_fa: 'مدیر عامل',
+          suggested_by: adminObj.pid,
+          active: true,
+        })
+      })
+      .then(res => {
+        po_id = res.id;
+        return rp({
+          method: 'post',
+          form: {
+            oid: oid,
+            position_id: po_id,
+            start_date: new Date(2010, 10, 10)
+          },
+          uri: lib.helpers.apiTestURL('membership/introducing/rep'),
+          jar: repObj.jar,
+          resolveWithFullResponse: true,
+        });
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid: res.body});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].is_active).toBe(false);
+        expect(res[0].is_representative).toBe(true);
+        expect(res[0].position_id).not.toBe(null);
+        expect(res[0].position_id).toBe(po_id);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("representative of one biz or org cannot ask admin to be representative of same biz or org (no more than one representative for a org/biz)", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        oid: orgObj.oid,
+      },
+      uri: lib.helpers.apiTestURL('membership/introducing/rep'),
+      jar: repObj.jar,
+      json: true,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        fail('Representative of organization ask to be representative of it again');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(500);
+        expect(err.error).toBe('this organization or business already has representative');
         done();
       });
   });

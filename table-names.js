@@ -1,5 +1,6 @@
 module.exports = [ // Name tables in order of dependency
   'person',
+  'administrators',
   'expertise',
   'person_expertise',
   'person_activation_link',
