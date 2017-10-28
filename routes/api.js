@@ -80,12 +80,12 @@ router.put('/user', apiResponse('Person', 'insert', true, ['body']));
 router.get('/user', apiResponse('Person', 'select', true));
 // router.post('/user/:pid', apiResponse('Person', 'update', true, ['params.pid','body']));
 router.post('/user/profile', apiResponse('Person', 'setProfile', false, ['body.target_username', 'user.username', 'user.pid', 'body']));
-router.post('/user/expertise/:username', apiResponse('Person', 'setExpertise', false, ['body', 'params.username', 'user.username', 'user.pid']));
+router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, [ 'user.username', 'user.pid','body']));
 router.delete('/user/:pid', apiResponse('Person', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body']));
 
 //Expertise API
-router.put('/expertise', apiResponse('Expertise', 'addExpertise', false, ['body']));
+router.put('/expertise', apiResponse('Expertise', 'addExpertise', true, ['body']));
 
 //Business API
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
