@@ -89,3 +89,5 @@ on
 where
     membership.is_representative = true
     and membership.is_active = true
+    and membership.start_time < current_timestamp
+    and (membership.end_time is null or membership.end_time > current_timestamp)

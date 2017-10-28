@@ -126,7 +126,7 @@ router.delete('/orgAttends/:eid/:oid', apiResponse('Attendance', 'orgUnattends',
 
 // Joiners API
 router.get('/joiners', apiResponse('Joiner', 'select', false, ['user.pid']));
-router.put('/joiner/:pid', apiResponse('Joiner', 'saveData', false, ['user.pid', 'params.pid']));
-router.delete('/joiner/:pid', apiResponse('Joiner', 'delete', false, ['user.pid', 'params.pid']));
+router.put('/joiner/:mid', apiResponse('Joiner', 'saveData', false, ['params.mid', 'user.pid']));
+router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['params.mid', 'params.aid', 'user.pid']));
 
 module.exports = router;

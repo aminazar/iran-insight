@@ -84,6 +84,9 @@ let modExp = {
     create:                   sql('membership/create.sql'),
     drop:                     sql('membership/drop.sql'),
     isRepresentativeOrAdmin:  sql('membership/isRepresentativeOrAdmin.sql'),
+    getWithAssoc:             sql('membership/getWithAssoc.sql'),
+    getWithLimitedAssoc:      sql('membership/getWithLimitedAssoc.sql'),
+    repPendingUsers:          sql('membership/repPendingUsers.sql'),
   },
   event: {
     create:     sql('event/create.sql'),
@@ -97,9 +100,7 @@ let modExp = {
     orgUnattends: sql('attendance/org-unattend.sql'),
   },
   joiner : {
-    repPendingUsers: sql('joiner/repPendingUsers.sql'),
-    confirm: sql('joiner/confirm.sql'),
-    reject: sql('joiner/reject.sql'),
+
   }
 };
 

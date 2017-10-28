@@ -5,5 +5,9 @@ create table if not exists membership(
     is_representative boolean default false not null,
     start_time timestamp with time zone not null default current_timestamp,
     end_time timestamp with time zone,
-    position_id integer references position_type(id)
+    position_id integer references position_type(id),
+  CONSTRAINT mem_start_and_end_dates_in_sequence
+  CHECK (start_time < end_time),
+  CONSTRAINT mem_duplicate_records
+  UNIQUE (assoc_id, position_id, start_time)
 );

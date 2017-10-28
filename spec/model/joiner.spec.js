@@ -1,12 +1,12 @@
 const Joiner = require('../../lib/joiner.model');
-const sql = require('../../sql')
+const sql = require('../../sql');
 
 describe("Joiner Model", () => {
 
 
   it('should parse db rows into nested object', () => {
     Joiner.test = true;
-    spyOn(sql.test.joiner, 'repPendingUsers').and.returnValue(Promise.resolve(
+    spyOn(sql.test.membership, 'repPendingUsers').and.returnValue(Promise.resolve(
       [
         {
           oid: 1,
@@ -55,7 +55,7 @@ describe("Joiner Model", () => {
     Joiner.select(10)
       .then(res => {
         // console.log(JSON.stringify(res,null, 2));
-        expect(sql.test.joiner.repPendingUsers).toHaveBeenCalledWith({pid:10});
+        expect(sql.test.membership.repPendingUsers).toHaveBeenCalledWith({pid:10});
         expect(res.biz).toBeDefined();
         if(res.biz) {
           expect(res.biz.length).toBe(1);

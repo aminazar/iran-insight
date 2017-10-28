@@ -23,7 +23,7 @@ describe('GET Joiners API', () => {
         return lib.dbHelpers.addOrgPerson('hasan', orgData.oid, {is_active: true, is_representative:false, position: 'XYZ'})
       })
       .then(res => {
-        hasanPid = res.pid;
+        hasanData = res.pid;
         return lib.dbHelpers.addAndLoginPerson('mo', '654321')
       })
       .then(res => {
