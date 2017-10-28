@@ -1,27 +1,33 @@
 select
     association.oid,
     association.bid,
+
     biz_pending_member.*,
-    org_pending_member.*
+    business.name as biz_name_en,
+    business.name_fa as biz_name_fa,
+
+    org_pending_member.*,
+    organization.name as org_name_en,
+    organization.name_fa as org_name_fa
 from
     membership
 join
     association
 on
     association.aid = membership.assoc_id
-    and association.pid = 1
+    and association.pid = ${pid}
 left outer join
     (select
+        association.aid as biz_a_aid,
         association.bid,
-        person.firstname_en as biz_firstname_en,
-        person.surname_en as biz_surname_en,
-        person.firstname_fa as biz_firstname_fa,
-        person.surname_fa as biz_surname_fa,
-        position_type.name as biz_position_name,
-        position_type.name_fa as biz_position_name_fa,
-        business.name as biz_name,
-        business.name_fa as biz_name_fa,
-        membership.is_active as biz_membership_is_active
+        person.firstname_en as biz_a_firstname_en,
+        person.surname_en as biz_a_surname_en,
+        person.firstname_fa as biz_a_firstname_fa,
+        person.surname_fa as biz_a_surname_fa,
+        position_type.name as biz_a_position_name,
+        position_type.name_fa as biz_a_position_name_fa,
+        membership.is_active as biz_a_membership_is_active,
+        membership.mid as biz_a_mid
     from
         membership
     join
@@ -33,10 +39,6 @@ left outer join
         person
     on
         person.pid = association.pid
-    join
-        business
-    on
-        business.bid = association.bid
     left outer join
         position_type
     on
@@ -46,17 +48,21 @@ left outer join
 on
     biz_pending_member.bid = association.bid
 left outer join
+    business
+on
+    association.bid = business.bid
+left outer join
     (select
+        association.aid as org_a_aid,
         association.oid,
-        person.firstname_en as org_firstname_en,
-        person.surname_en as org_surname_en,
-        person.firstname_fa as org_firstname_fa,
-        person.surname_fa as org_surname_fa,
-        position_type.name as org_position_name,
-        position_type.name_fa as org_position_name_fa,
-        organization.name as org_name,
-        organization.name_fa as org_name_fa,
-        membership.is_active as org_membership_is_active
+        person.firstname_en as org_a_firstname_en,
+        person.surname_en as org_a_surname_en,
+        person.firstname_fa as org_a_firstname_fa,
+        person.surname_fa as org_a_surname_fa,
+        position_type.name as org_a_position_name,
+        position_type.name_fa as org_a_position_name_fa,
+        membership.is_active as org_a_membership_is_active,
+        membership.mid as org_a_mid
     from
         membership
     join
@@ -68,10 +74,6 @@ left outer join
         person
     on
         person.pid = association.pid
-    join
-        organization
-    on
-        organization.oid = association.oid
     left outer join
         position_type
     on
@@ -80,6 +82,10 @@ left outer join
         membership.end_time is null) org_pending_member
 on
     org_pending_member.oid = association.oid
+left outer join
+    organization
+on
+    association.oid = organization.oid
 where
     membership.is_representative = true
     and membership.is_active = true

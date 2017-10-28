@@ -2,9 +2,9 @@ const rp = require("request-promise");
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 
-describe('GET Event API', () => {
-  let eid = 0, pid = 0, aliPid = 0, orgData,
-    aminJar, moJar, adminJar;
+describe('GET Joiners API', () => {
+  let pid = 0, aliPid = 0, orgData, bizData,
+    aminJar, moJar, adminJar, josePid;
 
   beforeEach(function (done) {
     lib.dbHelpers.create()
@@ -32,7 +32,11 @@ describe('GET Event API', () => {
         return lib.dbHelpers.addBusinessWithRep(moPid);
       })
       .then(res => {
-
+        bizData = res;
+        return lib.dbHelpers.addBizPerson('jose', bizData.bid, {is_active: false, is_representative:false, position: 'WXYZ'})
+      })
+      .then(res => {
+        josePid = res.pid;
         return lib.dbHelpers.addAndLoginPerson('aDmIn', 'admin', {})
       })
       .then(res => {
@@ -46,23 +50,47 @@ describe('GET Event API', () => {
       });
   });
 
-  it('has an event API loading a single event with EID', function (done) {
+  it('lists pending users for an org rep', function (done) {
     rp({
       method: 'GET',
-      uri: lib.helpers.apiTestURL(`event/${eid}`),
+      uri: lib.helpers.apiTestURL(`joiners`),
+      jar: aminJar,
       resolveWithFullResponse: true,
     })
       .then(res => {
         expect(res.statusCode).toBe(200);
         let body = JSON.parse(res.body);
-        expect(body.eid).toBe(eid);
-        expect(body.organizer_pid).toBe(pid);
-        expect(body.organizer_bid).toBeUndefined();
-        expect(body.organizer_oid).toBeUndefined();
-        expect(body.title).toBe(eventData.title);
-        expect(body.title_fa).toBe(eventData.title_fa);
-        expect(body.start_date).toBe(eventData.start_date);
-        expect(body.attendance).toBeUndefined();
+        console.log(res.body);
+        expect(body.biz).toBeDefined();
+        expect(body.org).toBeDefined();
+        expect(body.org.length).toBe(1);
+        if(body.org[0]) {
+          expect(body.org[0].name_en).toBe(orgData.name);
+          expect(body.org[0].name_fa).toBe(orgData.name_fa);
+          expect(body.org[0].oid).toBe(orgData.oid);
+          expect(body.org[0].pending.length).toBe(2);
+          if(body.org[0].pending[0]) {
+            if(body.org[0].pending[0].surname_en === 'alis') {
+              expect(body.org[0].pending[0].firstname_en).toBe('alif');
+              expect(body.org[0].pending[0].membership_is_active).toBe(false);
+              expect(body.org[0].pending[0].position_name).toBe('CEO');
+              if(body.org[0].pending[1]) {
+                expect(body.org[0].pending[1].surname_en).toBe('hasans');
+                expect(body.org[0].pending[1].membership_is_active).toBe(true);
+                expect(body.org[0].pending[1].position_name_fa).toBe('XYZ_fa');
+              }
+            } else {
+              expect(body.org[0].pending[0].firstname_en).toBe('hasanf');
+              expect(body.org[0].pending[0].membership_is_active).toBe(true);
+              expect(body.org[0].pending[0].position_name).toBe('XYZ');
+              if (body.org[0].pending[1]) {
+                expect(body.org[0].pending[1].surname_en).toBe('alis');
+                expect(body.org[0].pending[1].membership_is_active).toBe(false);
+                expect(body.org[0].pending[0].position_name).toBe('CEO');
+              }
+            }
+          }
+        }
         done();
       })
       .catch(err => {
@@ -71,26 +99,32 @@ describe('GET Event API', () => {
       });
   });
 
-  it('loads a single event with attendance data where applicable', function (done) {
+  it('lists pending users for a biz rep', function (done) {
     rp({
       method: 'GET',
-      uri: lib.helpers.apiTestURL(`event/${eid}`),
+      uri: lib.helpers.apiTestURL(`joiners`),
+      jar: moJar,
       resolveWithFullResponse: true,
-      jar: aminJar,
     })
       .then(res => {
         expect(res.statusCode).toBe(200);
         let body = JSON.parse(res.body);
-        expect(body.eid).toBe(eid);
-        expect(body.organizer_pid).toBe(pid);
-        expect(body.organizer_bid).toBeUndefined();
-        expect(body.organizer_oid).toBeUndefined();
-        expect(body.title).toBe(eventData.title);
-        expect(body.title_fa).toBe(eventData.title_fa);
-        expect(body.start_date).toBe(eventData.start_date);
-        expect(body.attendance).toBeDefined();
-        if(body.attendance) {
-          expect(body.attendance.id).toBe(aid);
+        console.log(res.body);
+        expect(body.biz).toBeDefined();
+        expect(body.org).toBeDefined();
+        expect(body.org.length).toBe(0);
+
+        expect(body.biz.length).toBe(1);
+        if(body.biz[0]) {
+          expect(body.biz[0].name_en).toBe(bizData.name);
+          expect(body.biz[0].name_fa).toBe(bizData.name_fa);
+          expect(body.biz[0].oid).toBe(bizData.oid);
+          expect(body.biz[0].pending.length).toBe(1);
+          if(body.biz[0].pending[0]) {
+            expect(body.biz[0].pending[0].firstname_en).toBe('josef');
+            expect(body.biz[0].pending[0].membership_is_active).toBe(false);
+            expect(body.biz[0].pending[0].position_name).toBe('WXYZ');
+          }
         }
         done();
       })

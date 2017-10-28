@@ -96,6 +96,11 @@ let modExp = {
     bizUnattends: sql('attendance/biz-unattend.sql'),
     orgUnattends: sql('attendance/org-unattend.sql'),
   },
+  joiner : {
+    repPendingUsers: sql('joiner/repPendingUsers.sql'),
+    confirm: sql('joiner/confirm.sql'),
+    reject: sql('joiner/reject.sql'),
+  }
 };
 
 // Template-generated tables
