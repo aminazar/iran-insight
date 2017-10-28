@@ -2,6 +2,8 @@ const lib = require('../lib');
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const sql = require('../sql');
+const error = require('../lib/errors.list');
 
 function apiResponse(className, functionName, adminOnly=false, reqFuncs=[]){
   let args = Array.prototype.slice.call(arguments, 4);
@@ -23,32 +25,68 @@ function apiResponse(className, functionName, adminOnly=false, reqFuncs=[]){
     return obj;
   };
   return(function(req, res) {
-    let user = req.user ? req.user.username : req.user;
     req.test = lib.helpers.isTestReq(req);
-    if(adminOnly && !lib.helpers.adminCheck(user)) {
-      res.status(403)
-        .send('Only admin can do this.');
-    }
-    else {
-      let dynamicArgs = [];
-      for(let i in reqFuncs)
-        dynamicArgs.push((typeof reqFuncs[i]==='function') ? reqFuncs[i](req) : deepFind(req,reqFuncs[i]));
 
-      let allArgs = dynamicArgs.concat(args);
-      lib[className].test = req.test;
-      let isStaticFunction = typeof lib[className][functionName] === 'function';
-      let model = isStaticFunction ? lib[className] : new lib[className](req.test);
-      model[functionName].apply(isStaticFunction?null:model, allArgs)
-        .then(data=> {
-          res.status(200)
-            .json(data);
-        })
-        .catch(err=> {
-          console.log(`${className}/${functionName}: `, err.message);
-          res.status(err.status||500)
-            .send(err.message || err);
-        });
-    }
+    Promise.resolve()
+      .then(() => {
+        if(adminOnly){
+          if(req.user)
+            return (req.test ? sql.test : sql).person.isAdmin({pid: req.user.pid});
+          else
+            return Promise.reject(error.adminOnly);
+        }
+        else
+          return Promise.resolve();
+      })
+      .then(rs => {
+        if(adminOnly && rs.length < 1)
+          return Promise.reject(error.adminOnly);
+        else{
+          let dynamicArgs = [];
+          for(let i in reqFuncs)
+            dynamicArgs.push((typeof reqFuncs[i]==='function') ? reqFuncs[i](req) : deepFind(req,reqFuncs[i]));
+
+          let allArgs = dynamicArgs.concat(args);
+          lib[className].test = req.test;
+          let isStaticFunction = typeof lib[className][functionName] === 'function';
+          let model = isStaticFunction ? lib[className] : new lib[className](req.test);
+          return model[functionName].apply(isStaticFunction?null:model, allArgs);
+        }
+      })
+      .then(data=> {
+        res.status(200)
+          .json(data);
+      })
+      .catch(err=> {
+        console.log(`${className}/${functionName}: `, err.message);
+        res.status(err.status||500)
+          .send(err.message || err);
+      });
+
+    // if(adminOnly && !lib.helpers.adminCheck(user)) {
+    //   res.status(403)
+    //     .send('Only admin can do this.');
+    // }
+    // else {
+    //   let dynamicArgs = [];
+    //   for(let i in reqFuncs)
+    //     dynamicArgs.push((typeof reqFuncs[i]==='function') ? reqFuncs[i](req) : deepFind(req,reqFuncs[i]));
+    //
+    //   let allArgs = dynamicArgs.concat(args);
+    //   lib[className].test = req.test;
+    //   let isStaticFunction = typeof lib[className][functionName] === 'function';
+    //   let model = isStaticFunction ? lib[className] : new lib[className](req.test);
+    //   model[functionName].apply(isStaticFunction?null:model, allArgs)
+    //     .then(data=> {
+    //       res.status(200)
+    //         .json(data);
+    //     })
+    //     .catch(err=> {
+    //       console.log(`${className}/${functionName}: `, err.message);
+    //       res.status(err.status||500)
+    //         .send(err.message || err);
+    //     });
+    // }
   });
 }
 
@@ -79,7 +117,7 @@ router.post('/membership/introducing/rep', apiResponse('Person', 'introduceAsRep
 router.put('/user', apiResponse('Person', 'insert', true, ['body']));
 router.get('/user', apiResponse('Person', 'select', true));
 // router.post('/user/:pid', apiResponse('Person', 'update', true, ['params.pid','body']));
-router.post('/user/profile', apiResponse('Person', 'setProfile', false, ['body.target_username', 'user.username', 'user.pid', 'body']));
+router.post('/user/profile', apiResponse('Person', 'setProfile', false, ['user.pid', 'body']));
 router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, [ 'user.username', 'user.pid','body']));
 router.delete('/user/:pid', apiResponse('Person', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body']));

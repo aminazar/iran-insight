@@ -14,8 +14,9 @@ describe("PUT user API", () => {
       .then(res => {
         adminObj.pid = res.pid;
         adminObj.jar = res.rpJar;
-        done();
+        return lib.dbHelpers.addAdmin(adminObj.pid);
       })
+      .then(res => done())
       .catch(err => {
         console.error(err);
         done();
@@ -45,8 +46,8 @@ describe("PUT user API", () => {
         expect(res.length).toBe(1);
         expect(res[0].name_en).toBe('Web Programming');
         expect(res[0].name_fa).toBe('برنامه نویسی وب');
-        expect(res[0].type_en).toBe('Programming');
-        expect(res[0].type_fa).toBe('برنامه نویسی');
+        // expect(res[0].type_en).toBe('Programming');
+        // expect(res[0].type_fa).toBe('برنامه نویسی');
         expect(res[0].is_education).toBe(false);
         done();
       })
@@ -86,13 +87,13 @@ describe("PUT user API", () => {
         expect(res.length).toBe(2);
         expect(res[0].name_en).toBe('Graphic Design');
         expect(res[0].name_fa).toBe('طراحی گرافیکی');
-        expect(res[0].type_en).toBe('Designing');
-        expect(res[0].type_fa).toBe('طراحی');
+        // expect(res[0].type_en).toBe('Designing');
+        // expect(res[0].type_fa).toBe('طراحی');
         expect(res[0].is_education).toBe(false);
         expect(res[1].name_en).toBe('Computer Science - Artificial Intelligence');
         expect(res[1].name_fa).toBe('علوم کامپیوتر - هوش مصنوعی');
-        expect(res[1].type_en).toBe('Master Education');
-        expect(res[1].type_fa).toBe('تحصیلات تکمیلی');
+        // expect(res[1].type_en).toBe('Master Education');
+        // expect(res[1].type_fa).toBe('تحصیلات تکمیلی');
         expect(res[1].is_education).toBe(true);
         done();
       })

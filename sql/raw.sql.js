@@ -31,14 +31,18 @@ let modExp = {
     create:     sql('person/create.sql'),
     drop:       sql('person/drop.sql'),
     get:        sql('person/get.sql'),
+    isAdmin:    sql('person/isAdmin.sql'),
     orgRep:     sql('person/orgRep.sql'),
     bizRep:     sql('person/bizRep.sql'),
     getListOfRepresentationRequests: sql('person/getListOfRepresentationRequests.sql'),
     getListOfMembershipRequests: sql('person/getListOfMembershipRequests.sql'),
     getPersonExpertise: sql('person/getPersonExpertise.sql'),
-  }, administrators: {
+    getAdmins:  sql('person/getAdmins.sql'),
+  },
+  administrators: {
     create:     sql('administrators/create.sql'),
     getById:     sql('administrators/getById.sql'),
+    drop:         sql('administrators/drop.sql'),
   },
   expertise: {
     create: sql('expertise/create.sql'),
@@ -101,10 +105,6 @@ let modExp = {
     personUnattends: sql('attendance/person-unattend.sql'),
     bizUnattends: sql('attendance/biz-unattend.sql'),
     orgUnattends: sql('attendance/org-unattend.sql'),
-  },
-  administrator: {
-    create:     sql('administrator/create.sql'),
-    drop:       sql('administrator/drop.sql'),
   },
 };
 

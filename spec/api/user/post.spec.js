@@ -71,7 +71,7 @@ describe("POST user API", () => {
   beforeEach(done => {
     lib.dbHelpers.create()
       .then(() => {
-        return lib.dbHelpers.addAndLoginPerson('admin', 'admin123');
+        return lib.dbHelpers.addAndLoginPerson('alireza@bentoak.systems', 'admin123');
       })
       .then(res => {
         adminObj.pid = res.pid;
@@ -107,7 +107,6 @@ describe("POST user API", () => {
       method: 'post',
       form: {
         firstname_en: 'ali',
-        target_username: 'ali@mail.com'
       },
       uri: lib.helpers.apiTestURL('user/profile'),
       jar: normalUserObj.jar,
@@ -141,7 +140,6 @@ describe("POST user API", () => {
         birth_date: new Date(1993,10,10),
         display_name_en: 'A^2',
         display_name_fa: 'علی آقا',
-        target_username: 'ali@mail.com',
       },
       uri: lib.helpers.apiTestURL('user/profile'),
       jar: normalUserObj.jar,
@@ -175,7 +173,6 @@ describe("POST user API", () => {
         mobile_no: '+1-123',
         is_user: false,
         username: 'asghar@mail.com',
-        target_username: 'ali@mail.com',
       },
       uri: lib.helpers.apiTestURL('user/profile'),
       jar: normalUserObj.jar,
@@ -267,7 +264,6 @@ describe("POST user API", () => {
         display_name_fa: 'علی آقا',
         phone_no: '09129998800',
         is_user: true,
-        target_username: 'ali@mail.com',
       },
       uri: lib.helpers.apiTestURL('user/profile'),
       jar: repObj.jar,
@@ -284,7 +280,7 @@ describe("POST user API", () => {
       });
   });
 
-  it("user should add expertise (expertise is not exist)", function (done) {
+  xit("user should add expertise (expertise is not exist)", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -314,7 +310,7 @@ describe("POST user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("user should add expertise (expertise is exist)", function (done) {
+  xit("user should add expertise (expertise is exist)", function (done) {
     this.done = done;
     let expertiseId = null;
     sql.test.expertise.add({
@@ -351,7 +347,7 @@ describe("POST user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("user should be able to update expertise", function (done) {
+  xit("user should be able to update expertise", function (done) {
     this.done = done;
     let expertiseId = null;
     sql.test.expertise.add({
@@ -395,7 +391,7 @@ describe("POST user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("admin should add expertise for specific user (expertise is exist)", function (done) {
+  xit("admin should add expertise for specific user (expertise is exist)", function (done) {
     this.done = done;
     let expertiseId = null;
     sql.test.expertise.add({
