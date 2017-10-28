@@ -28,6 +28,7 @@ function prodTablesCreate() {
 function setupMainDatabase() {
   prodTablesCreate()
     .then(() => lib.dbHelpers.addPerson('admin', 'admin', {}, false, true))
+    .then(adminId => lib.dbHelpers.addAdmin(adminId))
     .then(() => {
       if (env.isDev)
         return dbTestCreate();

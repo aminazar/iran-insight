@@ -79,7 +79,7 @@ router.put('/user', apiResponse('Person', 'insert', true, ['body']));
 router.get('/user', apiResponse('Person', 'select', true));
 // router.post('/user/:pid', apiResponse('Person', 'update', true, ['params.pid','body']));
 router.post('/user/profile/:username', apiResponse('Person', 'setProfile', false, ['params.username', 'user.username', 'user.pid', 'body']));
-router.post('/user/expertise/:username', apiResponse('Person', 'setExpertise', false, ['body', 'params.username', 'user.username', 'user.pid']));
+router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, [ 'user.username', 'user.pid','body']));
 router.delete('/user/:pid', apiResponse('Person', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body']));
 
