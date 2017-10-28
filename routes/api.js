@@ -27,17 +27,7 @@ function apiResponse(className, functionName, adminOnly=false, reqFuncs=[]){
   return(function(req, res) {
     req.test = lib.helpers.isTestReq(req);
 
-    Promise.resolve()
-      .then(() => {
-        if(adminOnly){
-          if(req.user)
-            return (req.test ? sql.test : sql).person.isAdmin({pid: req.user.pid});
-          else
-            return Promise.reject(error.adminOnly);
-        }
-        else
-          return Promise.resolve();
-      })
+    lib.Person.adminCheck(adminOnly, req.user, req.test)
       .then(rs => {
         if(adminOnly && rs.length < 1)
           return Promise.reject(error.adminOnly);

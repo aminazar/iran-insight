@@ -4,7 +4,8 @@ join association on membership.assoc_id = association.aid
 join person on association.pid = person.pid
 where membership.is_representative = true and
       membership.is_active = true and
-      person.pid = ${pid}
+      person.pid = ${pid} and
+      person.pid not in (select pid from administrators)
 union
 select *, true as is_admin
 from person
