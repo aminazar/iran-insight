@@ -106,8 +106,8 @@ router.get('/organization-lce/:oid', apiResponse('OrganizationLCE', 'getByOid', 
 // Organization type
 router.put('/organization-type', apiResponse('OrganizationType', 'saveData', false, ['body' , 'id']));
 
-// Representation check API
-router.get('/user/checkIfRep',apiResponse('Person','findRepRequests',true, ['user.username']));
+//representation check API
+router.get('/user/checkIfRep',apiResponse('Person','findRepRequests',true));
 router.get('/user/checkIfUser',apiResponse('Person','findMemRequests',false, ['user.username']));
 
 //Events API
