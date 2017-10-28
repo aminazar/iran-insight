@@ -12,7 +12,7 @@ describe("SQL library",()=>{
       expect(raw[table][query].constructor.name).toBe('QueryFile')
     );
     let testDirectoryNameMatchesTableName = (query, table) => it(`should have SQL file in directory with the same name as the table '${table}' for query '${query}'`, () =>
-      expect(raw[table][query].file.split(path.sep).slice(-2)[0]).toBe(table)
+      expect(table).toContain(raw[table][query].file.split(path.sep).slice(-2)[0])
     );
 
     let testAllRawSQLsAreInWrappedSQLs = (query,table) => it(`should wrap raw SQL for table table '${table}' and query '${query}'`, () => {
