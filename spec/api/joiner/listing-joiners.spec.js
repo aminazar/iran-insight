@@ -4,7 +4,7 @@ const sql = require('../../../sql/index');
 
 describe('GET Joiners API', () => {
   let pid = 0, aliPid = 0, orgData, bizData,
-    aminJar, moJar, adminJar, josePid;
+    aminJar, moJar, adminJar, joseData;
 
   beforeEach(function (done) {
     lib.dbHelpers.create()
@@ -16,11 +16,19 @@ describe('GET Joiners API', () => {
       })
       .then(res => {
         orgData = res;
-        return lib.dbHelpers.addOrgPerson('ali', orgData.oid, {is_active: false, is_representative:false, position: 'CEO'})
+        return lib.dbHelpers.addOrgPerson('ali', orgData.oid, {
+          is_active: false,
+          is_representative: false,
+          position: 'CEO'
+        })
       })
       .then(res => {
         aliPid = res.pid;
-        return lib.dbHelpers.addOrgPerson('hasan', orgData.oid, {is_active: true, is_representative:false, position: 'XYZ'})
+        return lib.dbHelpers.addOrgPerson('hasan', orgData.oid, {
+          is_active: true,
+          is_representative: false,
+          position: 'XYZ'
+        })
       })
       .then(res => {
         hasanData = res.pid;
@@ -33,10 +41,14 @@ describe('GET Joiners API', () => {
       })
       .then(res => {
         bizData = res;
-        return lib.dbHelpers.addBizPerson('jose', bizData.bid, {is_active: false, is_representative:false, position: 'WXYZ'})
+        return lib.dbHelpers.addBizPerson('jose', bizData.bid, {
+          is_active: false,
+          is_representative: false,
+          position: 'WXYZ'
+        })
       })
       .then(res => {
-        josePid = res.pid;
+        joseData = res;
         return lib.dbHelpers.addAndLoginPerson('aDmIn', 'admin', {})
       })
       .then(res => {
@@ -48,6 +60,30 @@ describe('GET Joiners API', () => {
         console.error('Setup failure:', err);
         done();
       });
+  });
+
+  it('should just list biz/org with empty pending where there is no pending joiner', function (done) {
+    this.done = done;
+    sql.test.membership.delete(joseData.mid)
+      .then(() => rp({
+        method: 'GET',
+        uri: lib.helpers.apiTestURL(`joiners`),
+        jar: moJar,
+        resolveWithFullResponse: true,
+      }))
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let body = JSON.parse(res.body);
+        console.log(res.body);
+        expect(body.biz).toBeTruthy();
+        expect(body.biz.length).toBe(1);
+        if(body.biz[0]) {
+          expect(body.biz[0].pending.length).toBe(0);
+          expect(body.biz[0].name_en).toBe('biz0');
+        }
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
   });
 
   it('lists pending users for an org rep', function (done) {
@@ -64,17 +100,17 @@ describe('GET Joiners API', () => {
         expect(body.biz).toBeDefined();
         expect(body.org).toBeDefined();
         expect(body.org.length).toBe(1);
-        if(body.org[0]) {
+        if (body.org[0]) {
           expect(body.org[0].name_en).toBe(orgData.name);
           expect(body.org[0].name_fa).toBe(orgData.name_fa);
           expect(body.org[0].oid).toBe(orgData.oid);
           expect(body.org[0].pending.length).toBe(2);
-          if(body.org[0].pending[0]) {
-            if(body.org[0].pending[0].surname_en === 'alis') {
+          if (body.org[0].pending[0]) {
+            if (body.org[0].pending[0].surname_en === 'alis') {
               expect(body.org[0].pending[0].firstname_en).toBe('alif');
               expect(body.org[0].pending[0].membership_is_active).toBe(false);
               expect(body.org[0].pending[0].position_name).toBe('CEO');
-              if(body.org[0].pending[1]) {
+              if (body.org[0].pending[1]) {
                 expect(body.org[0].pending[1].surname_en).toBe('hasans');
                 expect(body.org[0].pending[1].membership_is_active).toBe(true);
                 expect(body.org[0].pending[1].position_name_fa).toBe('XYZ_fa');
@@ -115,12 +151,12 @@ describe('GET Joiners API', () => {
         expect(body.org.length).toBe(0);
 
         expect(body.biz.length).toBe(1);
-        if(body.biz[0]) {
+        if (body.biz[0]) {
           expect(body.biz[0].name_en).toBe(bizData.name);
           expect(body.biz[0].name_fa).toBe(bizData.name_fa);
           expect(body.biz[0].oid).toBe(bizData.oid);
           expect(body.biz[0].pending.length).toBe(1);
-          if(body.biz[0].pending[0]) {
+          if (body.biz[0].pending[0]) {
             expect(body.biz[0].pending[0].firstname_en).toBe('josef');
             expect(body.biz[0].pending[0].membership_is_active).toBe(false);
             expect(body.biz[0].pending[0].position_name).toBe('WXYZ');

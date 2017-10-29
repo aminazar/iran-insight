@@ -19,7 +19,7 @@ on
 left outer join
     (select
         association.aid as biz_a_aid,
-        association.bid,
+        association.bid as biz_a_bid,
         person.firstname_en as biz_a_firstname_en,
         person.surname_en as biz_a_surname_en,
         person.firstname_fa as biz_a_firstname_fa,
@@ -46,7 +46,7 @@ left outer join
     where
         membership.end_time is null) biz_pending_member
 on
-    biz_pending_member.bid = association.bid
+    biz_pending_member.biz_a_bid = association.bid
 left outer join
     business
 on
@@ -54,7 +54,7 @@ on
 left outer join
     (select
         association.aid as org_a_aid,
-        association.oid,
+        association.oid as org_a_oid,
         person.firstname_en as org_a_firstname_en,
         person.surname_en as org_a_surname_en,
         person.firstname_fa as org_a_firstname_fa,
@@ -81,7 +81,7 @@ left outer join
     where
         membership.end_time is null) org_pending_member
 on
-    org_pending_member.oid = association.oid
+    org_pending_member.org_a_oid = association.oid
 left outer join
     organization
 on

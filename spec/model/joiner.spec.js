@@ -2,7 +2,69 @@ const Joiner = require('../../lib/joiner.model');
 const sql = require('../../sql');
 
 describe("Joiner Model", () => {
+  it('should parse an empty list to nested object', () => {
+    Joiner.test = true;
+    spyOn(sql.test.membership, 'repPendingUsers').and.returnValue(Promise.resolve(
+      []));
+    Joiner.select(10)
+      .then(res => {
+        // console.log(JSON.stringify(res,null, 2));
+        expect(sql.test.membership.repPendingUsers).toHaveBeenCalledWith({pid:10});
+        expect(res.biz).toBeDefined();
+        expect(res.org).toBeDefined();
+        expect(res.biz.length).toBe(0);
+        expect(res.org.length).toBe(0)
+      })
+      .catch(err => fail(err));
+  });
 
+  it('should parse an empty pending to nested object', () => {
+    Joiner.test = true;
+    spyOn(sql.test.membership, 'repPendingUsers').and.returnValue(Promise.resolve(
+      [
+        {
+          oid: 1,
+          org_name: 'org1',
+        },
+        {
+          bid: 1,
+          biz_name: 'biz1',
+        }
+      ]));
+    Joiner.select(10)
+      .then(res => {
+        // console.log(JSON.stringify(res,null, 2));
+        expect(sql.test.membership.repPendingUsers).toHaveBeenCalledWith({pid:10});
+        expect(res.biz).toBeDefined();
+        expect(res.org).toBeDefined();
+        expect(res.biz.length).toBe(1);
+        expect(res.org.length).toBe(1)
+      })
+      .catch(err => fail(err));
+  });
+
+  it('should error on null oid', () => {
+    Joiner.test = true;
+    spyOn(sql.test.membership, 'repPendingUsers').and.returnValue(Promise.resolve(
+      [
+        {
+          oid: null,
+          org_name: 'org1',
+        },
+        {
+          bid: 1,
+          biz_name: 'biz1',
+        }
+      ]));
+    Joiner.select(10)
+      .then(res => {
+        fail('it did not error on null oid')
+      })
+      .catch(err => {
+        expect(err).toBeTruthy();
+        expect(err.status).toBe(400);
+      });
+  });
 
   it('should parse db rows into nested object', () => {
     Joiner.test = true;
@@ -93,4 +155,5 @@ describe("Joiner Model", () => {
       })
       .catch(err => fail(err));
   })
+
 });
