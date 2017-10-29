@@ -1,6 +1,7 @@
 const rp = require("request-promise");
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
+const error = require('../../../lib/errors.list');
 
 describe("POST user API", () => {
   let adminObj = {
@@ -224,6 +225,64 @@ describe("POST user API", () => {
           done();
         });
     });
+
+  it("should get error when no pid is defined in body for expertise", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        expertise: {
+          name_en: 'Web Programming',
+          name_fa: 'برنامه نویسی وب',
+          is_education: false,
+        }
+      },
+      json: true,
+      uri: lib.helpers.apiTestURL('user/expertise'),
+      jar: normalUserObj.jar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        this.fail('did not failed when no pid is defined in expertise');
+        done();
+      })
+      .catch(err => {
+        console.log('-> ',err);
+        expect(err.statusCode).toBe(error.noId.status);
+        expect(err.message).toContain(error.noId.message);
+        done();
+      });
+  });
+
+  it("should get error when admin or user himself is not changing the expertise", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        expertise: {
+          name_en: 'Web Programming',
+          name_fa: 'برنامه نویسی وب',
+          is_education: false,
+        },
+        pid: normalUserObj.pid,
+      },
+      json: true,
+      uri: lib.helpers.apiTestURL('user/expertise'),
+      jar: repObj.jar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        this.fail('did not failed expertise is changing by other users');
+        done();
+      })
+      .catch(err => {
+        console.log('-> ',err);
+        expect(err.statusCode).toBe(error.notAllowed.status);
+        expect(err.message).toContain(error.notAllowed.message);
+        done();
+      });
+  });
+
 
   it("user should add expertise (expertise is not exist)", function (done) {
     this.done = done;
