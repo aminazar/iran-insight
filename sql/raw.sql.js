@@ -30,7 +30,7 @@ let modExp = {
   person: {
     create:     sql('person/create.sql'),
     drop:       sql('person/drop.sql'),
-    get:        sql('person/get.sql'),
+    get:        sql('person/getByBiz.sql'),
     isAdmin:    sql('person/isAdmin.sql'),
     orgRep:     sql('person/orgRep.sql'),
     bizRep:     sql('person/bizRep.sql'),
@@ -69,13 +69,13 @@ let modExp = {
     create:             sql('person_activation_link/create.sql'),
     drop:               sql('person_activation_link/drop.sql'),
     deleteByLink:       sql('person_activation_link/deleteByLink.sql'),
-    get:                sql('person_activation_link/get.sql'),
+    get:                sql('person_activation_link/getByBiz.sql'),
     getByLink:          sql('person_activation_link/getByLink.sql'),
   },
   business: {
     create: sql('business/create.sql'),
     drop: sql('business/drop.sql'),
-    get: sql('business/get.sql'),
+    get: sql('business/getByBiz.sql'),
   },
   business_lce: {
     create: sql('business_lce/create.sql'),
@@ -86,6 +86,13 @@ let modExp = {
   association: {
     create:     sql('association/create.sql'),
     drop:       sql('association/drop.sql'),
+  },
+  investment: {
+    create: sql('investment/create.sql'),
+    drop: sql('investment/drop.sql'),
+    getByBiz: sql('investment/getByBiz.sql'),
+    getByOrg: sql('investment/getByOrg.sql'),
+    getByPerson: sql('investment/getByPerson.sql'),
   },
   membership: {
     create:                   sql('membership/create.sql'),

@@ -254,6 +254,13 @@ let tablesWithSqlCreatedByHelpers = [
     delete: true,
     get: true,
     idColumn: 'id',
+  },
+  {
+    name: 'investment',
+    insert: true,
+    update: true,
+    delete: true,
+    idColumn: 'id',
   }
 ].concat(templateGeneratedTables
   .map(tableName => {

@@ -137,4 +137,9 @@ router.get('/joiners', apiResponse('Joiner', 'select', false, ['user.pid']));
 router.put('/joiner/:mid', apiResponse('Joiner', 'saveData', false, ['params.mid', 'user.pid']));
 router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['params.mid', 'params.aid', 'user.pid']));
 
+// Investment API
+router.get('/investment/business/:bid', apiResponse('Investment', 'getByBiz', false, ['params.bid']));
+router.get('/investment/organization/:oid', apiResponse('Investment', 'getByOrg', false, ['params.oid']));
+router.get('/investment/person/:pid', apiResponse('Investment', 'getByPerson', false, ['params.pid']));
+
 module.exports = router;
