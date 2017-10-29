@@ -3,7 +3,7 @@ const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 const moment = require('moment');
 
-describe('PUT Event API', () => {
+xdescribe('PUT Event API', () => {
   let eid = 0, pid = 0, eventData = {title: 'test event', title_fa: 'همایش تست', start_date: '20171010'}, aminJar, aliJar, adminJar;
 
   beforeEach(function (done) {

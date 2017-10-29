@@ -3,6 +3,7 @@ const base_url = "http://localhost:3000/api/";
 const test_query = '?test=tEsT';
 const lib = require('../../lib');
 const sql = require('../../sql');
+const rp = require("request-promise");
 let req = request.defaults({jar: true});//enabling cookies
 
 let resExpect = (res, statusCode) => {
@@ -329,6 +330,43 @@ describe("Admin can get all representation requests from users and send them act
       console.log(data);
       done();
     })
+  });
+
+  it('admin should be able to activate a right representation request', function (done) {
+    let jar;
+    sql.test.membership.get({mid:1})
+      .then(res => {
+        expect(res[0].is_active).toBe(false);
+        jar = rp.jar();
+        return rp({
+          method: 'POST',
+          uri: lib.helpers.apiTestURL('login'),
+          form:{username: 'admin', password :'atest'},
+          withCredentials: true,
+          jar : jar,
+        })
+      })
+      .then(() =>{
+        return rp({
+          method: 'PUT',
+          uri: lib.helpers.apiTestURL(`user/confirmRep/1`),
+          jar: jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        sql.test.membership.get({mid:1})
+          .then(res => {
+            expect(res[0].is_active).toBe(true);
+            done();
+          });
+
+      })
+      .catch(err => {
+        this.fail(lib.helpers.parseServerErrorToString(err));
+        done();
+      });
   });
 
   it("logs out a user(admin)", done => {
