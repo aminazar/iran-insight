@@ -42,12 +42,11 @@ describe("POST user API", () => {
         done();
       })
       .catch(err => {
-        console.error(err);
+        console.error('before each => ', err);
         done();
       })
   });
 
-  /*
     it("should get error when no pid defined in data object", function (done) {
       rp({
         method: 'post',
@@ -225,158 +224,162 @@ describe("POST user API", () => {
           done();
         });
     });
-  */
 
-  // it("user should add expertise (expertise is not exist)", function (done) {
-  //   this.done = done;
-  //   rp({
-  //     method: 'post',
-  //     form: {
-  //       pid: normalUserObj.pid,
-  //       name_en: 'Web Programming',
-  //       name_fa: 'برنامه نویسی وب',
-  //       start_date: new Date(2015, 2, 2),
-  //       is_education: false,
-  //     },
-  //     uri: lib.helpers.apiTestURL('user/expertise'),
-  //     jar: normalUserObj.jar,
-  //     resolveWithFullResponse: true
-  //   })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       return sql.test.person.getPersonExpertise({username: 'ali@mail.com'});
-  //     })
-  //     .then(res => {
-  //       expect(res.length).toBe(1);
-  //       expect(res[0].name_en).toBe('Web Programming');
-  //       expect(res[0].is_education).toBe(false);
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
-  //
-  // it("user should add expertise (expertise is exist)", function (done) {
-  //   this.done = done;
-  //   let expertiseId = null;
-  //   sql.test.expertise.add({
-  //     name_en: 'Computer Science - Artificial Intelligence',
-  //     name_fa: 'علوم کامپیوتر - هوش مصنوعی',
-  //     type_en: 'Master Education',
-  //     type_fa: 'تحصیلات تکمیلی',
-  //     is_education: true,
-  //   })
-  //     .then(res => {
-  //       expertiseId = res.expertise_id;
-  //       return rp({
-  //         method: 'post',
-  //         form: {
-  //           expertise_id: expertiseId,
-  //           pid: normalUserObj.pid,
-  //           start_date: new Date(),
-  //         },
-  //         uri: lib.helpers.apiTestURL('user/expertise/ali@mail.com'),
-  //         jar: normalUserObj.jar,
-  //         resolveWithFullResponse: true
-  //       });
-  //     })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       return sql.test.person_expertise.select();
-  //     })
-  //     .then(res => {
-  //       expect(res.length).toBe(1);
-  //       expect(res[0].pid).toBe(normalUserObj.pid);
-  //       expect(res[0].expertise_id).toBe(expertiseId);
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
-  //
-  // it("user should be able to update expertise", function (done) {
-  //   this.done = done;
-  //   let expertiseId = null;
-  //   sql.test.expertise.add({
-  //     name_en: 'Computer Science - Artificial Intelligence',
-  //     name_fa: 'علوم کامپیوتر - هوش مصنوعی',
-  //     type_en: 'Master Education',
-  //     type_fa: 'تحصیلات تکمیلی',
-  //     is_education: true,
-  //   })
-  //     .then(res => {
-  //       expertiseId = res.expertise_id;
-  //       return sql.test.person_expertise.add({
-  //         pid: normalUserObj.pid,
-  //         expertise_id: expertiseId,
-  //         start_date: new Date()
-  //       });
-  //     })
-  //     .then(res => {
-  //       return rp({
-  //         method: 'post',
-  //         form: {
-  //           peid: res.peid,
-  //           expertise_id: expertiseId,
-  //           pid: normalUserObj.pid,
-  //         },
-  //         uri: lib.helpers.apiTestURL('user/expertise/ali@mail.com'),
-  //         jar: normalUserObj.jar,
-  //         resolveWithFullResponse: true
-  //       });
-  //     })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       return sql.test.person_expertise.select();
-  //     })
-  //     .then(res => {
-  //       expect(res.length).toBe(1);
-  //       expect(res[0].pid).toBe(normalUserObj.pid);
-  //       expect(res[0].expertise_id).toBe(expertiseId);
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
-  //
-  //
-  //
-  // it("admin should add expertise for specific user (expertise is exist)", function (done) {
-  //   this.done = done;
-  //   let expertiseId = null;
-  //   sql.test.expertise.add({
-  //     name_en: 'Computer Science - Artificial Intelligence',
-  //     name_fa: 'علوم کامپیوتر - هوش مصنوعی',
-  //     type_en: 'Master Education',
-  //     type_fa: 'تحصیلات تکمیلی',
-  //     is_education: true,
-  //   })
-  //     .then(res => {
-  //       expertiseId = res.expertise_id;
-  //       return rp({
-  //         method: 'post',
-  //         form: {
-  //           expertise_id: expertiseId,
-  //           pid: normalUserObj.pid,
-  //           start_date: new Date(),
-  //         },
-  //         uri: lib.helpers.apiTestURL('user/expertise/ali@mail.com'),
-  //         jar: adminObj.jar,
-  //         resolveWithFullResponse: true
-  //       });
-  //     })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       return sql.test.person_expertise.select();
-  //     })
-  //     .then(res => {
-  //       expect(res.length).toBe(1);
-  //       expect(res[0].pid).toBe(normalUserObj.pid);
-  //       expect(res[0].expertise_id).toBe(expertiseId);
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // })
+  it("user should add expertise (expertise is not exist)", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        pid: normalUserObj.pid,
+        expertise: {
+          name_en: 'Web Programming',
+          name_fa: 'برنامه نویسی وب',
+          is_education: false,
+        }
+      },
+      json: true,
+      uri: lib.helpers.apiTestURL('user/expertise'),
+      jar: normalUserObj.jar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.person.getPersonExpertise({pid: normalUserObj.pid});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].name_en).toBe('Web Programming');
+        expect(res[0].is_education).toBe(false);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
 
-  it('sasasa', done => {
-    done();
-  })
+  it("user should add expertise (expertise is exist)", function (done) {
+    this.done = done;
+    let expertiseId = null;
+    sql.test.expertise.add({
+      name_en: 'Computer Science - Artificial Intelligence',
+      name_fa: 'علوم کامپیوتر - هوش مصنوعی',
+      is_education: true,
+    })
+      .then(res => {
+        expertiseId = res.expertise_id;
+        return rp({
+          method: 'post',
+          body: {
+            expertise: {
+              expertise_id: expertiseId,
+              name_en: 'Web Programming',
+              name_fa: 'برنامه نویسی وب',
+              is_education: false,
+            },
+            pid: normalUserObj.pid,
+          },
+          json: true,
+          uri: lib.helpers.apiTestURL('user/expertise'),
+          jar: normalUserObj.jar,
+          resolveWithFullResponse: true
+        });
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.person.getPersonExpertise({pid: normalUserObj.pid});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        console.log('-> ',res[0]);
+        expect(res[0].name_en).toBe('Web Programming');
+        expect(res[0].name_fa).toBe('برنامه نویسی وب');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("user should be able to update expertise", function (done) {
+    this.done = done;
+    let expertiseId = null;
+    sql.test.expertise.add({
+      name_en: 'Computer Science - Artificial Intelligence',
+      name_fa: 'علوم کامپیوتر - هوش مصنوعی',
+      is_education: true,
+    })
+      .then(res => {
+        expertiseId = res.expertise_id;
+        return sql.test.person_expertise.add({
+          pid: normalUserObj.pid,
+          expertise_id: expertiseId,
+        });
+      })
+      .then(res => {
+        return rp({
+          method: 'post',
+          body: {
+            expertise:{
+              expertise_id: expertiseId,
+              is_education: false,
+            },
+            peid: res.peid,
+            pid: normalUserObj.pid,
+          },
+          json: true,
+          uri: lib.helpers.apiTestURL('user/expertise'),
+          jar: normalUserObj.jar,
+          resolveWithFullResponse: true
+        });
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.person.getPersonExpertise({pid: normalUserObj.pid});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].is_education).toBe(false);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+
+
+  it("admin should add expertise for specific user (expertise is exist)", function (done) {
+    this.done = done;
+    let expertiseId = null;
+    sql.test.expertise.add({
+      name_en: 'Computer Science - Artificial Intelligence',
+      name_fa: 'علوم کامپیوتر - هوش مصنوعی',
+      is_education: true,
+    })
+      .then(res => {
+        expertiseId = res.expertise_id;
+        return rp({
+          method: 'post',
+          body: {
+            expertise:{
+              expertise_id: expertiseId,
+            },
+            pid: normalUserObj.pid,
+          },
+          json: true,
+          uri: lib.helpers.apiTestURL('user/expertise'),
+          jar: adminObj.jar,
+          resolveWithFullResponse: true
+        });
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.person.getPersonExpertise({pid: normalUserObj.pid});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].name_en).toBe('Computer Science - Artificial Intelligence');
+        expect(res[0].name_fa).toBe('علوم کامپیوتر - هوش مصنوعی');
+        expect(res[0].is_education).toBe(true);
+        expect(res[0].expertise_id).toBe(expertiseId);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
 
 });
