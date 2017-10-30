@@ -1,8 +1,6 @@
 select
     investment.*,
     association.*,
-    organization.name as org_name,
-    organization.name_fa as org_name_fa,
     business.name as biz_name,
     business.name_fa as biz_name_fa
 from
