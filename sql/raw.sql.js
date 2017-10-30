@@ -30,7 +30,7 @@ let modExp = {
   person: {
     create:     sql('person/create.sql'),
     drop:       sql('person/drop.sql'),
-    get:        sql('person/getByBiz.sql'),
+    get:        sql('person/get.sql'),
     isAdmin:    sql('person/isAdmin.sql'),
     orgRep:     sql('person/orgRep.sql'),
     bizRep:     sql('person/bizRep.sql'),
