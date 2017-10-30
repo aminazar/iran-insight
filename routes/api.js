@@ -81,7 +81,7 @@ router.get('/user', apiResponse('Person', 'select', true));
 router.post('/user/profile/:username', apiResponse('Person', 'setProfile', false, ['params.username', 'user.username', 'user.pid', 'body']));
 router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, [  'user.pid', 'body']));
 router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, [ 'user.pid', 'params.pid']));
-router.delete('/user/expertise', apiResponse('Person', 'deleteExp ertise', false, [ 'user.pid', 'body']));
+router.delete('/user/expertise', apiResponse('Person', 'deleteExpertise', false, [ 'user.pid', 'body']));
 router.delete('/user/:pid', apiResponse('Person', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body']));
 

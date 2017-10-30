@@ -3,7 +3,7 @@ const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
 
-describe("POST user API", () => {
+describe("Delete user API", () => {
   let adminObj = {
     pid: null,
     jar: null
