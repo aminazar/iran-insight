@@ -31,6 +31,7 @@ let modExp = {
     create: sql('person/create.sql'),
     drop: sql('person/drop.sql'),
     get: sql('person/get.sql'),
+    isAdmin: sql('person/isAdmin.sql'),
     orgRep: sql('person/orgRep.sql'),
     bizRep: sql('person/bizRep.sql'),
     getUserById: sql('person/getUserById.sql'),
@@ -38,11 +39,13 @@ let modExp = {
     getListOfMembershipRequests: sql('person/getListOfMembershipRequests.sql'),
     getPersonExpertise: sql('person/getPersonExpertise.sql'),
     deleteExpertiseById: sql('person/deleteExpertiseById.sql'),
-  }, administrators: {
-    create: sql('administrators/create.sql'),
-    getById: sql('administrators/isAdmin.sql'),
-    drop: sql('administrators/drop.sql'),
+    getAdmins: sql('person/getAdmins.sql'),
 
+  },
+  administrators: {
+    create: sql('administrators/create.sql'),
+    getById: sql('administrators/getById.sql'),
+    drop: sql('administrators/drop.sql'),
   },
   expertise: {
     create: sql('expertise/create.sql'),
@@ -91,6 +94,12 @@ let modExp = {
     create: sql('membership/create.sql'),
     drop: sql('membership/drop.sql'),
     isRepresentativeOrAdmin: sql('membership/isRepresentativeOrAdmin.sql'),
+    getWithAssoc: sql('membership/getWithAssoc.sql'),
+    getWithLimitedAssoc: sql('membership/getWithLimitedAssoc.sql'),
+    repPendingUsers: sql('membership/repPendingUsers.sql'),
+    getBizRep: sql('membership/getBizRep.sql'),
+    getOrgRep: sql('membership/getOrgRep.sql'),
+    get: sql('membership/get.sql'),
   },
   event: {
     create: sql('event/create.sql'),

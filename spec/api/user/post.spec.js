@@ -4,6 +4,8 @@ const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
 
 describe("POST user API", () => {
+  let orgObj = {};
+
   let adminObj = {
     pid: null,
     jar: null
@@ -17,9 +19,61 @@ describe("POST user API", () => {
     jar: null,
   };
 
+  let addBusiness = (bizIsActive = true, ceo_id = null, name, name_fa, name_type, name_fa_type) => {
+    return new Promise((resolve, reject) => {
+      sql.test.business_type.add({
+        name: name_type ? name_type : 'Transport',
+        name_fa: name_fa_type ? name_fa_type : 'حمل و نقل',
+        suggested_by: adminObj.pid,
+        active: bizIsActive,
+      })
+        .then(res => {
+          return sql.test.business.add({
+            name: name ? name : 'Snapp',
+            name_fa: name_fa ? name_fa : 'اسنپ',
+            ceo_pid: ceo_id,
+            biz_type_id: res.id,
+            address: null,
+            address_fa: null,
+            tel: null,
+            url: null,
+            general_stats: null,
+            financial_stats: null,
+          });
+        })
+        .then(res => {
+          resolve(res);
+        })
+        .catch(err => reject(err));
+    });
+  };
+
+  let addOrganization = (organIsActive = true, ceo_id = null) => {
+    return new Promise((resolve, reject) => {
+      sql.test.organization_type.add({
+        name: 'governmental',
+        name_fa: 'دولتی',
+        suggested_by: adminObj.pid,
+        active: organIsActive,
+      })
+        .then(res => {
+          return sql.test.organization.add({
+            name: 'Planning and Budget',
+            name_fa: 'برنامه ریزی و بودجه',
+            ceo_pid: ceo_id,
+            org_type_id: res.id
+          })
+        })
+        .then(res => resolve(res))
+        .catch(err => reject(err));
+    })
+  };
+
   beforeEach(done => {
     lib.dbHelpers.create()
-      .then(() => lib.dbHelpers.addAndLoginPerson('admin', 'admin123'))
+      .then(() => {
+        return lib.dbHelpers.addAndLoginPerson('alireza@bentoak.systems', 'admin123');
+      })
       .then(res => {
         adminObj.pid = res.pid;
         adminObj.jar = res.rpJar;
@@ -40,6 +94,7 @@ describe("POST user API", () => {
         return lib.dbHelpers.addOrganizationWithRep(repObj.pid, 'MTN');
       })
       .then(res => {
+        orgObj = res;
         done();
       })
       .catch(err => {
@@ -54,7 +109,7 @@ describe("POST user API", () => {
       form: {
         firstname_en: 'ali',
       },
-      uri: lib.helpers.apiTestURL('user/profile/ali@mail.com'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: normalUserObj.jar,
       resolveWithFullResponse: true
     })
@@ -85,9 +140,9 @@ describe("POST user API", () => {
         mobile_no: '+1-123',
         birth_date: new Date(1993, 10, 10),
         display_name_en: 'A^2',
-        display_name_fa: 'علی آقا'
+        display_name_fa: 'علی آقا',
       },
-      uri: lib.helpers.apiTestURL('user/profile/ali@mail.com'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: normalUserObj.jar,
       resolveWithFullResponse: true
     })
@@ -118,9 +173,9 @@ describe("POST user API", () => {
         phone_no: '123',
         mobile_no: '+1-123',
         is_user: false,
-        username: 'asghar@mail.com'
+        username: 'asghar@mail.com',
       },
-      uri: lib.helpers.apiTestURL('user/profile/ali@mail.com'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: normalUserObj.jar,
       resolveWithFullResponse: true
     })
@@ -152,7 +207,7 @@ describe("POST user API", () => {
         mobile_no: '+2-987',
         is_user: true,
       },
-      uri: lib.helpers.apiTestURL('user/profile/new'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: adminObj.jar,
       resolveWithFullResponse: true
     })
@@ -181,7 +236,7 @@ describe("POST user API", () => {
         phone_no: '0912',
         is_user: true,
       },
-      uri: lib.helpers.apiTestURL('user/profile/new'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: repObj.jar,
       resolveWithFullResponse: true
     })
@@ -211,7 +266,7 @@ describe("POST user API", () => {
         phone_no: '09129998800',
         is_user: true,
       },
-      uri: lib.helpers.apiTestURL('user/profile/ali@mail.com'),
+      uri: lib.helpers.apiTestURL('user/profile'),
       jar: repObj.jar,
       resolveWithFullResponse: true
     })

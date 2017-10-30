@@ -25,6 +25,9 @@ describe("POST Business API", () => {
         .then(res => {
           adminObj.pid = res.pid;
           adminObj.jar = res.rpJar;
+          return lib.dbHelpers.addAdmin(adminObj.pid);
+        })
+        .then(res => {
           return lib.dbHelpers.addAndLoginPerson('rep', 'rep123', {});
         })
         .then(res => {
