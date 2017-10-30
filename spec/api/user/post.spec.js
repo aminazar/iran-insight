@@ -494,5 +494,96 @@ describe("POST user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
+  it("user should ask admin to be representative of biz or org", function (done) {
+    this.done = done;
+    addBusiness()
+      .then((res) => {
+        return rp({
+          method: 'post',
+          form: {
+            bid: res.bid,
+          },
+          uri: lib.helpers.apiTestURL('membership/introducing/rep'),
+          jar: normalUserObj.jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid: res.body});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].is_representative).toBe(true);
+        expect(res[0].is_active).toBe(false);
+        expect(res[0].position_id).toBe(null);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  }, 6000);
 
+  it("representative of one biz or org can ask admin to be representative of another biz or org", function (done) {
+    this.done = done;
+    let oid = null, po_id = null;
+    addOrganization()
+      .then(res => {
+        oid = res.oid;
+        return sql.test.position_type.add({
+          name: 'Manager',
+          name_fa: 'مدیر عامل',
+          suggested_by: adminObj.pid,
+          active: true,
+        })
+      })
+      .then(res => {
+        po_id = res.id;
+        return rp({
+          method: 'post',
+          form: {
+            oid: oid,
+            position_id: po_id,
+            start_date: new Date(2010, 10, 10)
+          },
+          uri: lib.helpers.apiTestURL('membership/introducing/rep'),
+          jar: repObj.jar,
+          resolveWithFullResponse: true,
+        });
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid: res.body});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].is_active).toBe(false);
+        expect(res[0].is_representative).toBe(true);
+        expect(res[0].position_id).not.toBe(null);
+        expect(res[0].position_id).toBe(po_id);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("representative of one biz or org cannot ask admin to be representative of same biz or org (no more than one representative for a org/biz)", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        oid: orgObj.oid,
+      },
+      uri: lib.helpers.apiTestURL('membership/introducing/rep'),
+      jar: repObj.jar,
+      json: true,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        fail('Representative of organization ask to be representative of it again');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(500);
+        expect(err.error).toBe('this organization or business already has representative');
+        done();
+      });
+  });
 });
