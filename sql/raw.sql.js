@@ -34,10 +34,13 @@ let modExp = {
     isAdmin: sql('person/isAdmin.sql'),
     orgRep: sql('person/orgRep.sql'),
     bizRep: sql('person/bizRep.sql'),
+    getUserById: sql('person/getUserById.sql'),
     getListOfRepresentationRequests: sql('person/getListOfRepresentationRequests.sql'),
     getListOfMembershipRequests: sql('person/getListOfMembershipRequests.sql'),
     getPersonExpertise: sql('person/getPersonExpertise.sql'),
+    deleteExpertiseById: sql('person/deleteExpertiseById.sql'),
     getAdmins: sql('person/getAdmins.sql'),
+
   },
   administrators: {
     create: sql('administrators/create.sql'),
