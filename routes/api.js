@@ -108,7 +108,7 @@ router.get('/business-lce/:bid', apiResponse('BusinessLCE', 'getByBid', false, [
 router.get('/organization', apiResponse('Organization', 'getAll', false));
 router.get('/organization/:oid', apiResponse('Organization', 'getById', false, ['params.oid']));
 router.put('/organization', apiResponse('Organization', 'saveData', false, ['body']));
-router.put('/organization/profile', apiResponse('Organization', 'setProfile', false, ['body', 'user.username']));
+router.post('/organization/profile', apiResponse('Organization', 'setProfile', false, ['body', 'user.pid']));
 
 // Organization LCE API
 router.put('/organization-lce', apiResponse('OrganizationLCE', 'saveData', false, ['body']));
