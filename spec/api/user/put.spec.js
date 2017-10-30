@@ -44,7 +44,7 @@ describe("PUT user API", () => {
         name_fa: 'برنامه نویسی وب',
         is_education: false,
       },
-      json:true,
+      json: true,
       uri: lib.helpers.apiTestURL('expertise'),
       jar: adminObj.jar,
       resolveWithFullResponse: true,
@@ -85,9 +85,9 @@ describe("PUT user API", () => {
       resolveWithFullResponse: true,
     })
       .then(res => {
-      expect(res.statusCode).toBe(200);
-      return sql.test.expertise.select();
-    })
+        expect(res.statusCode).toBe(200);
+        return sql.test.expertise.select();
+      })
       .then(res => {
         expect(res.length).toBe(2);
         expect(res[0].name_en).toBe('Graphic Design');
@@ -110,7 +110,7 @@ describe("PUT user API", () => {
         name_fa: 'برنامه نویسی وب',
         is_education: false,
       },
-      json:true,
+      json: true,
       uri: lib.helpers.apiTestURL('expertise'),
       jar: repObj.jar,
       resolveWithFullResponse: true,
