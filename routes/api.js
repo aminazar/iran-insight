@@ -26,7 +26,6 @@ function apiResponse(className, functionName, adminOnly=false, reqFuncs=[]){
   };
   return(function(req, res) {
     req.test = lib.helpers.isTestReq(req);
-    console.log('****', req.user);
     lib.Person.adminCheck(adminOnly, req.user, req.test)
       .then(rs => {
         if(adminOnly && rs.length < 1)
@@ -114,7 +113,7 @@ router.get('/organization-lce/:oid', apiResponse('OrganizationLCE', 'getByOid', 
 // Organization type
 router.put('/organization-type', apiResponse('OrganizationType', 'saveData', false, ['body' , 'id']));
 
-//representation check API****************************************
+// Representation-chekc API
 router.get('/user/checkIfRep',apiResponse('Person','findRepRequests',true));
 router.put('/user/confirmRep/:mid',apiResponse('Person','confirmRepByAdmin',true,['params.mid']));
 router.delete('/user/deleteRep/:mid',apiResponse('Person','deleteRepRequest',true,['params.mid']));

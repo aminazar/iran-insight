@@ -37,7 +37,7 @@ let orgs_type_info = [{
 }];
 
 
-xdescribe("organization", () => {
+describe("organization", () => {
 
   let createNewOrg = (org_info) => {
 

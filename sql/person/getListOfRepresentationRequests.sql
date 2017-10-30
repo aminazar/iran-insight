@@ -3,6 +3,7 @@ select
     assoc.bid,
     assoc.oid,
     mem.mid,
+    mem.position_id,
     per.firstname_en as first_name_en,
     per.firstname_fa as first_name_fa,
     per.surname_en as sur_name_en,
@@ -23,16 +24,23 @@ select
     org.name org_name,
     org.name_fa as org_name_fa,
     org.ceo_pid as org_ceo_pid,
-    org.org_type_id as org_type_id
+    org.org_type_id as org_type_id,
+    pos.id as pos_id,
+    pos.name as position_name,
+    pos.name_fa as position_name_fa
 from
     membership as mem
 inner join
     association as assoc
 on
     assoc.aid = mem.assoc_id
+left outer join position_type as pos
+on
+    mem.position_id = pos.id
 inner join person as per
 on
     per.pid = assoc.pid
+
 left outer join business as biz
 on
     biz.bid = assoc.bid

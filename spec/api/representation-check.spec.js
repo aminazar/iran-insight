@@ -54,7 +54,6 @@ let orgs_type_info = [{
   name_fa: 'غیر دولتی'
 }];
 
-
 let assoc_info = [
   {
     aid : 1,
@@ -153,7 +152,7 @@ let mem_info = [{
   assoc_id : 1,
   is_active : false,
   is_representative : true,
-  position_id : null
+  position_id : 300
 },{
   mid : 2,
   assoc_id : 2,
@@ -171,13 +170,36 @@ let mem_info = [{
   assoc_id : 4,
   is_active : false,
   is_representative : true,
-  position_id : null
+  position_id : 302
 },{
   mid : 5,
   assoc_id : 5,
   is_active : false,
   is_representative : true,
   position_id : null
+},{
+  mid : 6,
+  assoc_id : 1,
+  is_active : false,
+  is_representative : true,
+  position_id : 301
+}];
+
+let position_type_info = [{
+  id: 300,
+  name: 'CEO',
+  name_fa: 'مدیر عامل',
+  active : true
+},{
+  id: 301,
+  name: 'programmer',
+  name_fa: 'برنامه نویس',
+  active : true
+},{
+  id: 302,
+  name: 'tester',
+  name_fa: 'تستر نرم افزار',
+  active : true
 }]
 
 describe("Admin can get all representation requests from users and send them activation E-mail if they are right.", () => {
@@ -211,6 +233,11 @@ describe("Admin can get all representation requests from users and send them act
   let createNewAssociation = (biz_info) => {
 
     return sql.test.association.add(biz_info);
+  };
+
+  let createNewPositionType = (position_type_info) => {
+
+    return sql.test.position_type.add(position_type_info);
   };
 
 
@@ -250,12 +277,16 @@ describe("Admin can get all representation requests from users and send them act
         .then(() =>  createNewAssociation(assoc_info[3]))
         .then(() =>  createNewAssociation(assoc_info[4]))
         .then(() =>  createNewAssociation(assoc_info[5]))
+        .then(() =>  createNewPositionType(position_type_info[0]))
+        .then(() =>  createNewPositionType(position_type_info[1]))
+        .then(() =>  createNewPositionType(position_type_info[2]))
         .then(() =>  createNewMembership(mem_info[0]))
         .then(() =>  createNewMembership(mem_info[1]))
         .then(() =>  createNewMembership(mem_info[2]))
         .then(() =>  createNewMembership(mem_info[3]))
+        .then(() =>  createNewMembership(mem_info[4]))
         .then(()=>{
-          createNewMembership(mem_info[4])
+          createNewMembership(mem_info[5])
           done();
         })
         .catch(err => {
@@ -327,7 +358,6 @@ describe("Admin can get all representation requests from users and send them act
       expect(res.statusCode).toBe(200);
       let data = JSON.parse(res.body);
       expect(data.length).toBe(2);
-      console.log(data);
       done();
     })
   });
@@ -363,7 +393,7 @@ describe("Admin can get all representation requests from users and send them act
               expect(res.statusCode).toBe(200);
               let data = JSON.parse(res.body);
               expect(data.length).toBe(2);
-              console.log(data);
+              expect(data[0].business.length).toBe(0);
               done();
             })
           });
@@ -405,7 +435,6 @@ describe("Admin can get all representation requests from users and send them act
               expect(res.statusCode).toBe(200);
               let data = JSON.parse(res.body);
               expect(data.length).toBe(1);
-              console.log(data);
               done();
             })
           });
@@ -417,50 +446,6 @@ describe("Admin can get all representation requests from users and send them act
   });
 
   it('admin should be able to delete a false representation request', function (done) {
-    let jar;
-    sql.test.membership.get({mid:1})
-      .then(res => {
-        expect(res[0].is_active).toBe(false);
-        expect(res[0].is_representative).toBe(true);
-        jar = rp.jar();
-        return rp({
-          method: 'POST',
-          uri: lib.helpers.apiTestURL('login'),
-          form:{username: 'admin', password :'atest'},
-          withCredentials: true,
-          jar : jar,
-        })
-      })
-      .then(() =>{
-        return rp({
-          method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`user/deleteRep/1`),
-          jar: jar,
-          resolveWithFullResponse: true,
-        })
-      })
-      .then(res => {
-        expect(res.statusCode).toBe(200);
-        sql.test.membership.get({mid:1})
-          .then(res => {
-            expect(res[0].is_active).toBe(true);
-            expect(res[0].is_representative).toBe(false);
-            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
-              expect(res.statusCode).toBe(200);
-              let data = JSON.parse(res.body);
-              expect(data.length).toBe(1);
-              console.log(data);
-              done();
-            })
-          });
-      })
-      .catch(err => {
-        this.fail(lib.helpers.parseServerErrorToString(err));
-        done();
-      });
-  });
-
-  it('admin should be able to delete a false representation request from all related tables', function (done) {
     let jar;
     sql.test.membership.get({mid:5})
       .then(res => {
@@ -478,7 +463,7 @@ describe("Admin can get all representation requests from users and send them act
       .then(() =>{
         return rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`user/deleteRepOrg/5`),
+          uri: lib.helpers.apiTestURL(`user/deleteRep/5`),
           jar: jar,
           resolveWithFullResponse: true,
         })
@@ -487,12 +472,96 @@ describe("Admin can get all representation requests from users and send them act
         expect(res.statusCode).toBe(200);
         sql.test.membership.get({mid:5})
           .then(res => {
+            expect(res[0].is_active).toBe(true);
+            expect(res[0].is_representative).toBe(false);
+            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+              expect(res.statusCode).toBe(200);
+              let data = JSON.parse(res.body);
+              expect(data.length).toBe(1);
+              done();
+            })
+          });
+      })
+      .catch(err => {
+        this.fail(lib.helpers.parseServerErrorToString(err));
+        done();
+      });
+  });
+
+  it('admin should be able to delete a false representation request from all related tables except association', function (done) {
+    let jar;
+    sql.test.membership.get({mid:1})
+      .then(res => {
+        expect(res[0].is_active).toBe(false);
+        expect(res[0].is_representative).toBe(true);
+        jar = rp.jar();
+        return rp({
+          method: 'POST',
+          uri: lib.helpers.apiTestURL('login'),
+          form:{username: 'admin', password :'atest'},
+          withCredentials: true,
+          jar : jar,
+        })
+      })
+      .then(() =>{
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`user/deleteRepOrg/1`),
+          jar: jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        sql.test.membership.get({mid:1})
+          .then(res => {
             expect(res.length).toBe(0);
             req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
               expect(res.statusCode).toBe(200);
               let data = JSON.parse(res.body);
               expect(data.length).toBe(1);
-              console.log(data);
+              done();
+            })
+          });
+      })
+      .catch(err => {
+        this.fail(lib.helpers.parseServerErrorToString(err));
+        done();
+      });
+  });
+
+  it('admin should be able to delete a false representation request from all related tables', function (done) {
+    let jar;
+    sql.test.membership.get({mid:6})
+      .then(res => {
+        expect(res[0].is_active).toBe(false);
+        expect(res[0].is_representative).toBe(true);
+        jar = rp.jar();
+        return rp({
+          method: 'POST',
+          uri: lib.helpers.apiTestURL('login'),
+          form:{username: 'admin', password :'atest'},
+          withCredentials: true,
+          jar : jar,
+        })
+      })
+      .then(() =>{
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`user/deleteRepOrg/6`),
+          jar: jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        sql.test.membership.get({mid:6})
+          .then(res => {
+            expect(res.length).toBe(0);
+            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+              expect(res.statusCode).toBe(200);
+              let data = JSON.parse(res.body);
+              expect(data.length).toBe(1);
               done();
             })
           });
