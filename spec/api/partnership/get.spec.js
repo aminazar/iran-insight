@@ -104,30 +104,75 @@ describe("Get partnership API", () => {
           .catch(lib.helpers.errorHandler.bind(this));
       });
   });
-  it("expect error when other users want to get user partnership", function (done) {
+  it("other users should see only confirmed partnership of user", function (done) {
     this.done = done;
 
     addPartnership({
       pid1: user1Obj.pid,
       pid2: user2Obj.pid,
       start_date: new Date(2017, 8, 9)
+    }).then(()=>
+      addPartnership({
+        pid1: user1Obj.pid,
+        pid2: user2Obj.pid,
+        start_date: new Date(2017, 10, 19),
+        is_confirmed: true
+      }))
+      .then(res => {
+      return lib.dbHelpers.addAndLoginPerson('per3@mail.com', 'per123');
     })
-      .then(() => {
+      .then(res => {
+
+
         rp({
           method: 'get',
           uri: lib.helpers.apiTestURL(`person/partnership/${user1Obj.pid}`),
+          jar: res.rpJar,
+          resolveWithFullResponse: true
+        })
+          .then(res => {
+            let result = JSON.parse(res.body);
+            expect(res.statusCode).toBe(200);
+            expect(result.length).toBe(1);
+            expect(result[0].is_confirmed).toBe(true);
+            done();
+          })
+          .catch(lib.helpers.errorHandler.bind(this));
+
+      });
+  });
+
+  it("users should see his/her requested partnership", function (done) {
+    this.done = done;
+
+    addPartnership({
+      pid1: user1Obj.pid,
+      pid2: user2Obj.pid,
+      description: 'friend',
+      start_date: new Date(2017, 8, 9)
+    }).then(()=>
+      addPartnership({
+        pid1: user1Obj.pid,
+        pid2: user2Obj.pid,
+        start_date: new Date(2017, 10, 19),
+        is_confirmed: true
+      }))
+      .then(() => {
+        rp({
+          method: 'get',
+          uri: lib.helpers.apiTestURL(`person/requested/partnership`),
           jar: user2Obj.jar,
           resolveWithFullResponse: true
         })
           .then(res => {
-            this.fail('did not failed when other users wants to get user partnership');
+            let result = JSON.parse(res.body);
+            expect(res.statusCode).toBe(200);
+            expect(result.length).toBe(1);
+            expect(result[0].is_confirmed).toBe(false);
+            expect(result[0].description).toBe('friend');
             done();
           })
-          .catch(err => {
-            expect(err.statusCode).toBe(error.notAllowed.status);
-            expect(err.error).toContain(error.notAllowed.message);
-            done();
-          });
+          .catch(lib.helpers.errorHandler.bind(this));
 
       });
   });

@@ -46,6 +46,8 @@ let modExp = {
     create: sql('partnership/create.sql'),
     drop: sql('partnership/drop.sql'),
     getById: sql('partnership/getById.sql'),
+    getConfirmedById: sql('partnership/getConfirmedById.sql'),
+    getRequestedById: sql('partnership/getRequestedById.sql'),
   },
 
   administrators: {

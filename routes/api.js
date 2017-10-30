@@ -98,7 +98,8 @@ router.delete('/user/expertise', apiResponse('Person', 'deleteExpertise', false,
 
 // Partnership
 router.get('/person/partnership/:pid', apiResponse('Person', 'getPartnership', false, ['user.pid', 'params.pid']));
-router.put('/person/partnership', apiResponse('Person', 'getPartnership', false, ['user.pid', 'body']));
+router.get('/person/requested/partnership', apiResponse('Person', 'getRequestedPartnership', false, ['user.pid']));
+router.put('/person/partnership', apiResponse('Person', 'setPartnership', false, ['user.pid', 'body']));
 
 
 
