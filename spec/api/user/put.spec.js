@@ -1,11 +1,16 @@
 const rp = require("request-promise");
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
+const error = require('../../../lib/errors.list');
 
 describe("PUT user API", () => {
   let adminObj = {
     pid: null,
     jar: null
+  };
+  let repObj = {
+    pid: null,
+    jar: null,
   };
 
   beforeEach(done => {
@@ -17,6 +22,11 @@ describe("PUT user API", () => {
         return lib.dbHelpers.addAdmin(res.pid);
       })
       .then(() => {
+        return lib.dbHelpers.addAndLoginPerson('rep@mail.com', 'rep123');
+      })
+      .then(res => {
+        repObj.pid = res.pid;
+        repObj.jar = res.rpJar;
         done();
       })
       .catch(err => {
@@ -89,7 +99,36 @@ describe("PUT user API", () => {
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
-  })
+  });
+
+  it("should get error when admin is not adding new expertise", function (done) {
+    this.done = done;
+    rp({
+      method: 'put',
+      body: {
+        name_en: 'Web Programming',
+        name_fa: 'برنامه نویسی وب',
+        is_education: false,
+      },
+      json:true,
+      uri: lib.helpers.apiTestURL('expertise'),
+      jar: repObj.jar,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.expertise.select();
+      })
+      .then(res => {
+        this.fail('did not failed when other user (not admin) are adding new expertise directly');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(403);
+        expect(err.error).toBe('Only admin can do this.');
+        done();
+      });
+  });
 
 
 });

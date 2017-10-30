@@ -20,10 +20,10 @@ describe("POST user API", () => {
   let addExpertise = (newExpertise) => {
     return sql.test.expertise.add(newExpertise)
   };
-
   let addPersonExpertise = (newPersonExpertise) => {
     return sql.test.person_expertise.add(newPersonExpertise)
   };
+
 
   beforeEach(done => {
     lib.dbHelpers.create()
@@ -56,8 +56,10 @@ describe("POST user API", () => {
       })
   });
 
-  it("user should can get his/her expertise", function (done) {
+  it("user should can delete his/her expertise ", function (done) {
     this.done = done;
+
+    let eid1, eid2;
 
     addExpertise({
       name_en: 'Computer Science - Artificial Intelligence',
@@ -65,9 +67,10 @@ describe("POST user API", () => {
       is_education: true,
     })
       .then(res => {
+        eid1 = res.expertise_id;
         addPersonExpertise({
           pid: normalUserObj.pid,
-          expertise_id: res.expertise_id
+          expertise_id: eid1
         })
       })
       .then(() =>
@@ -77,59 +80,39 @@ describe("POST user API", () => {
           is_education: false,
         }))
       .then(res => {
+        eid2 = res.expertise_id;
         addPersonExpertise({
           pid: normalUserObj.pid,
-          expertise_id: res.expertise_id
+          expertise_id: eid2
         })
       })
       .then(() => {
 
-
         rp({
-          method: 'get',
-          uri: lib.helpers.apiTestURL(`user/${normalUserObj.pid}/expertise`),
+          method: 'delete',
+          body: {
+            pid: normalUserObj.pid,
+            expertise_id: eid2
+          },
+          json: true,
+          uri: lib.helpers.apiTestURL('user/expertise'),
           jar: normalUserObj.jar,
           resolveWithFullResponse: true
         })
           .then(res => {
-            let result = JSON.parse(res.body);
-            expect(res.statusCode).toBe(200);
-            expect(result.length).toBe(2);
-            done();
-          })
+            return sql.test.person.getPersonExpertise({pid: normalUserObj.pid});
+          }).then(res => {
+          expect(res.length).toBe(1);
+          done();
+        })
           .catch(lib.helpers.errorHandler.bind(this));
       });
   });
-  it("other users should not can get user expertise => expect error", function (done) {
+
+  it("admin should can delete user expertise ", function (done) {
     this.done = done;
 
-    addExpertise({
-      name_en: 'Computer Science - Artificial Intelligence',
-      name_fa: 'علوم کامپیوتر - هوش مصنوعی',
-      is_education: true,
-    }).then(() => {
-      rp({
-        method: 'get',
-        uri: lib.helpers.apiTestURL(`user/${normalUserObj.pid}/expertise`),
-        jar: repObj.jar,
-        resolveWithFullResponse: true
-      })
-        .then(res => {
-          this.fail('did not failed when other users wants to get user expertise');
-          done();
-        })
-        .catch(err => {
-          expect(err.statusCode).toBe(error.notAllowed.status);
-          expect(err.error).toContain(error.notAllowed.message);
-          done();
-        });
-
-    });
-
-
-  });
-  it("admin should can get user expertise", function (done) {
-    this.done = done;
+    let eid1, eid2;
 
     addExpertise({
       name_en: 'Computer Science - Artificial Intelligence',
@@ -137,9 +120,10 @@ describe("POST user API", () => {
       is_education: true,
     })
       .then(res => {
+        eid1 = res.expertise_id;
         addPersonExpertise({
           pid: normalUserObj.pid,
-          expertise_id: res.expertise_id
+          expertise_id: eid1
         })
       })
       .then(() =>
@@ -149,26 +133,88 @@ describe("POST user API", () => {
           is_education: false,
         }))
       .then(res => {
+        eid2 = res.expertise_id;
         addPersonExpertise({
           pid: normalUserObj.pid,
-          expertise_id: res.expertise_id
+          expertise_id: eid2
         })
-      }).then(() => {
-      rp({
-        method: 'get',
-        uri: lib.helpers.apiTestURL(`user/${normalUserObj.pid}/expertise`),
-        jar: adminObj.jar,
-        resolveWithFullResponse: true
       })
-        .then(res => {
-          let result = JSON.parse(res.body);
-          expect(res.statusCode).toBe(200);
-          expect(result.length).toBe(2);
+      .then(() => {
+
+        rp({
+          method: 'delete',
+          body: {
+            pid: normalUserObj.pid,
+            expertise_id: eid2
+          },
+          json: true,
+          uri: lib.helpers.apiTestURL('user/expertise'),
+          jar: adminObj.jar,
+          resolveWithFullResponse: true
+        })
+          .then(res => {
+            return sql.test.person.getPersonExpertise({pid: normalUserObj.pid});
+          }).then(res => {
+          expect(res.length).toBe(1);
           done();
         })
-        .catch(lib.helpers.errorHandler.bind(this));
-    });
+          .catch(lib.helpers.errorHandler.bind(this));
+      });
   });
 
+  it("expect error when other users (not admin) are deleting user expertise", function (done) {
+    this.done = done;
+
+    let eid1, eid2;
+
+    addExpertise({
+      name_en: 'Computer Science - Artificial Intelligence',
+      name_fa: 'علوم کامپیوتر - هوش مصنوعی',
+      is_education: true,
+    })
+      .then(res => {
+        eid1 = res.expertise_id;
+        addPersonExpertise({
+          pid: normalUserObj.pid,
+          expertise_id: eid1
+        })
+      })
+      .then(() =>
+        addExpertise({
+          name_en: 'Software architect',
+          name_fa: 'معماری نرم افزار',
+          is_education: false,
+        }))
+      .then(res => {
+        eid2 = res.expertise_id;
+        addPersonExpertise({
+          pid: normalUserObj.pid,
+          expertise_id: eid2
+        })
+      })
+      .then(() => {
+
+        rp({
+          method: 'delete',
+          body: {
+            pid: normalUserObj.pid,
+            expertise_id: eid2
+          },
+          json: true,
+          uri: lib.helpers.apiTestURL('user/expertise'),
+          jar: repObj.jar,
+          resolveWithFullResponse: true
+        })
+          .then(res => {
+            this.fail('did not failed when other users wants to delete user expertise');
+            done();
+          })
+          .catch(err => {
+            expect(err.statusCode).toBe(error.notAllowed.status);
+            expect(err.error).toContain(error.notAllowed.message);
+            done();
+          });
+      });
+  });
 
 });

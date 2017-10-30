@@ -1,0 +1,1 @@
+delete from person_expertise where expertise_id = ${expertise_id} and pid = ${pid};

@@ -37,6 +37,7 @@ let modExp = {
     getListOfRepresentationRequests: sql('person/getListOfRepresentationRequests.sql'),
     getListOfMembershipRequests: sql('person/getListOfMembershipRequests.sql'),
     getPersonExpertise: sql('person/getPersonExpertise.sql'),
+    deleteExpertiseById: sql('person/deleteExpertiseById.sql'),
   }, administrators: {
     create: sql('administrators/create.sql'),
     getById: sql('administrators/isAdmin.sql'),
