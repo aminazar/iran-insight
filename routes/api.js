@@ -114,12 +114,11 @@ router.get('/organization-lce/:oid', apiResponse('OrganizationLCE', 'getByOid', 
 // Organization type
 router.put('/organization-type', apiResponse('OrganizationType', 'saveData', false, ['body' , 'id']));
 
-//representation check API
+//representation check API****************************************
 router.get('/user/checkIfRep',apiResponse('Person','findRepRequests',true));
 router.put('/user/confirmRep/:mid',apiResponse('Person','confirmRepByAdmin',true,['params.mid']));
-router.delete('/user/deleteRep',apiResponse('Person','deleteRepRequest',true,['params.mid']));
-router.delete('/user/deleteRep-org',apiResponse('Person','deleteRepAndHisCompany',true,['params.mid']));
-// router.get('/user/checkIfUser',apiResponse('Person','findMemRequests',false, ['user.username']));
+router.delete('/user/deleteRep/:mid',apiResponse('Person','deleteRepRequest',true,['params.mid']));
+router.delete('/user/deleteRepOrg/:mid',apiResponse('Person','deleteRepAndHisCompany',true,['params.mid']));
 
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid','?user.pid']));

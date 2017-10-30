@@ -334,7 +334,7 @@ describe("Admin can get all representation requests from users and send them act
 
   it('admin should be able to activate a right representation request', function (done) {
     let jar;
-    sql.test.membership.get({mid:1})
+    sql.test.membership.get({mid:2})
       .then(res => {
         expect(res[0].is_active).toBe(false);
         jar = rp.jar();
@@ -349,7 +349,92 @@ describe("Admin can get all representation requests from users and send them act
       .then(() =>{
         return rp({
           method: 'PUT',
-          uri: lib.helpers.apiTestURL(`user/confirmRep/1`),
+          uri: lib.helpers.apiTestURL(`user/confirmRep/2`),
+          jar: jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        sql.test.membership.get({mid:2})
+          .then(res => {
+            expect(res[0].is_active).toBe(true);
+            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+              expect(res.statusCode).toBe(200);
+              let data = JSON.parse(res.body);
+              expect(data.length).toBe(2);
+              console.log(data);
+              done();
+            })
+          });
+      })
+      .catch(err => {
+        this.fail(lib.helpers.parseServerErrorToString(err));
+        done();
+      });
+  });
+
+  it('admin should be able to activate another right representation request', function (done) {
+    let jar;
+    sql.test.membership.get({mid:3})
+      .then(res => {
+        expect(res[0].is_active).toBe(false);
+        jar = rp.jar();
+        return rp({
+          method: 'POST',
+          uri: lib.helpers.apiTestURL('login'),
+          form:{username: 'admin', password :'atest'},
+          withCredentials: true,
+          jar : jar,
+        })
+      })
+      .then(() =>{
+        return rp({
+          method: 'PUT',
+          uri: lib.helpers.apiTestURL(`user/confirmRep/3`),
+          jar: jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        sql.test.membership.get({mid:3})
+          .then(res => {
+            expect(res[0].is_active).toBe(true);
+            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+              expect(res.statusCode).toBe(200);
+              let data = JSON.parse(res.body);
+              expect(data.length).toBe(1);
+              console.log(data);
+              done();
+            })
+          });
+      })
+      .catch(err => {
+        this.fail(lib.helpers.parseServerErrorToString(err));
+        done();
+      });
+  });
+
+  it('admin should be able to delete a false representation request', function (done) {
+    let jar;
+    sql.test.membership.get({mid:1})
+      .then(res => {
+        expect(res[0].is_active).toBe(false);
+        expect(res[0].is_representative).toBe(true);
+        jar = rp.jar();
+        return rp({
+          method: 'POST',
+          uri: lib.helpers.apiTestURL('login'),
+          form:{username: 'admin', password :'atest'},
+          withCredentials: true,
+          jar : jar,
+        })
+      })
+      .then(() =>{
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`user/deleteRep/1`),
           jar: jar,
           resolveWithFullResponse: true,
         })
@@ -359,9 +444,58 @@ describe("Admin can get all representation requests from users and send them act
         sql.test.membership.get({mid:1})
           .then(res => {
             expect(res[0].is_active).toBe(true);
-            done();
+            expect(res[0].is_representative).toBe(false);
+            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+              expect(res.statusCode).toBe(200);
+              let data = JSON.parse(res.body);
+              expect(data.length).toBe(1);
+              console.log(data);
+              done();
+            })
           });
+      })
+      .catch(err => {
+        this.fail(lib.helpers.parseServerErrorToString(err));
+        done();
+      });
+  });
 
+  it('admin should be able to delete a false representation request from all related tables', function (done) {
+    let jar;
+    sql.test.membership.get({mid:5})
+      .then(res => {
+        expect(res[0].is_active).toBe(false);
+        expect(res[0].is_representative).toBe(true);
+        jar = rp.jar();
+        return rp({
+          method: 'POST',
+          uri: lib.helpers.apiTestURL('login'),
+          form:{username: 'admin', password :'atest'},
+          withCredentials: true,
+          jar : jar,
+        })
+      })
+      .then(() =>{
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`user/deleteRepOrg/5`),
+          jar: jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        sql.test.membership.get({mid:5})
+          .then(res => {
+            expect(res.length).toBe(0);
+            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+              expect(res.statusCode).toBe(200);
+              let data = JSON.parse(res.body);
+              expect(data.length).toBe(1);
+              console.log(data);
+              done();
+            })
+          });
       })
       .catch(err => {
         this.fail(lib.helpers.parseServerErrorToString(err));
