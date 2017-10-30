@@ -123,7 +123,7 @@ describe("POST user API", () => {
       });
   });
 
-  it("user should complete her/his profile", function(done) {
+  it("user should complete her/his profile", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -137,7 +137,7 @@ describe("POST user API", () => {
         address_fa: 'خیابان شریعتی',
         phone_no: '123',
         mobile_no: '+1-123',
-        birth_date: new Date(1993,10,10),
+        birth_date: new Date(1993, 10, 10),
         display_name_en: 'A^2',
         display_name_fa: 'علی آقا',
       },
@@ -160,7 +160,7 @@ describe("POST user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("ignore username and is_user property to change", function(done) {
+  it("ignore username and is_user property to change", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -195,7 +195,7 @@ describe("POST user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("admin should add a user", function(done) {
+  it("admin should add a user", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -224,7 +224,7 @@ describe("POST user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("representative should add a user (just username and display_name accept)", function(done) {
+  it("representative should add a user (just username and display_name accept)", function (done) {
     this.done = done;
     rp({
       method: 'post',

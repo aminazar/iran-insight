@@ -80,9 +80,9 @@ describe("PUT user API", () => {
       resolveWithFullResponse: true,
     })
       .then(res => {
-      expect(res.statusCode).toBe(200);
-      return sql.test.expertise.select();
-    })
+        expect(res.statusCode).toBe(200);
+        return sql.test.expertise.select();
+      })
       .then(res => {
         expect(res.length).toBe(2);
         expect(res[0].name_en).toBe('Graphic Design');
