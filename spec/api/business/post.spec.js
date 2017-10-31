@@ -19,7 +19,7 @@ describe("POST Business API", () => {
   let setup = true;
 
   beforeEach(done => {
-    if(setup)
+    if (setup)
       lib.dbHelpers.create()
         .then(() => lib.dbHelpers.addAndLoginPerson('admin', 'admin123', {}))
         .then(res => {
@@ -57,7 +57,7 @@ describe("POST Business API", () => {
       done();
   });
 
-  it("representative should add business profile", function(done) {
+  it("representative should add business profile", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -81,7 +81,7 @@ describe("POST Business API", () => {
         return sql.test.business.select()
       })
       .then(res => {
-        if(res.length === 0)
+        if (res.length === 0)
           this.fail('No business added');
         else
           expect(res).toBeTruthy();
@@ -108,9 +108,9 @@ describe("POST Business API", () => {
         return sql.test.business.get({bid: businessId});
       })
       .then(res => {
-        if(res.length < 1)
+        if (res.length < 1)
           this.fail('No business added');
-        else{
+        else {
           expect(res[0].name).toBe('SnappFood');
           expect(res[0].name_fa).toBe('اسنپ فود');
           expect(res[0].tel).toBe('+123-9876');
@@ -143,4 +143,32 @@ describe("POST Business API", () => {
         done();
       });
   });
+
+  // it("relevant representative should add product to specific business", function (done) {
+  //   this.done = done;
+  //
+  //   lib.dbHelpers.addBusinessWithRep(repObj.pid)
+  //     .then(res => {
+  //       return rp({
+  //         method: 'post',
+  //         body: {
+  //           bid: res.bid,
+  //           product: {
+  //             name: 'Mobile app developing framework',
+  //             name_fa: 'چارچوب ساخت برنامه موبایل',
+  //           },
+  //           market_share: 25.34,
+  //         },
+  //         uri: lib.dbHelpers.apiTestURL('business/product'),
+  //         json: true,
+  //         jar: repObj.jar,
+  //         resolveWithFullResponse: true,
+  //       })
+  //     })
+  //     .then(res => {
+  //       expect(res.statusCode).toBe(200);
+  //       done();
+  //     })
+  //     .catch(lib.helpers.errorHandler.bind(this));
+  // });
 });
