@@ -100,6 +100,8 @@ router.delete('/user/expertise', apiResponse('Person', 'deleteExpertise', false,
 router.get('/person/partnership/:pid', apiResponse('Person', 'getPartnership', false, ['user.pid', 'params.pid']));
 router.get('/person/requested/partnership', apiResponse('Person', 'getRequestedPartnership', false, ['user.pid']));
 router.put('/person/partnership', apiResponse('Person', 'setPartnership', false, ['user.pid', 'body']));
+router.post('/person/confirm/partnership', apiResponse('Person', 'confirmPartnership', false, ['user.pid', 'body']));
+router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', false, ['user.pid', 'body']));
 
 
 

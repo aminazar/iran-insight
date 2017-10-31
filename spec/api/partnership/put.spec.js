@@ -37,7 +37,7 @@ describe("Put partnership API", () => {
       .then(res => {
         user1Obj.pid = res.pid;
         user1Obj.jar = res.rpJar;
-        return lib.dbHelpers.addAndLoginPerson('eabasir@mail.com', 'eab123')
+        return lib.dbHelpers.addAndLoginPerson('eabasir@gmail.com', 'eab123')
       })
       .then(res => {
         user2Obj.pid = res.pid;
@@ -66,6 +66,7 @@ describe("Put partnership API", () => {
       resolveWithFullResponse: true
     })
       .then(res => {
+
         expect(res.statusCode).toBe(200);
 
         return sql.test.partnership.getById({pid: user1Obj.pid});
@@ -123,6 +124,40 @@ describe("Put partnership API", () => {
           .catch(lib.helpers.errorHandler.bind(this));
       });
   });
+
+  it("user should add partnership for him/her self ", function (done) {
+    this.done = done;
+
+        rp({
+          method: 'put',
+          uri: lib.helpers.apiTestURL(`person/partnership`),
+          body: {
+            pid1: user1Obj.pid,
+            pid2: user2Obj.pid,
+            start_date: new Date(2017, 10, 12),
+            description: 'friendship',
+            description_fa: 'دوستی'
+          },
+          json: true,
+          jar: user1Obj.jar,
+          resolveWithFullResponse: true
+        })
+          .then(res => {
+            expect(res.statusCode).toBe(200);
+
+            return sql.test.partnership.getById({pid: user1Obj.pid});
+          }).then(res => {
+
+          expect(res.length).toBe(1);
+          expect(res[0].pid2).toBe(user2Obj.pid);
+          expect(res[0].is_confirmed).toBe(false);
+          expect(res[0].description).toBe('friendship');
+          expect(res[0].description_fa).toBe('دوستی');
+          done();
+        })
+          .catch(lib.helpers.errorHandler.bind(this));
+      });
+
   it("user should update partnership of him/her self ", function (done) {
     this.done = done;
 
@@ -149,6 +184,7 @@ describe("Put partnership API", () => {
           resolveWithFullResponse: true
         })
           .then(res => {
+
             expect(res.statusCode).toBe(200);
 
             return sql.test.partnership.getById({pid: user1Obj.pid});

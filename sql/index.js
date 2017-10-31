@@ -164,6 +164,7 @@ let tablesWithSqlCreatedByHelpers = [
     name: 'partnership',
     insert: true,
     update: true,
+    delete: true,
     idColumn: 'id',
   },
   {
