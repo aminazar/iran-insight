@@ -1,12 +1,10 @@
 select
     investment.*,
     association.*,
+    business.name as biz_name,
+    business.name_fa as biz_name_fa,
     organization.name as org_name,
     organization.name_fa as org_name_fa,
-    person.firstname_en as person_firstname,
-    person.surname_en as person_surname,
-    person.firstname_fa as person_firstname_fa,
-    person.surname_fa as person_surname_fa,
     claim_person.firstname_en as claimed_by_firstname,
     claim_person.surname_en as claimed_by_surname,
     claim_person.firstname_fa as claimed_by_firstname_fa,
@@ -14,17 +12,17 @@ select
     confirm_person.firstname_fa as confirmed_by_firstname_fa,
     confirm_person.surname_fa as confirmed_by_surname_fa
 from
-    investment
-join
     association
+join
+    investment
 on
     investment.assoc_id = association.aid
-    and association.bid = ${bid}
-left outer join
-    person
+    and is_confirmed = false
+join
+    business
 on
-    person.pid = association.pid
-left outer join
+    business.bid = association.bid
+join
     organization
 on
     organization.oid = association.oid
@@ -37,4 +35,18 @@ left outer join
 on
     confirmed_by = confirm_person.pid
 where
-    is_confirmed = true;
+    association.oid in (
+        select
+            oid
+        from
+            association
+        join
+            membership
+        on
+            association.aid = membership.assoc_id
+            and membership.is_active = true
+            and membership.is_representative = true
+        where
+            association.pid = ${pid}
+            and oid is not null
+    )

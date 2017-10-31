@@ -310,9 +310,9 @@ describe("PUT Investment API", () => {
     let id;
     sql.test.association.add({oid: orgData.oid, bid: bizData.bid})
       .then(res => {
-        personInvestment.assoc_id = res.aid;
-        personInvestment.claimed_by = orgMan.pid;
-        return sql.test.investment.add(personInvestment)
+        orgInvestment.assoc_id = res.aid;
+        orgInvestment.claimed_by = orgMan.pid;
+        return sql.test.investment.add(orgInvestment)
       })
       .then(res => {
         id = res.id;
@@ -369,7 +369,7 @@ describe("PUT Investment API", () => {
           expect(res[0].pid).toBe(null);
           expect(res[0].amount);
           if(res[0].amount) {
-            expect(+res[0].amount.substring(1).replace(',', '')).toBe(personInvestment.amount);
+            expect(+res[0].amount.substring(1).replace(',', '')).toBe(orgInvestment.amount);
           }
           expect(res[0].is_confirmed).toBe(true);
           expect(res[0].confirmed_by).toBe(bizMan.pid);

@@ -93,6 +93,9 @@ let modExp = {
     getByBiz: sql('investment/getByBiz.sql'),
     getByOrg: sql('investment/getByOrg.sql'),
     getByPerson: sql('investment/getByPerson.sql'),
+    getPendingByBiz: sql('investment/getPendingByBiz.sql'),
+    getPendingByOrg: sql('investment/getPendingByOrg.sql'),
+    getPendingByPerson: sql('investment/getPendingByPerson.sql'),
     getWithAssoc: sql('investment/getWithAssoc.sql'),
   },
   membership: {

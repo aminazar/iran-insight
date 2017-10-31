@@ -31,6 +31,6 @@ on
 left outer join
     person confirm_person
 on
-    confirm_by = confirm_person.pid
+    confirmed_by = confirm_person.pid
 where
     is_confirmed = true

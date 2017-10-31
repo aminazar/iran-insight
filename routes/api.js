@@ -142,6 +142,9 @@ router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['para
 router.get('/investment/business/:bid', apiResponse('Investment', 'getByBiz', false, ['params.bid']));
 router.get('/investment/organization/:oid', apiResponse('Investment', 'getByOrg', false, ['params.oid']));
 router.get('/investment/person/:pid', apiResponse('Investment', 'getByPerson', false, ['params.pid']));
+router.get('/investment/pending/business', apiResponse('Investment', 'getBizPending', false, ['user.pid']));
+router.get('/investment/pending/organization', apiResponse('Investment', 'getOrgPending', false, ['user.pid']));
+router.get('/investment/pending/person', apiResponse('Investment', 'getPersonalPending', false, ['user.pid']));
 router.put('/personalInvestment/:bid/:pid', apiResponse('Investment', 'savePersonal', false, ['params.bid', 'params.pid', 'body', 'user.pid']));
 router.put('/orgInvestment/:bid/:oid', apiResponse('Investment', 'saveOrganizational', false, ['params.bid', 'params.oid', 'body', 'user.pid']));
 router.post('/personalInvestment/:id/:bid/:pid', apiResponse('Investment', 'savePersonal', false, ['params.bid', 'params.pid', 'body', 'user.pid', 'params.id']));
