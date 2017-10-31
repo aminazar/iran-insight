@@ -150,6 +150,6 @@ router.put('/orgInvestment/:bid/:oid', apiResponse('Investment', 'saveOrganizati
 router.post('/personalInvestment/:id/:bid/:pid', apiResponse('Investment', 'savePersonal', false, ['params.bid', 'params.pid', 'body', 'user.pid', 'params.id']));
 router.post('/orgInvestment/:id/:bid/:oid', apiResponse('Investment', 'saveOrganizational', false, ['params.bid', 'params.oid', 'body', 'user.pid', 'params.id']));
 router.put('/investment/:id', apiResponse('Investment', 'confirm', false, ['params.id', 'user.pid']));
-router.delete('/investment/:id', apiResponse('Investment', 'delete', false, ['user.pid', 'params.id']));
+router.delete('/investment/:id', apiResponse('Investment', 'delete', false, ['params.id', 'user.pid']));
 
 module.exports = router;
