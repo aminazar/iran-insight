@@ -47,12 +47,117 @@ let orgs_info = [
 let orgs_type_info = [{
   id: 100,
   name: 'governmental',
-  name_fa: 'دولتی'
+  name_fa: 'دولتی',
+  active: true
 }, {
   id: 101,
   name: 'non-governmental',
-  name_fa: 'غیر دولتی'
+  name_fa: 'غیر دولتی',
+  active: true
+},{
+  id: 102,
+  name: 'half-governmental',
+  name_fa: 'نیمه دولتی',
+  active: true
 }];
+let biz_info = [{
+  bid: 1,
+  name: 'burgista app',
+  name_fa: 'برگیستا',
+  ceo_pid : 1,
+  biz_type_id: 200,
+  address: null,
+  address_fa: null,
+  tel: null,
+  url: null,
+  general_stats: null,
+  financial_stats: null
+},{
+  bid: 2,
+  name: 'snap',
+  name_fa: 'اسنپ',
+  ceo_pid : 3,
+  biz_type_id: 201,
+  address: null,
+  address_fa: null,
+  tel: null,
+  url: null,
+  general_stats: null,
+  financial_stats: null
+},{
+  bid: 3,
+  name: 'tapsi',
+  name_fa: 'تپسی',
+  ceo_pid : 3,
+  biz_type_id: 201,
+  address: null,
+  address_fa: null,
+  tel: null,
+  url: null,
+  general_stats: null,
+  financial_stats: null
+},{
+  bid: 4,
+  name: 'fara-dars',
+  name_fa: 'فرادرس',
+  ceo_pid : 1,
+  biz_type_id: 202,
+  address: null,
+  address_fa: 'تهران - هفت تیر',
+  tel: '02188888888',
+  url: null,
+  general_stats: null,
+  financial_stats: null
+}];
+
+let biz_type_info = [{
+  id: 200,
+  name: 'start_up',
+  name_fa: 'استارت آپ',
+  active : true
+}, {
+  id: 201,
+  name: 'sicence_base',
+  name_fa: 'دانش بنیان',
+  active : true
+},{
+  id: 202,
+  name: 'research_base',
+  name_fa: 'تحقیقاتی',
+  active : true
+}];
+
+let position_type_info = [{
+  id: 300,
+  name: 'CEO',
+  name_fa: 'مدیر عامل',
+  active : true
+},{
+  id: 301,
+  name: 'programmer',
+  name_fa: 'برنامه نویس',
+  active : true
+},{
+  id: 302,
+  name: 'tester',
+  name_fa: 'تستر نرم افزار',
+  active : true
+},{
+  id: 303,
+  name: 'accountant',
+  name_fa: 'حسابدار',
+  active : true
+},{
+  id: 304,
+  name: 'operator',
+  name_fa: 'اپراتور',
+  active : true
+},{
+  id: 305,
+  name: 'minister',
+  name_fa: 'وزیر',
+  active : true
+}]
 
 let assoc_info = [
   {
@@ -97,55 +202,16 @@ let assoc_info = [
     oid : 52,
     start_date : null,
     end_date : null
+  },{
+    aid : 7,
+    pid : 1,
+    bid : 3,
+    oid : null,
+    start_date : null,
+    end_date : null
   }];
 
-let biz_info = [{
-  bid: 1,
-  name: 'burgista app',
-  name_fa: 'برگیستا',
-  ceo_pid : 2,
-  biz_type_id: 200,
-  address: null,
-  address_fa: null,
-  tel: null,
-  url: null,
-  general_stats: null,
-  financial_stats: null
-},{
-  bid: 2,
-  name: 'snap',
-  name_fa: 'اسنپ',
-  ceo_pid : 3,
-  biz_type_id: 201,
-  address: null,
-  address_fa: null,
-  tel: null,
-  url: null,
-  general_stats: null,
-  financial_stats: null
-},{
-  bid: 3,
-  name: 'tapsi',
-  name_fa: 'تپسی',
-  ceo_pid : 3,
-  biz_type_id: 201,
-  address: null,
-  address_fa: null,
-  tel: null,
-  url: null,
-  general_stats: null,
-  financial_stats: null
-}];
 
-let biz_type_info = [{
-  id: 200,
-  name: 'start_up',
-  name_fa: 'استارت آپ'
-}, {
-  id: 201,
-  name: 'sicence_base',
-  name_fa: 'دانش بنیان'
-}];
 
 let mem_info = [{
   mid : 1,
@@ -164,7 +230,7 @@ let mem_info = [{
   assoc_id : 3,
   is_active : false,
   is_representative : true,
-  position_id : null
+  position_id : 305
 },{
   mid : 4,
   assoc_id : 4,
@@ -183,24 +249,33 @@ let mem_info = [{
   is_active : false,
   is_representative : true,
   position_id : 301
+},{
+  mid : 7,
+  assoc_id : 7,
+  is_active : false,
+  is_representative : true,
+  position_id : 300
+},{
+  mid : 8,
+  assoc_id : 7,
+  is_active : false,
+  is_representative : true,
+  position_id : 304
+},{
+  mid : 9,
+  assoc_id : 4,
+  is_active : false,
+  is_representative : true,
+  position_id : 304
+},{
+  mid : 10,
+  assoc_id : 4,
+  is_active : false,
+  is_representative : true,
+  position_id : 300
 }];
 
-let position_type_info = [{
-  id: 300,
-  name: 'CEO',
-  name_fa: 'مدیر عامل',
-  active : true
-},{
-  id: 301,
-  name: 'programmer',
-  name_fa: 'برنامه نویس',
-  active : true
-},{
-  id: 302,
-  name: 'tester',
-  name_fa: 'تستر نرم افزار',
-  active : true
-}]
+
 
 describe("Admin can get all representation requests from users and send them activation E-mail if they are right.", () => {
   let setup = true;
@@ -264,29 +339,40 @@ describe("Admin can get all representation requests from users and send them act
         })
         .then(() => createNewOrg(orgs_info[0]))
         .then(() => createNewOrgType(orgs_type_info[1]))
+        .then(() => createNewOrgType(orgs_type_info[2]))
         .then(() =>createNewOrg(orgs_info[1]))
         .then(() => createNewOrg(orgs_info[2]))
         .then(() => createNewBizType(biz_type_info[0]))
         .then(() => createNewBusiness(biz_info[0]))
         .then(() => createNewBizType(biz_type_info[1]))
+        .then(() => createNewBizType(biz_type_info[2]))
         .then(() => createNewBusiness(biz_info[1]))
         .then(() => createNewBusiness(biz_info[2]))
+        .then(() => createNewBusiness(biz_info[3]))
         .then(() =>  createNewAssociation(assoc_info[0]))
         .then(() =>  createNewAssociation(assoc_info[1]))
         .then(() =>  createNewAssociation(assoc_info[2]))
         .then(() =>  createNewAssociation(assoc_info[3]))
         .then(() =>  createNewAssociation(assoc_info[4]))
         .then(() =>  createNewAssociation(assoc_info[5]))
+        .then(() =>  createNewAssociation(assoc_info[6]))
         .then(() =>  createNewPositionType(position_type_info[0]))
         .then(() =>  createNewPositionType(position_type_info[1]))
         .then(() =>  createNewPositionType(position_type_info[2]))
+        .then(() =>  createNewPositionType(position_type_info[3]))
+        .then(() =>  createNewPositionType(position_type_info[4]))
+        .then(() =>  createNewPositionType(position_type_info[5]))
         .then(() =>  createNewMembership(mem_info[0]))
         .then(() =>  createNewMembership(mem_info[1]))
         .then(() =>  createNewMembership(mem_info[2]))
         .then(() =>  createNewMembership(mem_info[3]))
         .then(() =>  createNewMembership(mem_info[4]))
+        .then(() =>  createNewMembership(mem_info[5]))
+        .then(() =>  createNewMembership(mem_info[6]))
+        .then(() =>  createNewMembership(mem_info[7]))
+        .then(() =>  createNewMembership(mem_info[8]))
         .then(()=>{
-          createNewMembership(mem_info[5])
+          createNewMembership(mem_info[9])
           done();
         })
         .catch(err => {
@@ -358,6 +444,12 @@ describe("Admin can get all representation requests from users and send them act
       expect(res.statusCode).toBe(200);
       let data = JSON.parse(res.body);
       expect(data.length).toBe(2);
+      let x = (data[0].person.pid === 1 ? data[0] : data[1]);
+      let y = (data[0].person.pid === 3 ? data[0] : data[1]);
+      expect(x.business.length).toBe(3);
+      expect(x.organization.length).toBe(1);
+      expect(y.business.length).toBe(3);
+      expect(y.organization.length).toBe(3);
       done();
     })
   });
@@ -379,7 +471,7 @@ describe("Admin can get all representation requests from users and send them act
       .then(() =>{
         return rp({
           method: 'PUT',
-          uri: lib.helpers.apiTestURL(`user/confirmRep/2`),
+          uri: lib.helpers.apiTestURL(`user/confirmRep/2/2`),
           jar: jar,
           resolveWithFullResponse: true,
         })
@@ -393,7 +485,12 @@ describe("Admin can get all representation requests from users and send them act
               expect(res.statusCode).toBe(200);
               let data = JSON.parse(res.body);
               expect(data.length).toBe(2);
-              expect(data[0].business.length).toBe(0);
+              let x = (data[0].person.pid === 1 ? data[0] : data[1]);
+              let y = (data[0].person.pid === 3 ? data[0] : data[1]);
+              expect(x.business.length).toBe(2);
+              expect(x.organization.length).toBe(1);
+              expect(y.business.length).toBe(3);
+              expect(y.organization.length).toBe(3);
               done();
             })
           });
@@ -421,7 +518,7 @@ describe("Admin can get all representation requests from users and send them act
       .then(() =>{
         return rp({
           method: 'PUT',
-          uri: lib.helpers.apiTestURL(`user/confirmRep/3`),
+          uri: lib.helpers.apiTestURL(`user/confirmRep/3/3`),
           jar: jar,
           resolveWithFullResponse: true,
         })
@@ -434,7 +531,13 @@ describe("Admin can get all representation requests from users and send them act
             req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
               expect(res.statusCode).toBe(200);
               let data = JSON.parse(res.body);
-              expect(data.length).toBe(1);
+              expect(data.length).toBe(2);
+              let x = (data[0].person.pid === 1 ? data[0] : data[1]);
+              let y = (data[0].person.pid === 3 ? data[0] : data[1]);
+              expect(x.business.length).toBe(2);
+              expect(x.organization.length).toBe(0);
+              expect(y.business.length).toBe(3);
+              expect(y.organization.length).toBe(3);
               done();
             })
           });
@@ -445,7 +548,54 @@ describe("Admin can get all representation requests from users and send them act
       });
   });
 
-  it('admin should be able to delete a false representation request', function (done) {
+  it('admin should be able to activate another right representation request/2', function (done) {
+    let jar;
+    sql.test.membership.get({mid:7})
+      .then(res => {
+        expect(res[0].is_active).toBe(false);
+        jar = rp.jar();
+        return rp({
+          method: 'POST',
+          uri: lib.helpers.apiTestURL('login'),
+          form:{username: 'admin', password :'atest'},
+          withCredentials: true,
+          jar : jar,
+        })
+      })
+      .then(() =>{
+        return rp({
+          method: 'PUT',
+          uri: lib.helpers.apiTestURL(`user/confirmRep/7/7`),
+          jar: jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        sql.test.membership.get({mid:7})
+          .then(res => {
+            expect(res.length).toBe(1);
+            expect(res[0].is_active).toBe(true);
+            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+              expect(res.statusCode).toBe(200);
+              let data = JSON.parse(res.body);
+              expect(data.length).toBe(1);
+              let x = (data[0].person.pid === 1 ? data[0] : data[1]);
+              let y = (data[0].person.pid === 3 ? data[0] : data[1]);
+              expect(x).toBe(undefined);
+              expect(y.business.length).toBe(3);
+              expect(y.organization.length).toBe(3);
+              done();
+            })
+          });
+      })
+      .catch(err => {
+        this.fail(lib.helpers.parseServerErrorToString(err));
+        done();
+      });
+  });
+
+  it('admin should be able to delete a false representation request, convert him to a usual user', function (done) {
     let jar;
     sql.test.membership.get({mid:5})
       .then(res => {
@@ -478,6 +628,9 @@ describe("Admin can get all representation requests from users and send them act
               expect(res.statusCode).toBe(200);
               let data = JSON.parse(res.body);
               expect(data.length).toBe(1);
+              let x = (data[0].person.pid === 3 ? data[0] : data[1]);
+              expect(x.business.length).toBe(2);
+              expect(x.organization.length).toBe(3);
               done();
             })
           });
@@ -520,6 +673,9 @@ describe("Admin can get all representation requests from users and send them act
               expect(res.statusCode).toBe(200);
               let data = JSON.parse(res.body);
               expect(data.length).toBe(1);
+              let x = (data[0].person.pid === 3 ? data[0] : data[1]);
+              expect(x.business.length).toBe(1);
+              expect(x.organization.length).toBe(3);
               done();
             })
           });
@@ -562,6 +718,97 @@ describe("Admin can get all representation requests from users and send them act
               expect(res.statusCode).toBe(200);
               let data = JSON.parse(res.body);
               expect(data.length).toBe(1);
+              let x = (data[0].person.pid === 3 ? data[0] : data[1]);
+              expect(x.organization.length).toBe(3);
+              expect(x.business.length).toBe(0);
+              done();
+            })
+          });
+      })
+      .catch(err => {
+        this.fail(lib.helpers.parseServerErrorToString(err));
+        done();
+      });
+  });
+
+  it('admin should be able to delete a false representation request, convert him to a usual user/2', function (done) {
+    let jar;
+    sql.test.membership.get({mid:4})
+      .then(res => {
+        expect(res[0].is_active).toBe(false);
+        expect(res[0].is_representative).toBe(true);
+        jar = rp.jar();
+        return rp({
+          method: 'POST',
+          uri: lib.helpers.apiTestURL('login'),
+          form:{username: 'admin', password :'atest'},
+          withCredentials: true,
+          jar : jar,
+        })
+      })
+      .then(() =>{
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`user/deleteRep/4`),
+          jar: jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        sql.test.membership.get({mid:5})
+          .then(res => {
+            expect(res[0].is_active).toBe(true);
+            expect(res[0].is_representative).toBe(false);
+            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+              expect(res.statusCode).toBe(200);
+              let data = JSON.parse(res.body);
+              expect(data.length).toBe(1);
+              let x = (data[0].person.pid === 3 ? data[0] : data[1]);
+              expect(x.business.length).toBe(0);
+              expect(x.organization.length).toBe(2);
+              done();
+            })
+          });
+      })
+      .catch(err => {
+        this.fail(lib.helpers.parseServerErrorToString(err));
+        done();
+      });
+  });
+
+  it('admin should be able to activate another right representation request/2', function (done) {
+    let jar;
+    sql.test.membership.get({mid:9})
+      .then(res => {
+        expect(res[0].is_active).toBe(false);
+        jar = rp.jar();
+        return rp({
+          method: 'POST',
+          uri: lib.helpers.apiTestURL('login'),
+          form:{username: 'admin', password :'atest'},
+          withCredentials: true,
+          jar : jar,
+        })
+      })
+      .then(() =>{
+        return rp({
+          method: 'PUT',
+          uri: lib.helpers.apiTestURL(`user/confirmRep/9/4`),
+          jar: jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        sql.test.membership.get({mid:9})
+          .then(res => {
+            expect(res.length).toBe(1);
+            expect(res[0].is_active).toBe(true);
+            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+              expect(res.statusCode).toBe(200);
+              let data = JSON.parse(res.body);
+              expect(data).toContain('No new representative request.');
               done();
             })
           });

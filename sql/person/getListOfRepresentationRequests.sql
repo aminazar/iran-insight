@@ -51,6 +51,5 @@ where
     mem.is_representative = true
     and
     mem.is_active = false
-
 order by assoc.pid
 ;

@@ -120,7 +120,7 @@ router.put('/organization-type', apiResponse('OrganizationType', 'saveData', fal
 
 // Representation-chekc API
 router.get('/user/checkIfRep',apiResponse('Person','findRepRequests',true));
-router.put('/user/confirmRep/:mid',apiResponse('Person','confirmRepByAdmin',true,['params.mid']));
+router.put('/user/confirmRep/:mid/:aid',apiResponse('Person','confirmRepByAdmin',true,['params.mid','params.aid']));
 router.delete('/user/deleteRep/:mid',apiResponse('Person','deleteRepRequest',true,['params.mid']));
 router.delete('/user/deleteRepOrg/:mid',apiResponse('Person','deleteRepAndHisCompany',true,['params.mid']));
 

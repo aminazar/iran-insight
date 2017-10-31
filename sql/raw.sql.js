@@ -100,6 +100,7 @@ let modExp = {
     getBizRep: sql('membership/getBizRep.sql'),
     getOrgRep: sql('membership/getOrgRep.sql'),
     get: sql('membership/get.sql'),
+    getAllSameAssocIDsFromMembership: sql('membership/getAllSameAssocIDsFromMembership.sql'),
   },
   event: {
     create: sql('event/create.sql'),
