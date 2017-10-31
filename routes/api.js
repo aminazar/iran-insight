@@ -97,6 +97,9 @@ router.put('/expertise', apiResponse('Expertise', 'addExpertise', true, ['body']
 
 // Business API
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
+router.put('/business/product', apiResponse('Business', 'addProduct', true, ['body']));
+router.get('/business/product/all', apiResponse('Business', 'getAllProducts', false));
+router.get('/business/product/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
 
 // Organization LCE API
 router.put('/business-lce', apiResponse('BusinessLCE', 'saveData', false, ['body']));

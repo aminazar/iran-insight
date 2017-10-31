@@ -112,6 +112,14 @@ let modExp = {
     bizUnattends: sql('attendance/biz-unattend.sql'),
     orgUnattends: sql('attendance/org-unattend.sql'),
   },
+  product: {
+    create: sql('product/create.sql'),
+    drop: sql('product/drop.sql'),
+  },
+  business_product: {
+    create: sql('business_product/create.sql'),
+    drop: sql('business_product/drop.sql'),
+  },
 };
 
 // Template-generated tables
