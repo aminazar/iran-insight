@@ -1,1 +1,1 @@
-drop table if exists administrators;
+drop table if exists administrators
