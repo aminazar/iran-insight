@@ -59,13 +59,36 @@ describe("GET Investment API", () => {
 
   it("should fetch list of investments in business for its rep", function (done) {
     this.done = done;
-
     rp({
       method: 'GET',
       uri: lib.helpers.apiTestURL(`investment/pending/business`),
-      jar: bizMan.rpJar,
+      jar: orgMan.rpJar,
       resolveWithFullResponse: true
     })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data.length).toBe(0);
+        return rp({
+          method: 'GET',
+          uri: lib.helpers.apiTestURL(`investment/pending/business`),
+          jar: personData.rpJar,
+          resolveWithFullResponse: true
+        })
+          .then(res => {
+            expect(res.statusCode).toBe(200);
+            let data = JSON.parse(res.body);
+            expect(data.length).toBe(0);
+          })
+      })
+      .then(() =>
+        rp({
+          method: 'GET',
+          uri: lib.helpers.apiTestURL(`investment/pending/business`),
+          jar: bizMan.rpJar,
+          resolveWithFullResponse: true
+        })
+      )
       .then(res => {
         expect(res.statusCode).toBe(200);
         let data = JSON.parse(res.body);
@@ -105,13 +128,35 @@ describe("GET Investment API", () => {
 
   it("should fetch list of person's investments", function (done) {
     this.done = done;
-
     rp({
       method: 'GET',
       uri: lib.helpers.apiTestURL(`investment/pending/person`),
-      jar: personData.rpJar,
+      jar: orgMan.rpJar,
       resolveWithFullResponse: true
     })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data.length).toBe(0);
+        return rp({
+          method: 'GET',
+          uri: lib.helpers.apiTestURL(`investment/pending/person`),
+          jar: bizMan.rpJar,
+          resolveWithFullResponse: true
+        })
+          .then(res => {
+            expect(res.statusCode).toBe(200);
+            let data = JSON.parse(res.body);
+            expect(data.length).toBe(0);
+          })
+      })
+      .then(() =>
+        rp({
+          method: 'GET',
+          uri: lib.helpers.apiTestURL(`investment/pending/person`),
+          jar: personData.rpJar,
+          resolveWithFullResponse: true
+        }))
       .then(res => {
         expect(res.statusCode).toBe(200);
         let data = JSON.parse(res.body);
@@ -126,7 +171,7 @@ describe("GET Investment API", () => {
           expect(personInvRes.biz_name).toBe(bizData.name);
           expect(personInvRes.biz_name_fa).toBe(bizData.name_fa);
           expect(personInvRes.is_lead).toBe(true);
-          expect(+personInvRes.amount.substring(1).replace(',','')).toBe(personInvestment.amount);
+          expect(+personInvRes.amount.substring(1).replace(',', '')).toBe(personInvestment.amount);
           expect(personInvRes.currency).toBe(personInvestment.currency);
           expect(personInvRes.investment_cycle).toBe(personInvestment.investment_cycle);
         }
@@ -137,13 +182,35 @@ describe("GET Investment API", () => {
 
   it("should get list of organization's investments", function (done) {
     this.done = done;
-
     rp({
       method: 'GET',
       uri: lib.helpers.apiTestURL(`investment/pending/organization`),
-      jar: orgMan.rpJar,
+      jar: personData.rpJar,
       resolveWithFullResponse: true
     })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data.length).toBe(0);
+        return rp({
+          method: 'GET',
+          uri: lib.helpers.apiTestURL(`investment/pending/organization`),
+          jar: bizMan.rpJar,
+          resolveWithFullResponse: true
+        })
+          .then(res => {
+            expect(res.statusCode).toBe(200);
+            let data = JSON.parse(res.body);
+            expect(data.length).toBe(0);
+          })
+      })
+      .then(() =>
+        rp({
+          method: 'GET',
+          uri: lib.helpers.apiTestURL(`investment/pending/organization`),
+          jar: orgMan.rpJar,
+          resolveWithFullResponse: true
+        }))
       .then(res => {
         expect(res.statusCode).toBe(200);
         let data = JSON.parse(res.body);
@@ -158,7 +225,7 @@ describe("GET Investment API", () => {
           expect(orgInvRes.biz_name).toBe(bizData.name);
           expect(orgInvRes.biz_name_fa).toBe(bizData.name_fa);
           expect(orgInvRes.is_lead).toBe(orgInvRes.is_lead);
-          expect(+orgInvRes.amount.substring(1).replace(',','')).toBe(orgInvestment.amount);
+          expect(+orgInvRes.amount.substring(1).replace(',', '')).toBe(orgInvestment.amount);
           expect(orgInvRes.currency).toBe(orgInvestment.currency);
           expect(orgInvRes.investment_cycle).toBe(orgInvestment.investment_cycle);
         }
