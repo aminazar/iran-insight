@@ -3,14 +3,14 @@ const lib = require('../../../lib');
 const sql = require('../../../sql');
 
 describe("GET Investment API", () => {
-  let bizData, personData, orgData, personInvestment, orgInvestment;
+  let bizData, personData, orgData, personInvestment, orgInvestment,cofirmedByPID;
 
   beforeEach(done => {
     bizData = {name: 'biz', name_fa: 'کسب و کار'};
     personData = {firstname_en: 'ali', surname_en: 'alavi'};
     orgData = {name: 'org', name_fa: 'سازمان'};
-    personInvestment = {amount: 1000, currency: 'USD', is_lead: true, investment_cycle: 1};
-    orgInvestment = {amount: 10000, currency: 'EUR', investment_cycle: 1};
+    personInvestment = {amount: 1000, currency: 'USD', is_lead: true, investment_cycle: 1, is_confirmed: true};
+    orgInvestment = {amount: 10000, currency: 'EUR', investment_cycle: 1, is_confirmed: true};
 
     lib.dbHelpers.create()
       .then(() => {
@@ -22,11 +22,17 @@ describe("GET Investment API", () => {
       })
       .then(res => {
         personData.pid = +res;
+        return lib.dbHelpers.addPerson('y', 'y', personData)
+      })
+      .then(res => {
+        cofirmedByPID = +res;
         return sql.test.association.add({pid: personData.pid, bid: bizData.bid});
       })
       .then(res => {
         personData.aid = +res.aid;
         personInvestment.assoc_id = personData.aid;
+        personInvestment.claimed_by = personData.pid;
+        personInvestment.confirmed_by = cofirmedByPID;
         return sql.test.investment.add(personInvestment);
       })
       .then(res => {
@@ -40,6 +46,8 @@ describe("GET Investment API", () => {
       .then(res => {
         orgData.aid = +res.aid;
         orgInvestment.assoc_id = orgData.aid;
+        orgInvestment.claimed_by = personData.pid;
+        orgInvestment.confirmed_by = cofirmedByPID;
         return sql.test.investment.add(orgInvestment);
       })
       .then(res => {

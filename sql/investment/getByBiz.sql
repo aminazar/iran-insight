@@ -6,7 +6,13 @@ select
     person.firstname_en as person_firstname,
     person.surname_en as person_surname,
     person.firstname_fa as person_firstname_fa,
-    person.surname_fa as person_surname_fa
+    person.surname_fa as person_surname_fa,
+    claim_person.firstname_en as claimed_by_firstname,
+    claim_person.surname_en as claimed_by_surname,
+    claim_person.firstname_fa as claimed_by_firstname_fa,
+    claim_person.surname_fa as claimed_by_surname_fa,
+    confirm_person.firstname_fa as confirmed_by_firstname_fa,
+    confirm_person.surname_fa as confirmed_by_surname_fa
 from
     investment
 join
@@ -22,3 +28,13 @@ left outer join
     organization
 on
     organization.oid = association.oid
+left outer join
+    person claim_person
+on
+    claimed_by = claim_person.pid
+left outer join
+    person confirm_person
+on
+    confirm_by = confirm_person.pid
+where
+    is_confirmed = true;
