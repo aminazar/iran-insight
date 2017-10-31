@@ -271,7 +271,7 @@ let tablesWithSqlCreatedByHelpers = [
     select: true,
     delete: true,
     get: true,
-    idColumn: 'product_id',
+    idColumn: 'bpid',
   },
 ].concat(templateGeneratedTables
   .map(tableName => {

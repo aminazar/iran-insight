@@ -39,20 +39,21 @@ describe("PUT Business API", () => {
     this.done = done;
     rp({
       method: 'put',
-      form: {
+      body: {
         name: 'Biscuit',
         name_fa: 'بیسکویت',
-        desc: 'Produce with milk powder',
-        desc_fa: 'تولید شده از پودر شیر',
-        parent_product_id: null
+        description: 'Produce with milk powder',
+        description_fa: 'تولید شده از پودر شیر',
+        parent_product_id: null,
       },
+      json: true,
       uri: lib.helpers.apiTestURL('business/product'),
       jar: adminObj.jar,
       resolveWithFullResponse: true,
     })
       .then(res => {
         expect(res.statusCode).toBe(200);
-        return sql.test.product.getById({product_id: res.body});
+        return sql.test.product.getById({product_id: res.body.product_id});
       })
       .then(res => {
         expect(res.length).toBe(1);
@@ -77,8 +78,8 @@ describe("PUT Business API", () => {
           body: [{
             name: 'Biscuit',
             name_fa: 'بیسکویت',
-            desc: 'Produce with milk powder',
-            desc_fa: 'تولید شده از پودر شیر',
+            description: 'Produce with milk powder',
+            description_fa: 'تولید شده از پودر شیر',
             parent_product_id: res.product_id
           },{
             name: 'gumdrop',
@@ -92,7 +93,7 @@ describe("PUT Business API", () => {
       })
       .then(res => {
         expect(res.statusCode).toBe(200);
-        res.body.forEach(el => productIds.push(el));
+        res.body.forEach(el => productIds.push(el.product_id));
         return sql.test.product.getById({product_id: productIds[1]});
       })
       .then(res => {
@@ -104,7 +105,7 @@ describe("PUT Business API", () => {
       .then(res => {
         expect(res.length).toBe(1);
         expect(res[0].name).toBe('gumdrop');
-        expect(res[0].desc).toBe(null);
+        expect(res[0].description).toBe(null);
         expect(res[0].parent_product_id).toBe(null);
         done();
       })
@@ -115,28 +116,25 @@ describe("PUT Business API", () => {
     this.done = done;
     rp({
       method: 'put',
-      form: {
+      body: {
         name: 'Biscuit',
         name_fa: 'بیسکویت',
-        desc: 'Produce with milk powder',
-        desc_fa: 'تولید شده از پودر شیر',
+        description: 'Produce with milk powder',
+        description_fa: 'تولید شده از پودر شیر',
         parent_product_id: null,
       },
+      json: true,
       uri: lib.helpers.apiTestURL('business/product'),
-      jar: adminObj.jar,
+      jar: normalUserObj.jar,
       resolveWithFullResponse: true,
     })
-      .then(res => {
-        expect(res.statusCode).toBe(200);
-        return sql.test.product.getById({product_id: res.body});
-      })
       .then(res => {
         this.fail('Other users (not admins) add a product');
         done();
       })
       .catch(err => {
-        expect(err.statusCode).toBe(error.notAllowed.status);
-        expect(err.error).toBe(error.notAllowed.message);
+        expect(err.statusCode).toBe(error.adminOnly.status);
+        expect(err.error).toBe(error.adminOnly.message);
         done();
       });
   });
