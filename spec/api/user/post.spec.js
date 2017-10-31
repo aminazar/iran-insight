@@ -1,6 +1,7 @@
 const rp = require("request-promise");
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
+const error = require('../../../lib/errors.list');
 
 describe("POST user API", () => {
   let orgObj = {};
@@ -97,7 +98,7 @@ describe("POST user API", () => {
         done();
       })
       .catch(err => {
-        console.error(err);
+        console.error('before each => ', err);
         done();
       })
   });
@@ -123,7 +124,7 @@ describe("POST user API", () => {
       });
   });
 
-  it("user should complete her/his profile", function(done) {
+  it("user should complete her/his profile", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -137,7 +138,7 @@ describe("POST user API", () => {
         address_fa: 'خیابان شریعتی',
         phone_no: '123',
         mobile_no: '+1-123',
-        birth_date: new Date(1993,10,10),
+        birth_date: new Date(1993, 10, 10),
         display_name_en: 'A^2',
         display_name_fa: 'علی آقا',
       },
@@ -160,7 +161,7 @@ describe("POST user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("ignore username and is_user property to change", function(done) {
+  it("ignore username and is_user property to change", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -195,7 +196,7 @@ describe("POST user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("admin should add a user", function(done) {
+  it("admin should add a user", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -224,7 +225,7 @@ describe("POST user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("representative should add a user (just username and display_name accept)", function(done) {
+  it("representative should add a user (just username and display_name accept)", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -280,26 +281,84 @@ describe("POST user API", () => {
       });
   });
 
-  xit("user should add expertise (expertise is not exist)", function (done) {
+  it("should get error when no pid is defined in body for expertise", function (done) {
     this.done = done;
     rp({
       method: 'post',
-      form: {
-        pid: normalUserObj.pid,
-        name_en: 'Web Programming',
-        name_fa: 'برنامه نویسی وب',
-        type_en: 'Programming',
-        type_fa: 'برنامه نویسی',
-        start_date: new Date(2015, 2, 2),
-        is_education: false,
+      body: {
+        expertise: {
+          name_en: 'Web Programming',
+          name_fa: 'برنامه نویسی وب',
+          is_education: false,
+        }
       },
-      uri: lib.helpers.apiTestURL('user/expertise/ali@mail.com'),
+      json: true,
+      uri: lib.helpers.apiTestURL('user/expertise'),
+      jar: normalUserObj.jar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        this.fail('did not failed when no pid is defined in expertise');
+        done();
+      })
+      .catch(err => {
+        console.log('-> ', err);
+        expect(err.statusCode).toBe(error.noId.status);
+        expect(err.message).toContain(error.noId.message);
+        done();
+      });
+  });
+
+  it("should get error when admin or user himself is not changing the expertise", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        expertise: {
+          name_en: 'Web Programming',
+          name_fa: 'برنامه نویسی وب',
+          is_education: false,
+        },
+        pid: normalUserObj.pid,
+      },
+      json: true,
+      uri: lib.helpers.apiTestURL('user/expertise'),
+      jar: repObj.jar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        this.fail('did not failed expertise is changing by other users');
+        done();
+      })
+      .catch(err => {
+        console.log('-> ', err);
+        expect(err.statusCode).toBe(error.notAllowed.status);
+        expect(err.message).toContain(error.notAllowed.message);
+        done();
+      });
+  });
+
+
+  it("user should add expertise (expertise is not exist)", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        pid: normalUserObj.pid,
+        expertise: {
+          name_en: 'Web Programming',
+          name_fa: 'برنامه نویسی وب',
+          is_education: false,
+        }
+      },
+      json: true,
+      uri: lib.helpers.apiTestURL('user/expertise'),
       jar: normalUserObj.jar,
       resolveWithFullResponse: true
     })
       .then(res => {
         expect(res.statusCode).toBe(200);
-        return sql.test.person.getPersonExpertise({username: 'ali@mail.com'});
+        return sql.test.person.getPersonExpertise({pid: normalUserObj.pid});
       })
       .then(res => {
         expect(res.length).toBe(1);
@@ -310,51 +369,53 @@ describe("POST user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  xit("user should add expertise (expertise is exist)", function (done) {
+  it("user should add expertise (expertise is exist)", function (done) {
     this.done = done;
     let expertiseId = null;
     sql.test.expertise.add({
       name_en: 'Computer Science - Artificial Intelligence',
       name_fa: 'علوم کامپیوتر - هوش مصنوعی',
-      type_en: 'Master Education',
-      type_fa: 'تحصیلات تکمیلی',
       is_education: true,
     })
       .then(res => {
         expertiseId = res.expertise_id;
         return rp({
           method: 'post',
-          form: {
-            expertise_id: expertiseId,
+          body: {
+            expertise: {
+              expertise_id: expertiseId,
+              name_en: 'Web Programming',
+              name_fa: 'برنامه نویسی وب',
+              is_education: false,
+            },
             pid: normalUserObj.pid,
-            start_date: new Date(),
           },
-          uri: lib.helpers.apiTestURL('user/expertise/ali@mail.com'),
+          json: true,
+          uri: lib.helpers.apiTestURL('user/expertise'),
           jar: normalUserObj.jar,
           resolveWithFullResponse: true
         });
       })
       .then(res => {
         expect(res.statusCode).toBe(200);
-        return sql.test.person_expertise.select();
+        return sql.test.person.getPersonExpertise({pid: normalUserObj.pid});
       })
       .then(res => {
         expect(res.length).toBe(1);
-        expect(res[0].pid).toBe(normalUserObj.pid);
-        expect(res[0].expertise_id).toBe(expertiseId);
+        console.log('-> ', res[0]);
+        expect(res[0].name_en).toBe('Web Programming');
+        expect(res[0].name_fa).toBe('برنامه نویسی وب');
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  xit("user should be able to update expertise", function (done) {
+  it("user should be able to update expertise", function (done) {
     this.done = done;
     let expertiseId = null;
     sql.test.expertise.add({
       name_en: 'Computer Science - Artificial Intelligence',
       name_fa: 'علوم کامپیوتر - هوش مصنوعی',
-      type_en: 'Master Education',
-      type_fa: 'تحصیلات تکمیلی',
       is_education: true,
     })
       .then(res => {
@@ -362,66 +423,71 @@ describe("POST user API", () => {
         return sql.test.person_expertise.add({
           pid: normalUserObj.pid,
           expertise_id: expertiseId,
-          start_date: new Date()
         });
       })
       .then(res => {
         return rp({
           method: 'post',
-          form: {
+          body: {
+            expertise: {
+              expertise_id: expertiseId,
+              is_education: false,
+            },
             peid: res.peid,
-            expertise_id: expertiseId,
             pid: normalUserObj.pid,
           },
-          uri: lib.helpers.apiTestURL('user/expertise/ali@mail.com'),
+          json: true,
+          uri: lib.helpers.apiTestURL('user/expertise'),
           jar: normalUserObj.jar,
           resolveWithFullResponse: true
         });
       })
       .then(res => {
         expect(res.statusCode).toBe(200);
-        return sql.test.person_expertise.select();
+        return sql.test.person.getPersonExpertise({pid: normalUserObj.pid});
       })
       .then(res => {
         expect(res.length).toBe(1);
-        expect(res[0].pid).toBe(normalUserObj.pid);
-        expect(res[0].expertise_id).toBe(expertiseId);
+        expect(res[0].is_education).toBe(false);
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  xit("admin should add expertise for specific user (expertise is exist)", function (done) {
+
+  it("admin should add expertise for specific user (expertise is exist)", function (done) {
     this.done = done;
     let expertiseId = null;
     sql.test.expertise.add({
       name_en: 'Computer Science - Artificial Intelligence',
       name_fa: 'علوم کامپیوتر - هوش مصنوعی',
-      type_en: 'Master Education',
-      type_fa: 'تحصیلات تکمیلی',
       is_education: true,
     })
       .then(res => {
         expertiseId = res.expertise_id;
         return rp({
           method: 'post',
-          form: {
-            expertise_id: expertiseId,
+          body: {
+            expertise: {
+              expertise_id: expertiseId,
+            },
             pid: normalUserObj.pid,
-            start_date: new Date(),
           },
-          uri: lib.helpers.apiTestURL('user/expertise/ali@mail.com'),
+          json: true,
+          uri: lib.helpers.apiTestURL('user/expertise'),
           jar: adminObj.jar,
           resolveWithFullResponse: true
         });
       })
       .then(res => {
         expect(res.statusCode).toBe(200);
-        return sql.test.person_expertise.select();
+        return sql.test.person.getPersonExpertise({pid: normalUserObj.pid});
       })
       .then(res => {
         expect(res.length).toBe(1);
-        expect(res[0].pid).toBe(normalUserObj.pid);
+        expect(res[0].name_en).toBe('Computer Science - Artificial Intelligence');
+        expect(res[0].name_fa).toBe('علوم کامپیوتر - هوش مصنوعی');
+        expect(res[0].is_education).toBe(true);
         expect(res[0].expertise_id).toBe(expertiseId);
         done();
       })

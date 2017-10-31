@@ -28,21 +28,24 @@ let modExp = {
     test: sql('db/test.sql'),
   },
   person: {
-    create:     sql('person/create.sql'),
-    drop:       sql('person/drop.sql'),
-    get:        sql('person/get.sql'),
-    isAdmin:    sql('person/isAdmin.sql'),
-    orgRep:     sql('person/orgRep.sql'),
-    bizRep:     sql('person/bizRep.sql'),
+    create: sql('person/create.sql'),
+    drop: sql('person/drop.sql'),
+    get: sql('person/get.sql'),
+    isAdmin: sql('person/isAdmin.sql'),
+    orgRep: sql('person/orgRep.sql'),
+    bizRep: sql('person/bizRep.sql'),
+    getUserById: sql('person/getUserById.sql'),
     getListOfRepresentationRequests: sql('person/getListOfRepresentationRequests.sql'),
     getListOfMembershipRequests: sql('person/getListOfMembershipRequests.sql'),
     getPersonExpertise: sql('person/getPersonExpertise.sql'),
-    getAdmins:  sql('person/getAdmins.sql'),
+    deleteExpertiseById: sql('person/deleteExpertiseById.sql'),
+    getAdmins: sql('person/getAdmins.sql'),
+
   },
   administrators: {
-    create:     sql('administrators/create.sql'),
-    getById:     sql('administrators/getById.sql'),
-    drop:         sql('administrators/drop.sql'),
+    create: sql('administrators/create.sql'),
+    getById: sql('administrators/getById.sql'),
+    drop: sql('administrators/drop.sql'),
   },
   expertise: {
     create: sql('expertise/create.sql'),
@@ -66,16 +69,16 @@ let modExp = {
     select: sql('organization_lce/select.sql'),
   },
   person_activation_link: {
-    create:             sql('person_activation_link/create.sql'),
-    drop:               sql('person_activation_link/drop.sql'),
-    deleteByLink:       sql('person_activation_link/deleteByLink.sql'),
-    get:                sql('person_activation_link/getByBiz.sql'),
-    getByLink:          sql('person_activation_link/getByLink.sql'),
+    create: sql('person_activation_link/create.sql'),
+    drop: sql('person_activation_link/drop.sql'),
+    deleteByLink: sql('person_activation_link/deleteByLink.sql'),
+    get: sql('person_activation_link/get.sql'),
+    getByLink: sql('person_activation_link/getByLink.sql'),
   },
   business: {
     create: sql('business/create.sql'),
     drop: sql('business/drop.sql'),
-    get: sql('business/getByBiz.sql'),
+    get: sql('business/get.sql'),
   },
   business_lce: {
     create: sql('business_lce/create.sql'),
@@ -84,8 +87,8 @@ let modExp = {
     select: sql('business_lce/select.sql'),
   },
   association: {
-    create:     sql('association/create.sql'),
-    drop:       sql('association/drop.sql'),
+    create: sql('association/create.sql'),
+    drop: sql('association/drop.sql'),
   },
   investment: {
     create: sql('investment/create.sql'),
@@ -99,23 +102,23 @@ let modExp = {
     getWithAssoc: sql('investment/getWithAssoc.sql'),
   },
   membership: {
-    create:                   sql('membership/create.sql'),
-    drop:                     sql('membership/drop.sql'),
-    isRepresentativeOrAdmin:  sql('membership/isRepresentativeOrAdmin.sql'),
-    getWithAssoc:             sql('membership/getWithAssoc.sql'),
-    getWithLimitedAssoc:      sql('membership/getWithLimitedAssoc.sql'),
-    repPendingUsers:          sql('membership/repPendingUsers.sql'),
-    getBizRep:                sql('membership/getBizRep.sql'),
-    getOrgRep:                sql('membership/getOrgRep.sql'),
-    get:                      sql('membership/get.sql'),
+    create: sql('membership/create.sql'),
+    drop: sql('membership/drop.sql'),
+    isRepresentativeOrAdmin: sql('membership/isRepresentativeOrAdmin.sql'),
+    getWithAssoc: sql('membership/getWithAssoc.sql'),
+    getWithLimitedAssoc: sql('membership/getWithLimitedAssoc.sql'),
+    repPendingUsers: sql('membership/repPendingUsers.sql'),
+    getBizRep: sql('membership/getBizRep.sql'),
+    getOrgRep: sql('membership/getOrgRep.sql'),
+    get: sql('membership/get.sql'),
   },
   event: {
-    create:     sql('event/create.sql'),
-    drop:       sql('event/drop.sql'),
+    create: sql('event/create.sql'),
+    drop: sql('event/drop.sql'),
   },
   attendance: {
-    create:     sql('attendance/create.sql'),
-    drop:       sql('attendance/drop.sql'),
+    create: sql('attendance/create.sql'),
+    drop: sql('attendance/drop.sql'),
     personUnattends: sql('attendance/person-unattend.sql'),
     bizUnattends: sql('attendance/biz-unattend.sql'),
     orgUnattends: sql('attendance/org-unattend.sql'),
@@ -133,11 +136,11 @@ let modExp = {
   'business',
 ].forEach(t => {
   let typeTableName = t + '_type';
-  let extraSQL = t==='lce' ? `is_killer boolean default false,` : '';
+  let extraSQL = t === 'lce' ? `is_killer boolean default false,` : '';
   modExp[typeTableName] = {
-    create:     sql('type/create.sql', {tableName: typeTableName, extraSQL}),
-    drop:       sql('type/drop.sql', {tableName: typeTableName, extraSQL}),
-    getByName:  sql('type/getByName.sql', {tableName: typeTableName, extraSQL}),
+    create: sql('type/create.sql', {tableName: typeTableName, extraSQL}),
+    drop: sql('type/drop.sql', {tableName: typeTableName, extraSQL}),
+    getByName: sql('type/getByName.sql', {tableName: typeTableName, extraSQL}),
   }
 });
 
