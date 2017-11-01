@@ -3,7 +3,7 @@ const lib = require('../../../lib');
 const sql = require('../../../sql');
 const moment = require('moment');
 
-describe("PUT Investment API", () => {
+describe("POST Investment API", () => {
   let bizData, personData, orgData, personInvestment, orgInvestment, bizMan, orgMan;
 
   beforeEach(done => {
@@ -91,7 +91,7 @@ describe("PUT Investment API", () => {
         if (err.statusCode !== 403) {
           this.fail(lib.helpers.parseServerError(err));
         } else {
-          expect(err.message).toContain('User is not representative of business');
+          expect(err.message).toContain('Representative of neither side of investment');
         }
       })
       .then(() =>

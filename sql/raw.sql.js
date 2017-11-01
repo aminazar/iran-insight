@@ -91,17 +91,6 @@ let modExp = {
     create: sql('association/create.sql'),
     drop: sql('association/drop.sql'),
   },
-  investment: {
-    create: sql('investment/create.sql'),
-    drop: sql('investment/drop.sql'),
-    getByBiz: sql('investment/getByBiz.sql'),
-    getByOrg: sql('investment/getByOrg.sql'),
-    getByPerson: sql('investment/getByPerson.sql'),
-    getPendingByBiz: sql('investment/getPendingByBiz.sql'),
-    getPendingByOrg: sql('investment/getPendingByOrg.sql'),
-    getPendingByPerson: sql('investment/getPendingByPerson.sql'),
-    getWithAssoc: sql('investment/getWithAssoc.sql'),
-  },
   membership: {
     create: sql('membership/create.sql'),
     drop: sql('membership/drop.sql'),
@@ -137,7 +126,15 @@ let modExp = {
 };
 
 // Template-generated tables
-
+let extraSQLMap = {
+  investment: `amount money,
+    currency char(3),
+    investment_cycle smallint,
+    is_lead boolean not null default false,
+    is_confirmed boolean not null default false,`,
+  consultancy: `is_mentor boolean not null default false,`,
+  lce: `is_killer boolean default false,`
+};
 // type tables
 [
   'attendance',
@@ -147,12 +144,32 @@ let modExp = {
   'business',
 ].forEach(t => {
   let typeTableName = t + '_type';
-  let extraSQL = t === 'lce' ? `is_killer boolean default false,` : '';
+  let extraSQL = extraSQLMap[t] ? extraSQLMap[t]  : '';
   modExp[typeTableName] = {
     create: sql('type/create.sql', {tableName: typeTableName, extraSQL}),
     drop: sql('type/drop.sql', {tableName: typeTableName, extraSQL}),
     getByName: sql('type/getByName.sql', {tableName: typeTableName, extraSQL}),
   }
 });
+
+// biz input tables
+[
+  'investment',
+  'consultancy',
+].forEach(t => {
+  let extraSQL = extraSQLMap[t] ? extraSQLMap[t]  : '';
+  let param = {tableName: t};
+  modExp[t] = {
+    create: sql('biz-input/create.sql', {tableName: t, extraSQL}),
+    drop: sql('biz-input/drop.sql', param),
+    getByBiz: sql('biz-input/getByBiz.sql', param),
+    getByOrg: sql('biz-input/getByOrg.sql', param),
+    getByPerson: sql('biz-input/getByPerson.sql', param),
+    getPendingByBiz: sql('biz-input/getPendingByBiz.sql', param),
+    getPendingByOrg: sql('biz-input/getPendingByOrg.sql', param),
+    getPendingByPerson: sql('biz-input/getPendingByPerson.sql', param),
+    getWithAssoc: sql('biz-input/getWithAssoc.sql', param),
+  }
+})
 
 module.exports = modExp;

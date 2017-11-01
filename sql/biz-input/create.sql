@@ -1,11 +1,7 @@
-create table if not exists investment(
+create table if not exists ${tableName~}(
     id serial not null primary key,
     assoc_id integer references association(aid),
-    amount money,
-    currency char(3),
-    investment_cycle smallint,
-    is_lead boolean not null default false,
-    is_confirmed boolean not null default false,
+    ${extraSQL^}
     claimed_by integer not null references person(pid),
     confirmed_by integer references person(pid),
     saved_at timestamp with time zone not null default current_timestamp,
