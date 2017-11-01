@@ -72,7 +72,7 @@ describe("POST Organization API", () => {
       })
       .then(res => {
         expect(res.length).toBe(1);
-        expect(res[0].name).toBe('Management Crisis');
+        expect(res[0].org_name).toBe('Management Crisis');
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
@@ -87,7 +87,6 @@ describe("POST Organization API", () => {
       org_type_id: orgTypeId,
     })
       .then(res => {
-        console.log('=====>res: ', res);
         return rp({
           method: 'post',
           form: {
@@ -102,12 +101,12 @@ describe("POST Organization API", () => {
       })
       .then(res => {
         expect(res.statusCode).toBe(200);
-        return sql.test.organization.getById({oid: res.body});
+        return sql.test.organization.getById({oid: JSON.parse(res.body)});
       })
       .then(res => {
         expect(res.length).toBe(1);
-        expect(res[0].name).toBe('Country Management Crisis');
-        expect(res[0].name_fa).toBe('مدیریت بحران کشور');
+        expect(res[0].org_name).toBe('Country Management Crisis');
+        expect(res[0].org_name_fa).toBe('مدیریت بحران کشور');
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
@@ -128,13 +127,13 @@ describe("POST Organization API", () => {
             oid: res.oid,
             name: 'Country Management Crisis',
           },
-          uri: lib.dbHelpers.apiTestURL('organization/profile'),
+          uri: lib.helpers.apiTestURL('organization/profile'),
           jar: normalUserObj.jar,
           resolveWithFullResponse: true,
         });
       })
       .then(res => {
-        this.fail('Premitted not representative user to update organization info');
+        this.fail('Permitted not representative user to update organization info');
         done();
       })
       .catch(err => {
