@@ -1,1 +1,1 @@
-drop table if exists investment
+drop table if exists ${tableName~}

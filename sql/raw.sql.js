@@ -131,8 +131,9 @@ let extraSQLMap = {
     currency char(3),
     investment_cycle smallint,
     is_lead boolean not null default false,
-    is_confirmed boolean not null default false,`,
-  consultancy: `is_mentor boolean not null default false,`,
+    constraint currency_amount check((amount is null and currency is null) or (amount is not null and currency is not null)),`,
+  consultancy: `is_mentor boolean not null default false,
+    subject varchar(100),`,
   lce: `is_killer boolean default false,`
 };
 // type tables
@@ -170,6 +171,6 @@ let extraSQLMap = {
     getPendingByPerson: sql('biz-input/getPendingByPerson.sql', param),
     getWithAssoc: sql('biz-input/getWithAssoc.sql', param),
   }
-})
+});
 
 module.exports = modExp;
