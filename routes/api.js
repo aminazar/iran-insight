@@ -107,6 +107,10 @@ router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', 
 
 // Business API
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
+router.put('/business/product', apiResponse('Business', 'addProduct', true, ['body']));
+router.post('/business/product', apiResponse('Business', 'addBusinessProduct', false, ['body', 'user.pid']));
+router.get('/business/product/all', apiResponse('Business', 'getAllProducts', false));
+router.get('/business/product/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
 
 // Organization LCE API
 router.put('/business-lce', apiResponse('BusinessLCE', 'saveData', false, ['body']));
