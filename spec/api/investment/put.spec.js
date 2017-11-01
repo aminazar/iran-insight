@@ -497,4 +497,12 @@ describe("PUT Investment API", () => {
       })
       .catch(lib.helpers.errorHandler.bind(this));
   });
+
+  it("should add confirmed personal investment from admin", function (done) {
+
+  });
+
+  it("should add confirmed organizational investment from admin", function (done) {
+
+  });
 });

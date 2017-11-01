@@ -65,7 +65,7 @@ describe("PUT Investment API", () => {
       });
   });
 
-  xit("should delete personal investment from business", function (done) {
+  it("should delete personal investment from business", function (done) {
     this.done = done;
 
     rp({
@@ -101,7 +101,7 @@ describe("PUT Investment API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  xit("should delete personal investment from person", function (done) {
+  it("should delete personal investment from person", function (done) {
     this.done = done;
 
     rp({
@@ -122,7 +122,7 @@ describe("PUT Investment API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  xit("should delete organizational investment from business", function (done) {
+  it("should delete organizational investment from business", function (done) {
     this.done = done;
 
     rp({
