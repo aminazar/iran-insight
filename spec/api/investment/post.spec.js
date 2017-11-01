@@ -57,6 +57,13 @@ describe("PUT Investment API", () => {
       })
       .then(res => {
         orgInvestment.id = res.id;
+        return lib.dbHelpers.addAndLoginPerson('admin');
+      })
+      .then(res => {
+        adminData = res;
+        return lib.dbHelpers.addAdmin(adminData.pid);
+      })
+      .then(()=>{
         done();
       })
       .catch(err => {
@@ -253,6 +260,87 @@ describe("PUT Investment API", () => {
           expect(moment().diff(res[0].saved_at, 'seconds')).toBeLessThan(5);
           expect(res[0].is_claimed_by_biz).toBe(false);
           expect(res[0].claimed_by).toBe(orgMan.pid);
+        }
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+  
+  it("should update personal investment from admin", function (done) {
+    this.done = done;
+    personInvestment.investment_cycle = 100;
+    personInvestment.amount = 2000;
+    personInvestment.currency = 'EUR';
+
+
+    rp({
+      method: 'POST',
+      uri: lib.helpers.apiTestURL(`personalInvestment/${personInvestment.id}/${bizData.bid}/${personData.pid}`),
+      body: personInvestment,
+      json: true,
+      resolveWithFullResponse: true,
+      jar: adminData.rpJar,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data).toBeTruthy();
+        return sql.test.investment.getWithAssoc({id: data});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        if (res[0]) {
+          expect(res[0].bid).toBe(bizData.bid);
+          expect(res[0].oid).toBe(null);
+          expect(res[0].amount);
+          if (res[0].amount) {
+            expect(+res[0].amount.substring(1).replace(',', '')).toBe(personInvestment.amount);
+          }
+          expect(res[0].is_confirmed).toBe(true);
+          expect(moment().diff(res[0].saved_at, 'seconds')).toBeLessThan(5);
+          expect(res[0].is_claimed_by_biz).toBe(false);
+          expect(res[0].claimed_by).toBe(adminData.pid);
+          expect(res[0].investment_cycle).toBe(personInvestment.investment_cycle);
+        }
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should update organizational investment from admin", function (done) {
+    this.done = done;
+    orgInvestment.investment_cycle = 10;
+    orgInvestment.amount = 20000;
+    orgInvestment.currency = 'CHF';
+
+    rp({
+      method: 'POST',
+      uri: lib.helpers.apiTestURL(`orgInvestment/${orgInvestment.id}/${bizData.bid}/${orgData.oid}`),
+      body: orgInvestment,
+      json: true,
+      resolveWithFullResponse: true,
+      jar: adminData.rpJar,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data).toBeTruthy();
+        return sql.test.investment.getWithAssoc({id: data});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        if (res[0]) {
+          expect(res[0].bid).toBe(bizData.bid);
+          expect(res[0].oid).toBe(orgData.oid);
+          expect(res[0].pid).toBe(null);
+          expect(res[0].amount);
+          if (res[0].amount) {
+            expect(+res[0].amount.substring(1).replace(',', '')).toBe(orgInvestment.amount);
+          }
+          expect(res[0].is_confirmed).toBe(true);
+          expect(moment().diff(res[0].saved_at, 'seconds')).toBeLessThan(5);
+          expect(res[0].is_claimed_by_biz).toBe(false);
+          expect(res[0].claimed_by).toBe(adminData.pid);
         }
         done();
       })
