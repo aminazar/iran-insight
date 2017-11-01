@@ -27,7 +27,7 @@ describe("DELETE Business API", () => {
           });
         })
         .then(res => resolve(productId))
-        .catch(err =>  reject(err));
+        .catch(err => reject(err));
     });
   };
 
