@@ -104,7 +104,7 @@ describe("GET Investment API", () => {
           expect(orgInvRes.org_name).toBe(orgData.name);
           expect(orgInvRes.org_name_fa).toBe(orgData.name_fa);
           expect(orgInvRes.is_lead).toBe(false);
-          expect(+orgInvRes.amount.substring(1).replace(',', '')).toBe(orgInvestment.amount);
+          expect(orgInvRes.amount).toBe(orgInvestment.amount);
           expect(orgInvRes.currency).toBe(orgInvestment.currency);
           expect(orgInvRes.investment_cycle).toBe(orgInvestment.investment_cycle);
         }
@@ -117,7 +117,7 @@ describe("GET Investment API", () => {
           expect(personInvRes.person_firstname).toBe('ali');
           expect(personInvRes.person_surname).toBe('alavi');
           expect(personInvRes.is_lead).toBe(true);
-          expect(+personInvRes.amount.substring(1).replace(',', '')).toBe(personInvestment.amount);
+          expect(personInvRes.amount).toBe(personInvestment.amount);
           expect(personInvRes.currency).toBe(personInvestment.currency);
           expect(personInvRes.investment_cycle).toBe(personInvestment.investment_cycle);
         }
@@ -171,7 +171,7 @@ describe("GET Investment API", () => {
           expect(personInvRes.biz_name).toBe(bizData.name);
           expect(personInvRes.biz_name_fa).toBe(bizData.name_fa);
           expect(personInvRes.is_lead).toBe(true);
-          expect(+personInvRes.amount.substring(1).replace(',', '')).toBe(personInvestment.amount);
+          expect(personInvRes.amount).toBe(personInvestment.amount);
           expect(personInvRes.currency).toBe(personInvestment.currency);
           expect(personInvRes.investment_cycle).toBe(personInvestment.investment_cycle);
         }
@@ -225,7 +225,7 @@ describe("GET Investment API", () => {
           expect(orgInvRes.biz_name).toBe(bizData.name);
           expect(orgInvRes.biz_name_fa).toBe(bizData.name_fa);
           expect(orgInvRes.is_lead).toBe(orgInvRes.is_lead);
-          expect(+orgInvRes.amount.substring(1).replace(',', '')).toBe(orgInvestment.amount);
+          expect(orgInvRes.amount).toBe(orgInvestment.amount);
           expect(orgInvRes.currency).toBe(orgInvestment.currency);
           expect(orgInvRes.investment_cycle).toBe(orgInvestment.investment_cycle);
         }
