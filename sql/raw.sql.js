@@ -131,6 +131,7 @@ let modExp = {
   business_product: {
     create: sql('business_product/create.sql'),
     drop: sql('business_product/drop.sql'),
+    removeBizProduct: sql('business_product/removeBizProduct.sql'),
   },
 };
 

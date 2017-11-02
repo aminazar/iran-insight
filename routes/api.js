@@ -111,6 +111,7 @@ router.put('/business/product', apiResponse('Business', 'addProduct', true, ['bo
 router.post('/business/product', apiResponse('Business', 'addBusinessProduct', false, ['body', 'user.pid']));
 router.get('/business/product/all', apiResponse('Business', 'getAllProducts', false));
 router.get('/business/product/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
+router.delete('/business/product', apiResponse('Business', 'removeBizOfProduct', false, ['body', 'user.pid']));
 
 // Organization LCE API
 router.put('/business-lce', apiResponse('BusinessLCE', 'saveData', false, ['body']));

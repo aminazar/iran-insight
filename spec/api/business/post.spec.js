@@ -231,7 +231,7 @@ describe("POST Business API", () => {
       })
   });
 
-  it("representative should assign exist product", function (done) {
+  it("representative should assign existing product", function (done) {
     this.done = done;
     let productId = null;
     let businessId = null;
