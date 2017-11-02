@@ -89,6 +89,7 @@ let modExp = {
     create: sql('business/create.sql'),
     drop: sql('business/drop.sql'),
     get: sql('business/get.sql'),
+    getBusinessProducts: sql('business/getBusinessProducts.sql'),
   },
   business_lce: {
     create: sql('business_lce/create.sql'),
@@ -121,6 +122,15 @@ let modExp = {
     personUnattends: sql('attendance/person-unattend.sql'),
     bizUnattends: sql('attendance/biz-unattend.sql'),
     orgUnattends: sql('attendance/org-unattend.sql'),
+  },
+  product: {
+    create: sql('product/create.sql'),
+    drop: sql('product/drop.sql'),
+    getById: sql('product/getById.sql'),
+  },
+  business_product: {
+    create: sql('business_product/create.sql'),
+    drop: sql('business_product/drop.sql'),
   },
 };
 
