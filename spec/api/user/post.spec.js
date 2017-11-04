@@ -235,6 +235,7 @@ describe("POST user API", () => {
         display_name_fa: 'اصغر آقا',
         phone_no: '0912',
         is_user: true,
+        oid: orgObj.oid,
       },
       uri: lib.helpers.apiTestURL('user/profile'),
       jar: repObj.jar,
@@ -254,6 +255,65 @@ describe("POST user API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
+  it("representative cannot add a user when no business_id and organization_id passed (pass 'no pid defined' error)", function (done) {
+    rp({
+      method: 'post',
+      form: {
+        username: 'asghar@mail.com',
+        firstname_en: 'Asghar',
+        display_name_fa: 'اصغر آقا',
+        phone_no: '0912',
+        is_user: true,
+      },
+      uri: lib.helpers.apiTestURL('user/profile'),
+      jar: repObj.jar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        this.fail('rep add user without passing bid or oid into data object');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.noId.status);
+        expect(err.error).toBe(error.noId.message);
+        done();
+      });
+  });
+
+  it("representative of another business cannot add user to another business/organization (pass 'no pid defined' error)", function (done) {
+    let anotherRep;
+    lib.dbHelpers.addAndLoginPerson('rep2')
+      .then(res => {
+        anotherRep = res;
+        return lib.dbHelpers.addBusinessWithRep(anotherRep.pid);
+      })
+      .then(res => {
+        return rp({
+          method: 'post',
+          form: {
+            username: 'asghar@mail.com',
+            firstname_en: 'Asghar',
+            display_name_fa: 'اصغر آقا',
+            phone_no: '0912',
+            is_user: true,
+            oid: orgObj.oid,
+          },
+          uri: lib.helpers.apiTestURL('user/profile'),
+          jar: anotherRep.rpJar,
+          resolveWithFullResponse: true
+        });
+      })
+      .then(res => {
+        this.fail('Rep of another biz can add user for biz');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.noId.status);
+        expect(err.error).toBe(error.noId.message);
+        done();
+      });
+  });
+
   it("representative should not be able to modify a user", function (done) {
     this.done = done;
     rp({
@@ -265,6 +325,7 @@ describe("POST user API", () => {
         display_name_fa: 'علی آقا',
         phone_no: '09129998800',
         is_user: true,
+        oid: orgObj.oid,
       },
       uri: lib.helpers.apiTestURL('user/profile'),
       jar: repObj.jar,
@@ -302,7 +363,6 @@ describe("POST user API", () => {
         done();
       })
       .catch(err => {
-        console.log('-> ', err);
         expect(err.statusCode).toBe(error.noId.status);
         expect(err.message).toContain(error.noId.message);
         done();
@@ -337,7 +397,6 @@ describe("POST user API", () => {
         done();
       });
   });
-
 
   it("user should add expertise (expertise is not exist)", function (done) {
     this.done = done;
@@ -453,7 +512,6 @@ describe("POST user API", () => {
       })
       .catch(lib.helpers.errorHandler.bind(this));
   });
-
 
   it("admin should add expertise for specific user (expertise is exist)", function (done) {
     this.done = done;
