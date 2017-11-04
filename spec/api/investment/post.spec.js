@@ -3,7 +3,7 @@ const lib = require('../../../lib');
 const sql = require('../../../sql');
 const moment = require('moment');
 
-describe("PUT Investment API", () => {
+describe("POST Investment API", () => {
   let bizData, personData, orgData, personInvestment, orgInvestment, bizMan, orgMan;
 
   beforeEach(done => {
