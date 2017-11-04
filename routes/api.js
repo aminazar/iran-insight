@@ -86,14 +86,24 @@ router.put('/user', apiResponse('Person', 'insert', true, ['body']));
 router.get('/user', apiResponse('Person', 'select', true));
 // router.post('/user/:pid', apiResponse('Person', 'update', true, ['params.pid','body']));
 router.post('/user/profile', apiResponse('Person', 'setProfile', false, ['user.pid', 'body']));
-router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['user.pid', 'body']));
-router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, ['user.pid', 'params.pid']));
-router.delete('/user/expertise', apiResponse('Person', 'deleteExpertise', false, ['user.pid', 'body']));
 router.delete('/user/:pid', apiResponse('Person', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body']));
 
+
 //Expertise API
 router.put('/expertise', apiResponse('Expertise', 'addExpertise', true, ['body']));
+router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['user.pid', 'body']));
+router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, ['user.pid', 'params.pid']));
+router.delete('/user/expertise', apiResponse('Person', 'deleteExpertise', false, ['user.pid', 'body']));
+
+// Partnership
+router.get('/person/partnership/:pid', apiResponse('Person', 'getPartnership', false, ['user.pid', 'params.pid']));
+router.get('/person/requested/partnership', apiResponse('Person', 'getRequestedPartnership', false, ['user.pid']));
+router.put('/person/partnership', apiResponse('Person', 'setPartnership', false, ['user.pid', 'body']));
+router.post('/person/confirm/partnership', apiResponse('Person', 'confirmPartnership', false, ['user.pid', 'body']));
+router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', false, ['user.pid', 'body']));
+
+
 
 // Business API
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));

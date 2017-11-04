@@ -1,0 +1,1 @@
+delete from partnership where id =${id} and (pid1 = ${pid} or pid2 = ${pid});
