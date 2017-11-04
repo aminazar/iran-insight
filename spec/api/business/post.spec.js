@@ -16,6 +16,7 @@ describe("POST Business API", () => {
     pid: null,
     jar: null,
   };
+  let bizObj = null;
   let businessId = null;
 
   beforeEach(done => {
@@ -46,7 +47,10 @@ describe("POST Business API", () => {
         });
       })
       .then(() => lib.dbHelpers.addBusinessWithRep(repObj.pid, 'Irancell'))
-      .then(res => done())
+      .then(res => {
+        bizObj = res;
+        done();
+      })
       .catch(err => {
         console.error(err);
         done();
@@ -65,7 +69,8 @@ describe("POST Business API", () => {
         address: 'Tehran - Iran',
         address_fa: 'ایران - تهران',
         tel: '+123-9876',
-        url: 'https//snapp.com'
+        url: 'https//snapp.com',
+        bid: bizObj.bid,
       },
       uri: lib.helpers.apiTestURL('business/profile'),
       jar: repObj.jar,
@@ -83,6 +88,43 @@ describe("POST Business API", () => {
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("representative of another business cannot add business profile", function (done) {
+    let anotherRep;
+    lib.dbHelpers.addAndLoginPerson('rep2')
+      .then(res => {
+        anotherRep = res;
+        return lib.dbHelpers.addBusinessWithRep(anotherRep.pid);
+      })
+      .then(res => {
+        return rp({
+          method: 'post',
+          form: {
+            name: 'ZoodFood',
+            name_fa: 'زودفود',
+            ceo_pid: repObj.pid,
+            biz_type_id: 101,
+            address: 'Tehran - Iran',
+            address_fa: 'ایران - تهران',
+            tel: '+123-9876',
+            url: 'https//snapp.com',
+            bid: bizObj.bid,
+          },
+          uri: lib.helpers.apiTestURL('business/profile'),
+          jar: anotherRep.rpJar,
+          resolveWithFullResponse: true
+        });
+      })
+      .then(res => {
+        this.fail('Rep of another biz can set profile for another biz');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.notAllowed.status);
+        expect(err.error).toBe(error.notAllowed.message);
+        done();
+      })
   });
 
   it("admin should add/update business profile", function (done) {
