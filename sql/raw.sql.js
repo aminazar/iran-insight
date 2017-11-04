@@ -101,6 +101,17 @@ let modExp = {
     create: sql('association/create.sql'),
     drop: sql('association/drop.sql'),
   },
+  investment: {
+    create: sql('investment/create.sql'),
+    drop: sql('investment/drop.sql'),
+    getByBiz: sql('investment/getByBiz.sql'),
+    getByOrg: sql('investment/getByOrg.sql'),
+    getByPerson: sql('investment/getByPerson.sql'),
+    getPendingByBiz: sql('investment/getPendingByBiz.sql'),
+    getPendingByOrg: sql('investment/getPendingByOrg.sql'),
+    getPendingByPerson: sql('investment/getPendingByPerson.sql'),
+    getWithAssoc: sql('investment/getWithAssoc.sql'),
+  },
   membership: {
     create: sql('membership/create.sql'),
     drop: sql('membership/drop.sql'),
