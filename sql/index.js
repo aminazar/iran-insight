@@ -139,6 +139,20 @@ genericGet = (tableName, isTest) => {
   }
 };
 
+genericSafeInsert = (tableName, idColumn, isTest) => {
+  let db = chooseDb(tableName, isTest);
+
+  return (data) => {
+    return genericGet(tableName, isTest)(data)
+      .then(res => {
+        if(res.length)
+          return Promise.resolve(res[0]);
+        else
+          return db.one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn);
+      });
+  }
+};
+
 genericDelete = (tableName, idColumn, isTest) => {
   let db = chooseDb(tableName, isTest);
   return (id) => {
@@ -210,7 +224,7 @@ let tablesWithSqlCreatedByHelpers = [
   },
   {
     name: 'association',
-    insert: true,
+    insert: genericSafeInsert,
     update: true,
     select: true,
     get: true,
@@ -280,6 +294,13 @@ let tablesWithSqlCreatedByHelpers = [
     get: true,
     idColumn: 'bpid',
   },
+  {
+    name: 'investment',
+    insert: true,
+    update: true,
+    delete: true,
+    idColumn: 'id',
+  }
 ].concat(templateGeneratedTables
   .map(tableName => {
     return {
@@ -302,8 +323,9 @@ tablesWithSqlCreatedByHelpers.forEach((table) => {
     wrappedSQL.test[table] = {};
 
   if (table.insert) {
-    wrappedSQL[table.name].add = genericInsert(table.name, table.idColumn, false);
-    wrappedSQL.test[table.name].add = genericInsert(table.name, table.idColumn, true);
+    let func = table.insert===true ? genericInsert : table.insert;
+    wrappedSQL[table.name].add = func(table.name, table.idColumn, false);
+    wrappedSQL.test[table.name].add = func(table.name, table.idColumn, true);
   }
 
   if (table.update) {

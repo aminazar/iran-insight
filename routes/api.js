@@ -136,8 +136,6 @@ router.put('/organization-type', apiResponse('OrganizationType', 'saveData', fal
 router.get('/user/checkIfRep', apiResponse('Person', 'findRepRequests', true));
 router.get('/user/checkIfUser', apiResponse('Person', 'findMemRequests', false, ['user.username']));
 
-
-//
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid', '?user.pid']));
 router.put('/event', apiResponse('Event', 'saveData', false, ['body', 'user.pid']));
@@ -156,5 +154,19 @@ router.delete('/orgAttends/:eid/:oid', apiResponse('Attendance', 'orgUnattends',
 router.get('/joiners', apiResponse('Joiner', 'select', false, ['user.pid']));
 router.put('/joiner/:mid', apiResponse('Joiner', 'saveData', false, ['params.mid', 'user.pid']));
 router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['params.mid', 'params.aid', 'user.pid']));
+
+// Investment API
+router.get('/investment/business/:bid', apiResponse('Investment', 'getByBiz', false, ['params.bid']));
+router.get('/investment/organization/:oid', apiResponse('Investment', 'getByOrg', false, ['params.oid']));
+router.get('/investment/person/:pid', apiResponse('Investment', 'getByPerson', false, ['params.pid']));
+router.get('/investment/pending/business', apiResponse('Investment', 'getBizPending', false, ['user.pid']));
+router.get('/investment/pending/organization', apiResponse('Investment', 'getOrgPending', false, ['user.pid']));
+router.get('/investment/pending/person', apiResponse('Investment', 'getPersonalPending', false, ['user.pid']));
+router.put('/personalInvestment/:bid/:pid', apiResponse('Investment', 'savePersonal', false, ['params.bid', 'params.pid', 'body', 'user.pid']));
+router.put('/orgInvestment/:bid/:oid', apiResponse('Investment', 'saveOrganizational', false, ['params.bid', 'params.oid', 'body', 'user.pid']));
+router.post('/personalInvestment/:id/:bid/:pid', apiResponse('Investment', 'savePersonal', false, ['params.bid', 'params.pid', 'body', 'user.pid', 'params.id']));
+router.post('/orgInvestment/:id/:bid/:oid', apiResponse('Investment', 'saveOrganizational', false, ['params.bid', 'params.oid', 'body', 'user.pid', 'params.id']));
+router.put('/investment/:id', apiResponse('Investment', 'confirm', false, ['params.id', 'user.pid']));
+router.delete('/investment/:id', apiResponse('Investment', 'delete', false, ['params.id', 'user.pid']));
 
 module.exports = router;
