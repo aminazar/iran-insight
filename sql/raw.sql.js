@@ -105,6 +105,7 @@ let modExp = {
     create: sql('membership/create.sql'),
     drop: sql('membership/drop.sql'),
     isRepresentativeOrAdmin: sql('membership/isRepresentativeOrAdmin.sql'),
+    modifiedIsRepresentativeOrAdmin: sql('membership/modifiedIsRepresentativeOrAdmin.sql'),
     getWithAssoc: sql('membership/getWithAssoc.sql'),
     getWithLimitedAssoc: sql('membership/getWithLimitedAssoc.sql'),
     repPendingUsers: sql('membership/repPendingUsers.sql'),

@@ -113,7 +113,7 @@ router.get('/business/product/all', apiResponse('Business', 'getAllProducts', fa
 router.get('/business/product/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
 router.delete('/business/product', apiResponse('Business', 'removeBizOfProduct', false, ['body', 'user.pid']));
 
-// Organization LCE API
+// Business LCE API
 router.put('/business-lce', apiResponse('BusinessLCE', 'saveData', false, ['body']));
 router.get('/business-lce/:bid', apiResponse('BusinessLCE', 'getByBid', false, ['params.bid']));
 
@@ -125,7 +125,7 @@ router.put('/organization', apiResponse('Organization', 'saveData', false, ['bod
 router.post('/organization/profile', apiResponse('Organization', 'setProfile', false, ['body', 'user.pid']));
 
 // Organization LCE API
-router.put('/organization-lce', apiResponse('OrganizationLCE', 'saveData', false, ['body']));
+router.put('/organization-lce', apiResponse('Organization', 'setLCE', false, ['body','user.pid']));
 router.get('/organization-lce/:oid', apiResponse('OrganizationLCE', 'getByOid', false, ['params.oid']));
 
 
