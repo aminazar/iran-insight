@@ -734,7 +734,7 @@ describe("Admin can get all representation requests from users and send them act
       .then(() =>{
         return rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`user/deleteRepOrg/3`),
+          uri: lib.helpers.apiTestURL(`user/deleteRepBizOrg/3`),
           jar: jar,
           resolveWithFullResponse: true,
         })
@@ -771,7 +771,7 @@ describe("Admin can get all representation requests from users and send them act
       .then(() =>{
         return rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`user/deleteRepOrg/6`),
+          uri: lib.helpers.apiTestURL(`user/deleteRepBizOrg/6`),
           jar: jar,
           resolveWithFullResponse: true,
         })
@@ -808,7 +808,7 @@ describe("Admin can get all representation requests from users and send them act
       .then(() =>{
         return rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`user/deleteRepOrg/1`),
+          uri: lib.helpers.apiTestURL(`user/deleteRepBizOrg/1`),
           jar: jar,
           resolveWithFullResponse: true,
         })

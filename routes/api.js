@@ -122,7 +122,7 @@ router.put('/organization-type', apiResponse('OrganizationType', 'saveData', fal
 router.get('/user/getRepPendingList',apiResponse('Person','findRepRequests',true));
 router.put('/user/confirmRep/:mid/:aid',apiResponse('Person','confirmRepByAdmin',true,['params.mid','params.aid']));
 router.delete('/user/deleteRep/:mid',apiResponse('Person','deleteRepRequest',true,['params.mid']));
-router.delete('/user/deleteRepOrg/:mid',apiResponse('Person','deleteRepAndHisCompany',true,['params.mid']));
+router.delete('/user/deleteRepBizOrg/:mid',apiResponse('Person','deleteRepAndHisCompany',true,['params.mid']));
 
 
 //
