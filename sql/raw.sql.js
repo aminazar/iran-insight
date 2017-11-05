@@ -36,7 +36,6 @@ let modExp = {
     bizRep: sql('person/bizRep.sql'),
     getUserById: sql('person/getUserById.sql'),
     getListOfRepresentationRequests: sql('person/getListOfRepresentationRequests.sql'),
-    getListOfMembershipRequests: sql('person/getListOfMembershipRequests.sql'),
     getPersonExpertise: sql('person/getPersonExpertise.sql'),
     deleteExpertiseById: sql('person/deleteExpertiseById.sql'),
     getAdmins: sql('person/getAdmins.sql'),
@@ -122,6 +121,8 @@ let modExp = {
     getBizRep: sql('membership/getBizRep.sql'),
     getOrgRep: sql('membership/getOrgRep.sql'),
     get: sql('membership/get.sql'),
+    getAllSameAssocIDsFromMembership: sql('membership/getAllSameAssocIDsFromMembership.sql'),
+    checkIfRepIsExist: sql('membership/checkIfRepIsExist.sql'),
   },
   event: {
     create: sql('event/create.sql'),

@@ -149,7 +149,6 @@ describe('GET Joiners API', () => {
         expect(body.biz).toBeDefined();
         expect(body.org).toBeDefined();
         expect(body.org.length).toBe(0);
-
         expect(body.biz.length).toBe(1);
         if (body.biz[0]) {
           expect(body.biz[0].name_en).toBe(bizData.name);
