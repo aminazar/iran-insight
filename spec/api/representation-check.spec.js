@@ -459,7 +459,7 @@ describe("Admin can get all representation requests from users and send them act
   });
 
   it("no one should be able to get list of rep requests before login ", done =>{
-    req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+    req.get(base_url + 'user/getRepPendingList' + test_query, (err, res) => {
       expect(res.statusCode).toBe(403);
       done();
     })
@@ -476,7 +476,7 @@ describe("Admin can get all representation requests from users and send them act
   });
 
   it("amin (a user exept admin) should not be able to get representation requests", done =>{
-    req.get(base_url + 'user/checkifrep' +test_query , (err, res) => {
+    req.get(base_url + 'user/getRepPendingList' +test_query , (err, res) => {
       expect(res.statusCode).toBe(403);
       done();
     })
@@ -500,7 +500,7 @@ describe("Admin can get all representation requests from users and send them act
   });
 
   it("admin should get all representation requests from users", done =>{
-    req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+    req.get(base_url + 'user/getRepPendingList' + test_query, (err, res) => {
       expect(res.statusCode).not.toBe(404);
       expect(res.statusCode).not.toBe(403);
       expect(res.statusCode).not.toBe(500);
@@ -544,7 +544,7 @@ describe("Admin can get all representation requests from users and send them act
         sql.test.membership.get({mid:2})
           .then(res => {
             expect(res[0].is_active).toBe(true);
-            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+            req.get(base_url + 'user/getRepPendingList' + test_query, (err, res) => {
               expect(res.statusCode).toBe(200);
               let data = JSON.parse(res.body);
               expect(data.length).toBe(2);
@@ -592,7 +592,7 @@ describe("Admin can get all representation requests from users and send them act
           .then(res => {
             expect(res.length).toBe(1);
             expect(res[0].is_active).toBe(true);
-            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+            req.get(base_url + 'user/getRepPendingList' + test_query, (err, res) => {
               expect(res.statusCode).toBe(200);
               let data = JSON.parse(res.body);
               expect(data.length).toBe(2);
@@ -856,7 +856,7 @@ describe("Admin can get all representation requests from users and send them act
           .then(res => {
             expect(res[0].is_active).toBe(true);
             expect(res[0].is_representative).toBe(false);
-            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+            req.get(base_url + 'user/getRepPendingList' + test_query, (err, res) => {
               expect(res.statusCode).toBe(200);
               let data = JSON.parse(res.body);
               expect(data.length).toBe(1);
@@ -901,7 +901,7 @@ describe("Admin can get all representation requests from users and send them act
           .then(res => {
             expect(res.length).toBe(1);
             expect(res[0].is_active).toBe(true);
-            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+            req.get(base_url + 'user/getRepPendingList' + test_query, (err, res) => {
               expect(res.statusCode).toBe(200);
               let data = JSON.parse(res.body);
               expect(data).toContain('No new representative request.');
@@ -923,7 +923,7 @@ describe("Admin can get all representation requests from users and send them act
   });
 
   it("logs out a user(admin) - checking it happened", done => {
-    req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+    req.get(base_url + 'user/getRepPendingList' + test_query, (err, res) => {
       expect(res.statusCode).toBe(403);
       done();
     });
