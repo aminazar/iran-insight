@@ -69,7 +69,7 @@ describe("Get partnership API", () => {
 
             let result = JSON.parse(res.body);
             expect(res.statusCode).toBe(200);
-            expect(result.length).toBe(2);
+            expect(result.length).toBe(1);
             done();
           })
           .catch(lib.helpers.errorHandler.bind(this));
