@@ -65,7 +65,6 @@ describe("Delete partnership API", () => {
         uri: lib.helpers.apiTestURL(`person/partnership`),
         body:{
           id: res.id,
-          pid: user1Obj.pid
         },
         json: true,
         jar: user1Obj.jar,

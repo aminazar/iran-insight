@@ -126,7 +126,10 @@ router.post('/organization/profile', apiResponse('Organization', 'setProfile', f
 
 // Organization LCE API
 router.put('/organization-lce', apiResponse('Organization', 'setLCE', false, ['body','user.pid']));
-router.get('/organization-lce/:oid', apiResponse('OrganizationLCE', 'getByOid', false, ['params.oid']));
+router.post('/organization-lce/confirm', apiResponse('Organization', 'confirmLCE', false, ['user.pid','body']));
+router.get('/organization-lce/:oid', apiResponse('Organization', 'getLCE', false, ['user.pid', 'params.oid']));
+router.get('/organization-lce/requested/:oid', apiResponse('Organization', 'getRequestedLCE', false, ['user.pid' , 'params.oid']));
+router.delete('/organization-lce', apiResponse('Organization', 'deleteLCE', false, ['user.pid', 'body']));
 
 
 // Organization type

@@ -47,7 +47,6 @@ let modExp = {
     drop: sql('partnership/drop.sql'),
     getById: sql('partnership/getById.sql'),
     getFromById: sql('partnership/getFromById.sql'),
-    deleteById: sql('partnership/deleteById.sql'),
     getConfirmedById: sql('partnership/getConfirmedById.sql'),
     getRequestedById: sql('partnership/getRequestedById.sql'),
   },
@@ -75,7 +74,9 @@ let modExp = {
   organization_lce: {
     create: sql('organization_lce/create.sql'),
     drop: sql('organization_lce/drop.sql'),
-    getByOId: sql('organization_lce/get_by_oid.sql'),
+    getAll: sql('organization_lce/getAll.sql'),
+    getRequested: sql('organization_lce/getRequested.sql'),
+    getConfirmed: sql('organization_lce/getConfirmed.sql'),
     select: sql('organization_lce/select.sql'),
   },
   person_activation_link: {
