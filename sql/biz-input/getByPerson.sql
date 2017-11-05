@@ -1,5 +1,5 @@
 select
-    investment.*,
+    ${tableName~}.*,
     association.*,
     business.name as biz_name,
     business.name_fa as biz_name_fa,
@@ -10,20 +10,20 @@ select
     confirm_person.firstname_fa as confirmed_by_firstname_fa,
     confirm_person.surname_fa as confirmed_by_surname_fa
 from
-    investment
+    ${tableName~}
 join
     association
 on
-    investment.assoc_id = association.aid
-    and association.oid = ${oid}
+    ${tableName~}.assoc_id = association.aid
+    and association.pid = ${pid}
 join
     business
 on
     business.bid = association.bid
 join
-    organization
+    person
 on
-    organization.oid = association.oid
+    person.pid = association.pid
 left outer join
     person claim_person
 on
@@ -34,3 +34,4 @@ on
     confirmed_by = confirm_person.pid
 where
     is_confirmed = true
+

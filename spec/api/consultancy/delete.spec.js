@@ -2,19 +2,16 @@ const rp = require("request-promise");
 const lib = require('../../../lib');
 const sql = require('../../../sql');
 
-describe("DELETE Investment API", () => {
-  let bizData, personData, orgData, personInvestment, orgInvestment, bizMan, orgMan;
+describe("DELETE Consultancy API", () => {
+  let bizData, personData, orgData, personConsultancy, orgConsultancy, bizMan, orgMan, adminData;
 
   beforeEach(done => {
-    personInvestment = {
-      amount: 1000,
-      currency: 'USD',
-      is_lead: true,
-      investment_cycle: 1,
+    personConsultancy = {
+      is_mentor: true,
       is_confirmed: true,
       confirmed_by: 1
     };
-    orgInvestment = {amount: 10000, currency: 'EUR', investment_cycle: 1, is_confirmed: true, confirmed_by: 1};
+    orgConsultancy = {is_mentor: false, is_confirmed: true, confirmed_by: 1};
 
     lib.dbHelpers.create()
       .then(() => {
@@ -34,28 +31,28 @@ describe("DELETE Investment API", () => {
       })
       .then(res => {
         orgData = res;
-        return lib.dbHelpers.addAndLoginPerson('invMan', 'x', {firstname_en: 'ali', surname_en: 'alavi'});
+        return lib.dbHelpers.addAndLoginPerson('consMan', 'x', {firstname_en: 'ali', surname_en: 'alavi'});
       })
       .then(res => {
         personData = res;
         return sql.test.association.add({pid: personData.pid, bid: bizData.bid})
       })
       .then(res => {
-        personInvestment.assoc_id = res.aid;
-        personInvestment.claimed_by = personData.pid;
-        return sql.test.investment.add(personInvestment)
+        personConsultancy.assoc_id = res.aid;
+        personConsultancy.claimed_by = personData.pid;
+        return sql.test.consultancy.add(personConsultancy)
       })
       .then(res => {
-        personInvestment.id = res.id;
+        personConsultancy.id = res.id;
         return sql.test.association.add({oid: orgData.oid, bid: bizData.bid})
       })
       .then(res => {
-        orgInvestment.assoc_id = res.aid;
-        orgInvestment.claimed_by = orgMan.pid;
-        return sql.test.investment.add(orgInvestment)
+        orgConsultancy.assoc_id = res.aid;
+        orgConsultancy.claimed_by = orgMan.pid;
+        return sql.test.consultancy.add(orgConsultancy)
       })
       .then(res => {
-        orgInvestment.id = res.id;
+        orgConsultancy.id = res.id;
         return lib.dbHelpers.addAndLoginPerson('admin');
       })
       .then(res => {
@@ -71,16 +68,16 @@ describe("DELETE Investment API", () => {
       });
   });
 
-  it("should delete personal investment from business", function (done) {
+  it("should delete personal consultancy from business", function (done) {
     this.done = done;
 
     rp({
       method: 'DELETE',
-      uri: lib.helpers.apiTestURL(`investment/${personInvestment.id}`),
+      uri: lib.helpers.apiTestURL(`consultancy/${personConsultancy.id}`),
       resolveWithFullResponse: true,
       jar: orgMan.rpJar,
     })
-      .then(() => this.fail('Permitted unauthorised person to delete investment'))
+      .then(() => this.fail('Permitted unauthorised person to delete consultancy'))
       .catch(err => {
         if (err.statusCode !== 403) {
           this.fail(lib.helpers.parseServerError(err));
@@ -91,14 +88,14 @@ describe("DELETE Investment API", () => {
       .then(() =>
         rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`investment/${personInvestment.id}`),
+          uri: lib.helpers.apiTestURL(`consultancy/${personConsultancy.id}`),
           resolveWithFullResponse: true,
           jar: bizMan.rpJar,
         }))
       .then(res => {
         expect(res.statusCode).toBe(200);
 
-        return sql.test.investment.getWithAssoc({id: personInvestment.id});
+        return sql.test.consultancy.getWithAssoc({id: personConsultancy.id});
       })
       .then(res => {
         expect(res.length).toBe(0);
@@ -107,19 +104,19 @@ describe("DELETE Investment API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should delete personal investment from person", function (done) {
+  it("should delete personal consultancy from person", function (done) {
     this.done = done;
 
     rp({
       method: 'DELETE',
-      uri: lib.helpers.apiTestURL(`investment/${personInvestment.id}`),
+      uri: lib.helpers.apiTestURL(`consultancy/${personConsultancy.id}`),
       resolveWithFullResponse: true,
       jar: personData.rpJar,
     })
       .then(res => {
         expect(res.statusCode).toBe(200);
 
-        return sql.test.investment.getWithAssoc({id: personInvestment.id});
+        return sql.test.consultancy.getWithAssoc({id: personConsultancy.id});
       })
       .then(res => {
         expect(res.length).toBe(0);
@@ -128,16 +125,16 @@ describe("DELETE Investment API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should delete organizational investment from business", function (done) {
+  it("should delete organizational consultancy from business", function (done) {
     this.done = done;
 
     rp({
       method: 'DELETE',
-      uri: lib.helpers.apiTestURL(`investment/${orgInvestment.id}`),
+      uri: lib.helpers.apiTestURL(`consultancy/${orgConsultancy.id}`),
       resolveWithFullResponse: true,
       jar: personData.rpJar,
     })
-      .then(() => this.fail('Permitted unauthorised person to delete investment'))
+      .then(() => this.fail('Permitted unauthorised person to delete consultancy'))
       .catch(err => {
         if (err.statusCode !== 403) {
           this.fail(lib.helpers.parseServerError(err));
@@ -148,14 +145,14 @@ describe("DELETE Investment API", () => {
       .then(() =>
         rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`investment/${orgInvestment.id}`),
+          uri: lib.helpers.apiTestURL(`consultancy/${orgConsultancy.id}`),
           resolveWithFullResponse: true,
           jar: bizMan.rpJar,
         }))
       .then(res => {
         expect(res.statusCode).toBe(200);
 
-        return sql.test.investment.getWithAssoc({id: orgInvestment.id});
+        return sql.test.consultancy.getWithAssoc({id: orgConsultancy.id});
       })
       .then(res => {
         expect(res.length).toBe(0);
@@ -164,19 +161,19 @@ describe("DELETE Investment API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should delete organizational investment from organization", function (done) {
+  it("should delete organizational consultancy from organization", function (done) {
     this.done = done;
 
     rp({
       method: 'DELETE',
-      uri: lib.helpers.apiTestURL(`investment/${orgInvestment.id}`),
+      uri: lib.helpers.apiTestURL(`consultancy/${orgConsultancy.id}`),
       resolveWithFullResponse: true,
       jar: bizMan.rpJar,
     })
       .then(res => {
         expect(res.statusCode).toBe(200);
 
-        return sql.test.investment.getWithAssoc({id: orgInvestment.id});
+        return sql.test.consultancy.getWithAssoc({id: orgConsultancy.id});
       })
       .then(res => {
         expect(res.length).toBe(0);
@@ -185,20 +182,18 @@ describe("DELETE Investment API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should delete personal investment by admin", function (done) {
+  it("should delete personal consultancy by admin", function (done) {
     this.done = done;
-
-
     rp({
       method: 'DELETE',
-      uri: lib.helpers.apiTestURL(`investment/${personInvestment.id}`),
+      uri: lib.helpers.apiTestURL(`consultancy/${personConsultancy.id}`),
       resolveWithFullResponse: true,
       jar: adminData.rpJar,
     })
       .then(res => {
         expect(res.statusCode).toBe(200);
 
-        return sql.test.investment.getWithAssoc({id: personInvestment.id});
+        return sql.test.consultancy.getWithAssoc({id: personConsultancy.id});
       })
       .then(res => {
         expect(res.length).toBe(0);
@@ -207,20 +202,19 @@ describe("DELETE Investment API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should delete organizational investment by admin", function (done) {
+  it("should delete organizational consultancy by admin", function (done) {
     this.done = done;
-
 
     rp({
       method: 'DELETE',
-      uri: lib.helpers.apiTestURL(`investment/${orgInvestment.id}`),
+      uri: lib.helpers.apiTestURL(`consultancy/${orgConsultancy.id}`),
       resolveWithFullResponse: true,
       jar: adminData.rpJar,
     })
       .then(res => {
         expect(res.statusCode).toBe(200);
 
-        return sql.test.investment.getWithAssoc({id: orgInvestment.id});
+        return sql.test.consultancy.getWithAssoc({id: orgConsultancy.id});
       })
       .then(res => {
         expect(res.length).toBe(0);

@@ -1,5 +1,5 @@
 select
-    investment.*,
+    ${tableName~}.*,
     association.*,
     business.name as biz_name,
     business.name_fa as biz_name_fa,
@@ -18,9 +18,9 @@ select
 from
     association
 join
-    investment
+    ${tableName~}
 on
-    investment.assoc_id = association.aid
+    ${tableName~}.assoc_id = association.aid
     and is_confirmed = false
 join
     business
