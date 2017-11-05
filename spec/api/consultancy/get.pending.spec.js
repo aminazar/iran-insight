@@ -2,7 +2,7 @@ const rp = require("request-promise");
 const lib = require('../../../lib');
 const sql = require('../../../sql');
 
-describe("GET Consultancy API", () => {
+describe("GET Pending Consultancy API", () => {
   let bizData, personData, orgData, personConsultancy, orgConsultancy, bizMan, orgMan;
 
   beforeEach(done => {
@@ -27,7 +27,7 @@ describe("GET Consultancy API", () => {
       })
       .then(res => {
         orgData = res;
-        return lib.dbHelpers.addAndLoginPerson('invMan', 'x', {firstname_en: 'ali', surname_en: 'alavi'});
+        return lib.dbHelpers.addAndLoginPerson('consMan', 'x', {firstname_en: 'ali', surname_en: 'alavi'});
       })
       .then(res => {
         personData = res;

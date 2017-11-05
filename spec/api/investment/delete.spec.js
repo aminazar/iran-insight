@@ -2,7 +2,7 @@ const rp = require("request-promise");
 const lib = require('../../../lib');
 const sql = require('../../../sql');
 
-describe("PUT Investment API", () => {
+describe("DELETE Investment API", () => {
   let bizData, personData, orgData, personInvestment, orgInvestment, bizMan, orgMan;
 
   beforeEach(done => {
@@ -56,6 +56,13 @@ describe("PUT Investment API", () => {
       })
       .then(res => {
         orgInvestment.id = res.id;
+        return lib.dbHelpers.addAndLoginPerson('admin');
+      })
+      .then(res => {
+        adminData = res;
+        return lib.dbHelpers.addAdmin(adminData.pid);
+      })
+      .then(() => {
         done();
       })
       .catch(err => {
@@ -165,6 +172,50 @@ describe("PUT Investment API", () => {
       uri: lib.helpers.apiTestURL(`investment/${orgInvestment.id}`),
       resolveWithFullResponse: true,
       jar: bizMan.rpJar,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+
+        return sql.test.investment.getWithAssoc({id: orgInvestment.id});
+      })
+      .then(res => {
+        expect(res.length).toBe(0);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should delete personal investment by admin", function (done) {
+    this.done = done;
+
+
+    rp({
+      method: 'DELETE',
+      uri: lib.helpers.apiTestURL(`investment/${personInvestment.id}`),
+      resolveWithFullResponse: true,
+      jar: adminData.rpJar,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+
+        return sql.test.investment.getWithAssoc({id: personInvestment.id});
+      })
+      .then(res => {
+        expect(res.length).toBe(0);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should delete organizational investment by admin", function (done) {
+    this.done = done;
+
+
+    rp({
+      method: 'DELETE',
+      uri: lib.helpers.apiTestURL(`investment/${orgInvestment.id}`),
+      resolveWithFullResponse: true,
+      jar: adminData.rpJar,
     })
       .then(res => {
         expect(res.statusCode).toBe(200);

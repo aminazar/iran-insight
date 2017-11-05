@@ -2,8 +2,8 @@ const rp = require("request-promise");
 const lib = require('../../../lib');
 const sql = require('../../../sql');
 
-describe("PUT Consultancy API", () => {
-  let bizData, personData, orgData, personConsultancy, orgConsultancy, bizMan, orgMan;
+describe("DELETE Consultancy API", () => {
+  let bizData, personData, orgData, personConsultancy, orgConsultancy, bizMan, orgMan, adminData;
 
   beforeEach(done => {
     personConsultancy = {
@@ -11,7 +11,7 @@ describe("PUT Consultancy API", () => {
       is_confirmed: true,
       confirmed_by: 1
     };
-    orgConsultancy = {is_mentor:false, is_confirmed: true, confirmed_by: 1};
+    orgConsultancy = {is_mentor: false, is_confirmed: true, confirmed_by: 1};
 
     lib.dbHelpers.create()
       .then(() => {
@@ -31,7 +31,7 @@ describe("PUT Consultancy API", () => {
       })
       .then(res => {
         orgData = res;
-        return lib.dbHelpers.addAndLoginPerson('invMan', 'x', {firstname_en: 'ali', surname_en: 'alavi'});
+        return lib.dbHelpers.addAndLoginPerson('consMan', 'x', {firstname_en: 'ali', surname_en: 'alavi'});
       })
       .then(res => {
         personData = res;
@@ -53,6 +53,13 @@ describe("PUT Consultancy API", () => {
       })
       .then(res => {
         orgConsultancy.id = res.id;
+        return lib.dbHelpers.addAndLoginPerson('admin');
+      })
+      .then(res => {
+        adminData = res;
+        return lib.dbHelpers.addAdmin(adminData.pid);
+      })
+      .then(() => {
         done();
       })
       .catch(err => {
@@ -162,6 +169,47 @@ describe("PUT Consultancy API", () => {
       uri: lib.helpers.apiTestURL(`consultancy/${orgConsultancy.id}`),
       resolveWithFullResponse: true,
       jar: bizMan.rpJar,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+
+        return sql.test.consultancy.getWithAssoc({id: orgConsultancy.id});
+      })
+      .then(res => {
+        expect(res.length).toBe(0);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should delete personal consultancy by admin", function (done) {
+    this.done = done;
+    rp({
+      method: 'DELETE',
+      uri: lib.helpers.apiTestURL(`consultancy/${personConsultancy.id}`),
+      resolveWithFullResponse: true,
+      jar: adminData.rpJar,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+
+        return sql.test.consultancy.getWithAssoc({id: personConsultancy.id});
+      })
+      .then(res => {
+        expect(res.length).toBe(0);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should delete organizational consultancy by admin", function (done) {
+    this.done = done;
+
+    rp({
+      method: 'DELETE',
+      uri: lib.helpers.apiTestURL(`consultancy/${orgConsultancy.id}`),
+      resolveWithFullResponse: true,
+      jar: adminData.rpJar,
     })
       .then(res => {
         expect(res.statusCode).toBe(200);
