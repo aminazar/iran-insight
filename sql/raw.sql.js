@@ -77,7 +77,6 @@ let modExp = {
     getAll: sql('organization_lce/getAll.sql'),
     getRequested: sql('organization_lce/getRequested.sql'),
     getConfirmed: sql('organization_lce/getConfirmed.sql'),
-    select: sql('organization_lce/select.sql'),
   },
   person_activation_link: {
     create: sql('person_activation_link/create.sql'),
@@ -95,8 +94,10 @@ let modExp = {
   business_lce: {
     create: sql('business_lce/create.sql'),
     drop: sql('business_lce/drop.sql'),
-    getByBId: sql('business_lce/get_by_bid.sql'),
-    select: sql('business_lce/select.sql'),
+    getAll: sql('business_lce/getAll.sql'),
+    getRequested: sql('business_lce/getRequested.sql'),
+    getConfirmed: sql('business_lce/getConfirmed.sql'),
+
   },
   association: {
     create: sql('association/create.sql'),
@@ -117,7 +118,6 @@ let modExp = {
     create: sql('membership/create.sql'),
     drop: sql('membership/drop.sql'),
     isRepresentativeOrAdmin: sql('membership/isRepresentativeOrAdmin.sql'),
-    modifiedIsRepresentativeOrAdmin: sql('membership/modifiedIsRepresentativeOrAdmin.sql'),
     getWithAssoc: sql('membership/getWithAssoc.sql'),
     getWithLimitedAssoc: sql('membership/getWithLimitedAssoc.sql'),
     repPendingUsers: sql('membership/repPendingUsers.sql'),
