@@ -94,7 +94,7 @@ router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body
 router.put('/expertise', apiResponse('Expertise', 'addExpertise', true, ['body']));
 router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['user.pid', 'body']));
 router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, ['user.pid', 'params.pid']));
-router.delete('/user/expertise', apiResponse('Person', 'deleteExpertise', false, ['user.pid', 'body']));
+router.delete('/expertise', apiResponse('Person', 'deleteExpertise', false, ['user.pid', 'body']));
 
 // Partnership
 router.get('/person/partnership/:pid', apiResponse('Person', 'getPartnership', false, ['user.pid', 'params.pid']));
