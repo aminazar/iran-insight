@@ -55,4 +55,6 @@ if (env.isDev) {
         setupMainDatabase();
       }
     });
+} else {
+  setupMainDatabase();
 }
