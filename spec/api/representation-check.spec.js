@@ -209,9 +209,42 @@ let assoc_info = [
     oid : null,
     start_date : null,
     end_date : null
+  }, {
+    aid : 8,
+    pid : 1,
+    bid : 1,
+    oid : null,
+    start_date : null,
+    end_date : null
+  }, {
+    aid : 9,
+    pid : 1,
+    bid : 4,
+    oid : null,
+    start_date : null,
+    end_date : null
+  },{
+    aid : 10,
+    pid : 3,
+    bid : 4,
+    oid : null,
+    start_date : null,
+    end_date : null
+  },{
+    aid : 11,
+    pid : 3,
+    bid : null,
+    oid : 52,
+    start_date : null,
+    end_date : null
+  },{
+    aid : 12,
+    pid : 3,
+    bid : 2,
+    oid : null,
+    start_date : null,
+    end_date : null
   }];
-
-
 
 let mem_info = [{
   mid : 1,
@@ -271,7 +304,37 @@ let mem_info = [{
   mid : 10,
   assoc_id : 4,
   is_active : false,
+  is_representative : false,
+  position_id : 300
+},{
+  mid : 11,
+  assoc_id : 8,
+  is_active : false,
   is_representative : true,
+  position_id : 300
+},{
+  mid : 12,
+  assoc_id : 9,
+  is_active : false,
+  is_representative : false,
+  position_id : 300
+},{
+  mid : 13,
+  assoc_id : 10,
+  is_active : false,
+  is_representative : false,
+  position_id : 304
+},{
+  mid : 14,
+  assoc_id : 11,
+  is_active : false,
+  is_representative : false,
+  position_id : 301
+},{
+  mid : 15,
+  assoc_id : 12,
+  is_active : false,
+  is_representative : false,
   position_id : 300
 }];
 
@@ -356,6 +419,11 @@ describe("Admin can get all representation requests from users and send them act
         .then(() =>  createNewAssociation(assoc_info[4]))
         .then(() =>  createNewAssociation(assoc_info[5]))
         .then(() =>  createNewAssociation(assoc_info[6]))
+        .then(() =>  createNewAssociation(assoc_info[7]))
+        .then(() =>  createNewAssociation(assoc_info[8]))
+        .then(() =>  createNewAssociation(assoc_info[9]))
+        .then(() =>  createNewAssociation(assoc_info[10]))
+        .then(() =>  createNewAssociation(assoc_info[11]))
         .then(() =>  createNewPositionType(position_type_info[0]))
         .then(() =>  createNewPositionType(position_type_info[1]))
         .then(() =>  createNewPositionType(position_type_info[2]))
@@ -371,8 +439,13 @@ describe("Admin can get all representation requests from users and send them act
         .then(() =>  createNewMembership(mem_info[6]))
         .then(() =>  createNewMembership(mem_info[7]))
         .then(() =>  createNewMembership(mem_info[8]))
+        .then(() =>  createNewMembership(mem_info[9]))
+        .then(() =>  createNewMembership(mem_info[10]))
+        .then(() =>  createNewMembership(mem_info[11]))
+        .then(() =>  createNewMembership(mem_info[12]))
+        .then(() =>  createNewMembership(mem_info[13]))
         .then(()=>{
-          createNewMembership(mem_info[9])
+          createNewMembership(mem_info[14])
           done();
         })
         .catch(err => {
@@ -385,8 +458,14 @@ describe("Admin can get all representation requests from users and send them act
     }
   });
 
+  it("no one should be able to get list of rep requests before login ", done =>{
+    req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
+      expect(res.statusCode).toBe(403);
+      done();
+    })
+  });
 
-  it("logins as amin", done => {
+  it("amin logins, as representative of a business", done => {
     req.post({
       url: base_url + 'login' + test_query,
       form: {username: 'amin', password: 'test'}
@@ -410,23 +489,6 @@ describe("Admin can get all representation requests from users and send them act
     });
   });
 
-  it("should not be able to get list of rep requests bofore login ", done =>{
-    req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
-      expect(res.statusCode).toBe(403);
-      done();
-    })
-  });
-
-  it("should logins as representative of a business", done=>{
-    req.post({
-      url: base_url + 'login' + test_query,
-      form: {username: 'amin', password: 'test'}
-    }, (err, res) => {
-      expect(res.statusCode).toBe(200);
-      done();
-    })
-  })
-
   it("logins as admin", done => {
     req.post({
       url: base_url + 'login' + test_query,
@@ -437,24 +499,25 @@ describe("Admin can get all representation requests from users and send them act
     })
   });
 
-  it("admin should get all representation requests from users and send activation E-mail to them if they are right", done =>{
+  it("admin should get all representation requests from users", done =>{
     req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
       expect(res.statusCode).not.toBe(404);
+      expect(res.statusCode).not.toBe(403);
       expect(res.statusCode).not.toBe(500);
       expect(res.statusCode).toBe(200);
       let data = JSON.parse(res.body);
       expect(data.length).toBe(2);
       let x = (data[0].person.pid === 1 ? data[0] : data[1]);
       let y = (data[0].person.pid === 3 ? data[0] : data[1]);
-      expect(x.business.length).toBe(3);
+      expect(x.business.length).toBe(4);
       expect(x.organization.length).toBe(1);
       expect(y.business.length).toBe(3);
-      expect(y.organization.length).toBe(3);
+      expect(y.organization.length).toBe(2);
       done();
     })
   });
 
-  it('admin should be able to activate a right representation request', function (done) {
+  it('admin should be able to activate a right representation request, and send activation E-mail to him if he is right', function (done) {
     let jar;
     sql.test.membership.get({mid:2})
       .then(res => {
@@ -487,10 +550,10 @@ describe("Admin can get all representation requests from users and send them act
               expect(data.length).toBe(2);
               let x = (data[0].person.pid === 1 ? data[0] : data[1]);
               let y = (data[0].person.pid === 3 ? data[0] : data[1]);
-              expect(x.business.length).toBe(2);
+              expect(x.business.length).toBe(3);
               expect(x.organization.length).toBe(1);
               expect(y.business.length).toBe(3);
-              expect(y.organization.length).toBe(3);
+              expect(y.organization.length).toBe(2);
               done();
             })
           });
@@ -501,9 +564,9 @@ describe("Admin can get all representation requests from users and send them act
       });
   });
 
-  it('admin should be able to activate another right representation request', function (done) {
+  it('admin should be able to activate another right representation request for a biz/org,and deactive other rep requests for that biz/org', function (done) {
     let jar;
-    sql.test.membership.get({mid:3})
+    sql.test.membership.get({mid:8})
       .then(res => {
         expect(res[0].is_active).toBe(false);
         jar = rp.jar();
@@ -518,15 +581,16 @@ describe("Admin can get all representation requests from users and send them act
       .then(() =>{
         return rp({
           method: 'PUT',
-          uri: lib.helpers.apiTestURL(`user/confirmRep/3/3`),
+          uri: lib.helpers.apiTestURL(`user/confirmRep/8/7`),
           jar: jar,
           resolveWithFullResponse: true,
         })
       })
       .then(res => {
         expect(res.statusCode).toBe(200);
-        sql.test.membership.get({mid:3})
+        sql.test.membership.get({mid:8})
           .then(res => {
+            expect(res.length).toBe(1);
             expect(res[0].is_active).toBe(true);
             req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
               expect(res.statusCode).toBe(200);
@@ -534,25 +598,35 @@ describe("Admin can get all representation requests from users and send them act
               expect(data.length).toBe(2);
               let x = (data[0].person.pid === 1 ? data[0] : data[1]);
               let y = (data[0].person.pid === 3 ? data[0] : data[1]);
-              expect(x.business.length).toBe(2);
-              expect(x.organization.length).toBe(0);
-              expect(y.business.length).toBe(3);
-              expect(y.organization.length).toBe(3);
+              expect(x.business.length).toBe(1);
+              expect(x.organization.length).toBe(1);
+              expect(y.business.length).toBe(2);
+              expect(y.organization.length).toBe(2);
               done();
             })
-          });
-      })
+          })
+          .then(() =>{
+            sql.test.membership.get({mid:5})
+              .then(res => {
+                expect(res.length).toBe(1);
+                expect(res[0].is_active).toBe(false);
+                expect(res[0].is_representative).toBe(false);
+                done();
+              })
+            })
+       })
       .catch(err => {
         this.fail(lib.helpers.parseServerErrorToString(err));
         done();
       });
   });
 
-  it('admin should be able to activate another right representation request/2', function (done) {
+  it('admin should NOT be able to activate a rep request for a biz/org with representative', function (done) {
     let jar;
-    sql.test.membership.get({mid:7})
+    sql.test.membership.get({mid:5})
       .then(res => {
         expect(res[0].is_active).toBe(false);
+        expect(res[0].is_representative).toBe(false);
         jar = rp.jar();
         return rp({
           method: 'POST',
@@ -565,42 +639,25 @@ describe("Admin can get all representation requests from users and send them act
       .then(() =>{
         return rp({
           method: 'PUT',
-          uri: lib.helpers.apiTestURL(`user/confirmRep/7/7`),
+          uri: lib.helpers.apiTestURL(`user/confirmRep/5/5`),
           jar: jar,
           resolveWithFullResponse: true,
         })
       })
-      .then(res => {
-        expect(res.statusCode).toBe(200);
-        sql.test.membership.get({mid:7})
-          .then(res => {
-            expect(res.length).toBe(1);
-            expect(res[0].is_active).toBe(true);
-            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
-              expect(res.statusCode).toBe(200);
-              let data = JSON.parse(res.body);
-              expect(data.length).toBe(1);
-              let x = (data[0].person.pid === 1 ? data[0] : data[1]);
-              let y = (data[0].person.pid === 3 ? data[0] : data[1]);
-              expect(x).toBe(undefined);
-              expect(y.business.length).toBe(3);
-              expect(y.organization.length).toBe(3);
-              done();
-            })
-          });
+      .then(() => {
+        this.fail('this organization or business already has representative');
+        done();
       })
       .catch(err => {
-        this.fail(lib.helpers.parseServerErrorToString(err));
+        expect(err.statusCode).toBe(500);
         done();
       });
   });
 
   it('admin should be able to delete a false representation request, convert him to a usual user', function (done) {
     let jar;
-    sql.test.membership.get({mid:5})
+    sql.test.membership.get({mid:11})
       .then(res => {
-        expect(res[0].is_active).toBe(false);
-        expect(res[0].is_representative).toBe(true);
         jar = rp.jar();
         return rp({
           method: 'POST',
@@ -613,27 +670,14 @@ describe("Admin can get all representation requests from users and send them act
       .then(() =>{
         return rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`user/deleteRep/5`),
+          uri: lib.helpers.apiTestURL(`user/deleteRep/11`),
           jar: jar,
           resolveWithFullResponse: true,
         })
       })
       .then(res => {
         expect(res.statusCode).toBe(200);
-        sql.test.membership.get({mid:5})
-          .then(res => {
-            expect(res[0].is_active).toBe(true);
-            expect(res[0].is_representative).toBe(false);
-            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
-              expect(res.statusCode).toBe(200);
-              let data = JSON.parse(res.body);
-              expect(data.length).toBe(1);
-              let x = (data[0].person.pid === 3 ? data[0] : data[1]);
-              expect(x.business.length).toBe(2);
-              expect(x.organization.length).toBe(3);
-              done();
-            })
-          });
+        done();
       })
       .catch(err => {
         this.fail(lib.helpers.parseServerErrorToString(err));
@@ -641,9 +685,40 @@ describe("Admin can get all representation requests from users and send them act
       });
   });
 
-  it('admin should be able to delete a false representation request from all related tables except association', function (done) {
+  it('admin should NOT be able to delete a representation request and  convert him to a usual user,with representative', function (done) {
     let jar;
-    sql.test.membership.get({mid:1})
+    sql.test.membership.get({mid:7})
+      .then(res => {
+        jar = rp.jar();
+        return rp({
+          method: 'POST',
+          uri: lib.helpers.apiTestURL('login'),
+          form:{username: 'admin', password :'atest'},
+          withCredentials: true,
+          jar : jar,
+        })
+      })
+      .then(() =>{
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`user/deleteRep/7`),
+          jar: jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(() => {
+        this.fail('this organization or business already has representative');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(500);
+        done();
+      });
+  });
+
+  it('admin should be able to delete a false representation request from all related tables except(maybe) association', function (done) {
+    let jar;
+    sql.test.membership.get({mid:3})
       .then(res => {
         expect(res[0].is_active).toBe(false);
         expect(res[0].is_representative).toBe(true);
@@ -659,26 +734,18 @@ describe("Admin can get all representation requests from users and send them act
       .then(() =>{
         return rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`user/deleteRepOrg/1`),
+          uri: lib.helpers.apiTestURL(`user/deleteRepOrg/3`),
           jar: jar,
           resolveWithFullResponse: true,
         })
       })
       .then(res => {
         expect(res.statusCode).toBe(200);
-        sql.test.membership.get({mid:1})
-          .then(res => {
-            expect(res.length).toBe(0);
-            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
-              expect(res.statusCode).toBe(200);
-              let data = JSON.parse(res.body);
-              expect(data.length).toBe(1);
-              let x = (data[0].person.pid === 3 ? data[0] : data[1]);
-              expect(x.business.length).toBe(1);
-              expect(x.organization.length).toBe(3);
-              done();
-            })
-          });
+        sql.test.membership.get({mid:3})
+        .then(res => {
+          expect(res.length).toBe(0);
+          done();
+        });
       })
       .catch(err => {
         this.fail(lib.helpers.parseServerErrorToString(err));
@@ -686,7 +753,7 @@ describe("Admin can get all representation requests from users and send them act
       });
   });
 
-  it('admin should be able to delete a false representation request from all related tables', function (done) {
+  it('admin should be able to delete a false representation request from all related tables, except association', function (done) {
     let jar;
     sql.test.membership.get({mid:6})
       .then(res => {
@@ -714,15 +781,44 @@ describe("Admin can get all representation requests from users and send them act
         sql.test.membership.get({mid:6})
           .then(res => {
             expect(res.length).toBe(0);
-            req.get(base_url + 'user/checkifrep' + test_query, (err, res) => {
-              expect(res.statusCode).toBe(200);
-              let data = JSON.parse(res.body);
-              expect(data.length).toBe(1);
-              let x = (data[0].person.pid === 3 ? data[0] : data[1]);
-              expect(x.organization.length).toBe(3);
-              expect(x.business.length).toBe(0);
-              done();
-            })
+            done();
+          });
+      })
+      .catch(err => {
+        this.fail(lib.helpers.parseServerErrorToString(err));
+        done();
+      });
+  });
+
+  it('admin should be able to delete a false representation request from all related tables', function (done) {
+    let jar;
+    sql.test.membership.get({mid:1})
+      .then(res => {
+        expect(res[0].is_active).toBe(false);
+        expect(res[0].is_representative).toBe(true);
+        jar = rp.jar();
+        return rp({
+          method: 'POST',
+          uri: lib.helpers.apiTestURL('login'),
+          form:{username: 'admin', password :'atest'},
+          withCredentials: true,
+          jar : jar,
+        })
+      })
+      .then(() =>{
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`user/deleteRepOrg/1`),
+          jar: jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        sql.test.membership.get({mid:1})
+          .then(res => {
+            expect(res.length).toBe(0);
+            done();
           });
       })
       .catch(err => {
@@ -756,7 +852,7 @@ describe("Admin can get all representation requests from users and send them act
       })
       .then(res => {
         expect(res.statusCode).toBe(200);
-        sql.test.membership.get({mid:5})
+        sql.test.membership.get({mid:4})
           .then(res => {
             expect(res[0].is_active).toBe(true);
             expect(res[0].is_representative).toBe(false);
@@ -766,7 +862,7 @@ describe("Admin can get all representation requests from users and send them act
               expect(data.length).toBe(1);
               let x = (data[0].person.pid === 3 ? data[0] : data[1]);
               expect(x.business.length).toBe(0);
-              expect(x.organization.length).toBe(2);
+              expect(x.organization.length).toBe(1);
               done();
             })
           });
