@@ -2,7 +2,7 @@ const rp = require("request-promise");
 const lib = require('../../../lib');
 const sql = require('../../../sql');
 
-describe("GET Investment API", () => {
+describe("GET Pending Investment API", () => {
   let bizData, personData, orgData, personInvestment, orgInvestment, bizMan, orgMan;
 
   beforeEach(done => {

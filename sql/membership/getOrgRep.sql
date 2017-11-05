@@ -1,4 +1,4 @@
-select organization.oid
+select person.*
 from organization
 join association on association.oid = organization.oid
 join membership on association.aid = membership.assoc_id

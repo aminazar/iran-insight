@@ -36,12 +36,20 @@ let modExp = {
     bizRep: sql('person/bizRep.sql'),
     getUserById: sql('person/getUserById.sql'),
     getListOfRepresentationRequests: sql('person/getListOfRepresentationRequests.sql'),
-    getListOfMembershipRequests: sql('person/getListOfMembershipRequests.sql'),
     getPersonExpertise: sql('person/getPersonExpertise.sql'),
     deleteExpertiseById: sql('person/deleteExpertiseById.sql'),
     getAdmins: sql('person/getAdmins.sql'),
 
   },
+  partnership: {
+    create: sql('partnership/create.sql'),
+    drop: sql('partnership/drop.sql'),
+    getById: sql('partnership/getById.sql'),
+    getFromById: sql('partnership/getFromById.sql'),
+    getConfirmedById: sql('partnership/getConfirmedById.sql'),
+    getRequestedById: sql('partnership/getRequestedById.sql'),
+  },
+
   administrators: {
     create: sql('administrators/create.sql'),
     getById: sql('administrators/getById.sql'),
@@ -65,8 +73,9 @@ let modExp = {
   organization_lce: {
     create: sql('organization_lce/create.sql'),
     drop: sql('organization_lce/drop.sql'),
-    getByOId: sql('organization_lce/get_by_oid.sql'),
-    select: sql('organization_lce/select.sql'),
+    getAll: sql('organization_lce/getAll.sql'),
+    getRequested: sql('organization_lce/getRequested.sql'),
+    getConfirmed: sql('organization_lce/getConfirmed.sql'),
   },
   person_activation_link: {
     create: sql('person_activation_link/create.sql'),
@@ -84,8 +93,10 @@ let modExp = {
   business_lce: {
     create: sql('business_lce/create.sql'),
     drop: sql('business_lce/drop.sql'),
-    getByBId: sql('business_lce/get_by_bid.sql'),
-    select: sql('business_lce/select.sql'),
+    getAll: sql('business_lce/getAll.sql'),
+    getRequested: sql('business_lce/getRequested.sql'),
+    getConfirmed: sql('business_lce/getConfirmed.sql'),
+
   },
   association: {
     create: sql('association/create.sql'),
@@ -101,6 +112,8 @@ let modExp = {
     getBizRep: sql('membership/getBizRep.sql'),
     getOrgRep: sql('membership/getOrgRep.sql'),
     get: sql('membership/get.sql'),
+    getAllSameAssocIDsFromMembership: sql('membership/getAllSameAssocIDsFromMembership.sql'),
+    checkIfRepIsExist: sql('membership/checkIfRepIsExist.sql'),
   },
   event: {
     create: sql('event/create.sql'),

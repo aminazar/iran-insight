@@ -17,6 +17,7 @@ describe("POST Organization API", () => {
     jar: null,
   };
   let orgTypeId = null;
+  let orgObj = null;
 
   beforeEach(done => {
     lib.dbHelpers.create()
@@ -45,7 +46,10 @@ describe("POST Organization API", () => {
         });
       })
       .then(res => lib.dbHelpers.addOrganizationWithRep(repObj.pid, 'MTN'))
-      .then(res => done())
+      .then(res => {
+        orgObj = res;
+        done();
+      })
       .catch(err => {
         console.log(err);
         done();
@@ -60,7 +64,8 @@ describe("POST Organization API", () => {
         name: 'Management Crisis',
         name_fa: 'مدیریت بحران',
         ceo_pid: repObj.pid,
-        org_type_id: orgTypeId
+        org_type_id: orgTypeId,
+        oid: orgObj.oid,
       },
       uri: lib.helpers.apiTestURL('organization/profile'),
       jar: repObj.jar,
@@ -68,7 +73,7 @@ describe("POST Organization API", () => {
     })
       .then(res => {
         expect(res.statusCode).toBe(200);
-        return sql.test.organization.getById({oid: res.body});
+        return sql.test.organization.getById({oid: JSON.parse(res.body)});
       })
       .then(res => {
         expect(res.length).toBe(1);
@@ -76,6 +81,39 @@ describe("POST Organization API", () => {
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("representative of another organization cannot set profile for another organization", function (done) {
+    let anotherRep;
+    lib.dbHelpers.addAndLoginPerson('rep2')
+      .then(res => {
+        anotherRep = res;
+        return lib.dbHelpers.addOrganizationWithRep(anotherRep.pid);
+      })
+      .then(res => {
+        return rp({
+          method: 'post',
+          form: {
+            name: 'Management Crisis',
+            name_fa: 'مدیریت بحران',
+            ceo_pid: repObj.pid,
+            org_type_id: orgTypeId,
+            oid: orgObj.oid,
+          },
+          uri: lib.helpers.apiTestURL('organization/profile'),
+          jar: anotherRep.rpJar,
+          resolveWithFullResponse: true,
+        });
+      })
+      .then(res => {
+        this.fail('Rep of another org can set profile for another org');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.notAllowed.status);
+        expect(err.error).toBe(error.notAllowed.message);
+        done();
+      })
   });
 
   it("admin should add/update organization profile", function (done) {
