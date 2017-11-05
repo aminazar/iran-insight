@@ -90,12 +90,12 @@ describe("PUT user API", () => {
       })
       .then(res => {
         expect(res.length).toBe(2);
-        expect(res[0].name_en).toBe('Graphic Design');
-        expect(res[0].name_fa).toBe('طراحی گرافیکی');
-        expect(res[0].is_education).toBe(false);
-        expect(res[1].name_en).toBe('Computer Science - Artificial Intelligence');
-        expect(res[1].name_fa).toBe('علوم کامپیوتر - هوش مصنوعی');
-        expect(res[1].is_education).toBe(true);
+        expect(res.map(el => el.name_en)).toContain('Graphic Design');
+        expect(res.map(el => el.name_fa)).toContain('طراحی گرافیکی');
+        expect(res.map(el => el.is_education)).toContain(false);
+        expect(res.map(el => el.name_en)).toContain('Computer Science - Artificial Intelligence');
+        expect(res.map(el => el.name_fa)).toContain('علوم کامپیوتر - هوش مصنوعی');
+        expect(res.map(el => el.is_education)).toContain(true);
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
@@ -129,6 +129,4 @@ describe("PUT user API", () => {
         done();
       });
   });
-
-
 });

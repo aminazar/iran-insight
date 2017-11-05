@@ -68,7 +68,7 @@ describe("Delete user API", () => {
     })
       .then(res => {
         eid1 = res.expertise_id;
-        addPersonExpertise({
+        return addPersonExpertise({
           pid: normalUserObj.pid,
           expertise_id: eid1
         })
@@ -81,7 +81,7 @@ describe("Delete user API", () => {
         }))
       .then(res => {
         eid2 = res.expertise_id;
-        addPersonExpertise({
+        return addPersonExpertise({
           pid: normalUserObj.pid,
           expertise_id: eid2
         })
@@ -95,7 +95,7 @@ describe("Delete user API", () => {
             expertise_id: eid2
           },
           json: true,
-          uri: lib.helpers.apiTestURL('user/expertise'),
+          uri: lib.helpers.apiTestURL('expertise'),
           jar: normalUserObj.jar,
           resolveWithFullResponse: true
         })
@@ -148,7 +148,7 @@ describe("Delete user API", () => {
             expertise_id: eid2
           },
           json: true,
-          uri: lib.helpers.apiTestURL('user/expertise'),
+          uri: lib.helpers.apiTestURL('expertise'),
           jar: adminObj.jar,
           resolveWithFullResponse: true
         })
@@ -201,7 +201,7 @@ describe("Delete user API", () => {
             expertise_id: eid2
           },
           json: true,
-          uri: lib.helpers.apiTestURL('user/expertise'),
+          uri: lib.helpers.apiTestURL('expertise'),
           jar: repObj.jar,
           resolveWithFullResponse: true
         })

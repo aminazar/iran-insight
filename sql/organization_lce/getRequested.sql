@@ -1,0 +1,1 @@
+select * from organization_lce where oid2 = ${oid} and is_confirmed = false;

@@ -6,14 +6,15 @@ select
 from (
         select 
             temp.name as biz1_name,
-            temp.name_fa as biz2_bane_fa,
+            temp.name_fa as biz1_name_fa,
             b.name as biz2_name,
             b.name_fa as biz2_name_fa,
             temp.description,
             temp.description_fa,
             temp.start_date,
             temp.end_date,
-            temp.lce_type_id
+            temp.lce_type_id,
+            temp.is_confirmed
 
         from (
                 select * from 

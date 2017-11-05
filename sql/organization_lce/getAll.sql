@@ -6,14 +6,15 @@ select
 from (
         select 
             temp.name as org1_name,
-            temp.name_fa as org2_bane_fa,
+            temp.name_fa as org1_name_fa,
             o.name as org2_name,
             o.name_fa as org2_name_fa,
             temp.description,
             temp.description_fa,
             temp.start_date,
             temp.end_date,
-            temp.lce_type_id
+            temp.lce_type_id,
+            temp.is_confirmed
 
         from (
                 select * from 

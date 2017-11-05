@@ -1,0 +1,1 @@
+select * from business_lce where bid2 = ${bid} and is_confirmed = false;

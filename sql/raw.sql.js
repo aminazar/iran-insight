@@ -41,6 +41,15 @@ let modExp = {
     getAdmins: sql('person/getAdmins.sql'),
 
   },
+  partnership: {
+    create: sql('partnership/create.sql'),
+    drop: sql('partnership/drop.sql'),
+    getById: sql('partnership/getById.sql'),
+    getFromById: sql('partnership/getFromById.sql'),
+    getConfirmedById: sql('partnership/getConfirmedById.sql'),
+    getRequestedById: sql('partnership/getRequestedById.sql'),
+  },
+
   administrators: {
     create: sql('administrators/create.sql'),
     getById: sql('administrators/getById.sql'),
@@ -64,8 +73,9 @@ let modExp = {
   organization_lce: {
     create: sql('organization_lce/create.sql'),
     drop: sql('organization_lce/drop.sql'),
-    getByOId: sql('organization_lce/get_by_oid.sql'),
-    select: sql('organization_lce/select.sql'),
+    getAll: sql('organization_lce/getAll.sql'),
+    getRequested: sql('organization_lce/getRequested.sql'),
+    getConfirmed: sql('organization_lce/getConfirmed.sql'),
   },
   person_activation_link: {
     create: sql('person_activation_link/create.sql'),
@@ -78,16 +88,30 @@ let modExp = {
     create: sql('business/create.sql'),
     drop: sql('business/drop.sql'),
     get: sql('business/get.sql'),
+    getBusinessProducts: sql('business/getBusinessProducts.sql'),
   },
   business_lce: {
     create: sql('business_lce/create.sql'),
     drop: sql('business_lce/drop.sql'),
-    getByBId: sql('business_lce/get_by_bid.sql'),
-    select: sql('business_lce/select.sql'),
+    getAll: sql('business_lce/getAll.sql'),
+    getRequested: sql('business_lce/getRequested.sql'),
+    getConfirmed: sql('business_lce/getConfirmed.sql'),
+
   },
   association: {
     create: sql('association/create.sql'),
     drop: sql('association/drop.sql'),
+  },
+  investment: {
+    create: sql('investment/create.sql'),
+    drop: sql('investment/drop.sql'),
+    getByBiz: sql('investment/getByBiz.sql'),
+    getByOrg: sql('investment/getByOrg.sql'),
+    getByPerson: sql('investment/getByPerson.sql'),
+    getPendingByBiz: sql('investment/getPendingByBiz.sql'),
+    getPendingByOrg: sql('investment/getPendingByOrg.sql'),
+    getPendingByPerson: sql('investment/getPendingByPerson.sql'),
+    getWithAssoc: sql('investment/getWithAssoc.sql'),
   },
   membership: {
     create: sql('membership/create.sql'),
@@ -112,6 +136,16 @@ let modExp = {
     personUnattends: sql('attendance/person-unattend.sql'),
     bizUnattends: sql('attendance/biz-unattend.sql'),
     orgUnattends: sql('attendance/org-unattend.sql'),
+  },
+  product: {
+    create: sql('product/create.sql'),
+    drop: sql('product/drop.sql'),
+    getById: sql('product/getById.sql'),
+  },
+  business_product: {
+    create: sql('business_product/create.sql'),
+    drop: sql('business_product/drop.sql'),
+    removeBizProduct: sql('business_product/removeBizProduct.sql'),
   },
 };
 

@@ -1,6 +1,7 @@
 module.exports = [ // Name tables in order of dependency
   'person',
   'administrators',
+  'partnership',
   'expertise',
   'person_expertise',
   'person_activation_link',
@@ -14,7 +15,10 @@ module.exports = [ // Name tables in order of dependency
   'organization_lce',
   'position_type',
   'membership',
+  'investment',
   'event',
   'attendance_type',
   'attendance',
+  'product',
+  'business_product',
 ];

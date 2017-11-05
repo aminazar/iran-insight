@@ -38,6 +38,7 @@ let orgs_type_info = [{
 
 
 describe("organization", () => {
+  let orgRep_pid;
 
   let createNewOrg = (org_info) => {
 
@@ -52,7 +53,9 @@ describe("organization", () => {
 
   beforeEach(done => {
     lib.dbHelpers.create()
+      .then(res => lib.dbHelpers.addPerson('orgRep1'))
       .then(() => {
+        orgRep_pid = res.pid;
         done();
       }).catch(err => {
       console.log('err ==> ', err.message);
@@ -62,7 +65,7 @@ describe("organization", () => {
 
 
   it("/Get : get an existing organization joined with its type", done => {
-
+    orgs_info[0].ceo_pid = orgRep_pid;
     createNewOrgType(orgs_type_info[0])
       .then(() => createNewOrg(orgs_info[0]))
       .then(() => {
@@ -75,8 +78,8 @@ describe("organization", () => {
           done();
         });
       }).catch(err => {
-      throw new Error(err);
-
+      this.fail(err);
+      done();
     });
 
 
@@ -84,7 +87,7 @@ describe("organization", () => {
 
   it("/Get : get an existing organization with null org_type_id and expect null (farsi) name for org type in result", function(done) {
 
-    let new_org_info = Object.assign({}, orgs_info[0]);
+    let new_org_info = Object.assign({ceo_pid: orgRep_pid}, orgs_info[0]);
     new_org_info.org_type_id = null;
 
       createNewOrg(new_org_info)
@@ -100,10 +103,7 @@ describe("organization", () => {
       }).catch(err => {
       throw new Error(err);
       done();
-
     });
-
-
   });
 
 

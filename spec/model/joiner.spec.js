@@ -62,7 +62,7 @@ describe("Joiner Model", () => {
       })
       .catch(err => {
         expect(err).toBeTruthy();
-        expect(err.status).toBe(400);
+        expect(err.status).toBe(500);
       });
   });
 

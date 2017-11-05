@@ -1,0 +1,1 @@
+select * from partnership where pid1 = ${pid} and is_confirmed = true;

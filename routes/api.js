@@ -86,22 +86,39 @@ router.put('/user', apiResponse('Person', 'insert', true, ['body']));
 router.get('/user', apiResponse('Person', 'select', true));
 // router.post('/user/:pid', apiResponse('Person', 'update', true, ['params.pid','body']));
 router.post('/user/profile', apiResponse('Person', 'setProfile', false, ['user.pid', 'body']));
-router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['user.pid', 'body']));
-router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, ['user.pid', 'params.pid']));
-router.delete('/user/expertise', apiResponse('Person', 'deleteExpertise', false, ['user.pid', 'body']));
 router.delete('/user/:pid', apiResponse('Person', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body']));
 
+
 //Expertise API
 router.put('/expertise', apiResponse('Expertise', 'addExpertise', true, ['body']));
+router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['user.pid', 'body']));
+router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, ['user.pid', 'params.pid']));
+router.delete('/expertise', apiResponse('Person', 'deleteExpertise', false, ['user.pid', 'body']));
+
+// Partnership
+router.get('/person/partnership/:pid', apiResponse('Person', 'getPartnership', false, ['user.pid', 'params.pid']));
+router.get('/person/requested/partnership', apiResponse('Person', 'getRequestedPartnership', false, ['user.pid']));
+router.put('/person/partnership', apiResponse('Person', 'setPartnership', false, ['user.pid', 'body']));
+router.post('/person/confirm/partnership', apiResponse('Person', 'confirmPartnership', false, ['user.pid', 'body']));
+router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', false, ['user.pid', 'body']));
+
+
 
 // Business API
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
+router.put('/business/product', apiResponse('Business', 'addProduct', true, ['body']));
+router.post('/business/product', apiResponse('Business', 'addBusinessProduct', false, ['body', 'user.pid']));
+router.get('/business/product/all', apiResponse('Business', 'getAllProducts', false));
+router.get('/business/product/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
+router.delete('/business/product', apiResponse('Business', 'removeBizOfProduct', false, ['body', 'user.pid']));
 
-// Organization LCE API
-router.put('/business-lce', apiResponse('BusinessLCE', 'saveData', false, ['body']));
-router.get('/business-lce/:bid', apiResponse('BusinessLCE', 'getByBid', false, ['params.bid']));
-
+// Business LCE API
+router.put('/business-lce', apiResponse('Business', 'setLCE', false, ['body','user.pid']));
+router.post('/business-lce/confirm', apiResponse('Business', 'confirmLCE', false, ['user.pid','body']));
+router.get('/business-lce/:bid', apiResponse('Business', 'getLCE', false, ['user.pid', 'params.bid']));
+router.get('/business-lce/requested/:bid', apiResponse('Business', 'getRequestedLCE', false, ['user.pid' , 'params.bid']));
+router.delete('/business-lce', apiResponse('Business', 'deleteLCE', false, ['user.pid', 'body']));
 
 
 // Organization API
@@ -111,8 +128,11 @@ router.put('/organization', apiResponse('Organization', 'saveData', false, ['bod
 router.post('/organization/profile', apiResponse('Organization', 'setProfile', false, ['body', 'user.pid']));
 
 // Organization LCE API
-router.put('/organization-lce', apiResponse('OrganizationLCE', 'saveData', false, ['body']));
-router.get('/organization-lce/:oid', apiResponse('OrganizationLCE', 'getByOid', false, ['params.oid']));
+router.put('/organization-lce', apiResponse('Organization', 'setLCE', false, ['body','user.pid']));
+router.post('/organization-lce/confirm', apiResponse('Organization', 'confirmLCE', false, ['user.pid','body']));
+router.get('/organization-lce/:oid', apiResponse('Organization', 'getLCE', false, ['user.pid', 'params.oid']));
+router.get('/organization-lce/requested/:oid', apiResponse('Organization', 'getRequestedLCE', false, ['user.pid' , 'params.oid']));
+router.delete('/organization-lce', apiResponse('Organization', 'deleteLCE', false, ['user.pid', 'body']));
 
 
 // Organization type
@@ -124,8 +144,6 @@ router.put('/user/confirmRep/:mid/:aid',apiResponse('Person','confirmRepByAdmin'
 router.delete('/user/deleteRep/:mid',apiResponse('Person','deleteRepRequest',true,['params.mid']));
 router.delete('/user/deleteRepBizOrg/:mid',apiResponse('Person','deleteRepAndHisCompany',true,['params.mid']));
 
-
-//
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid', '?user.pid']));
 router.put('/event', apiResponse('Event', 'saveData', false, ['body', 'user.pid']));
@@ -144,5 +162,19 @@ router.delete('/orgAttends/:eid/:oid', apiResponse('Attendance', 'orgUnattends',
 router.get('/joiners', apiResponse('Joiner', 'select', false, ['user.pid']));
 router.put('/joiner/:mid', apiResponse('Joiner', 'saveData', false, ['params.mid', 'user.pid']));
 router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['params.mid', 'params.aid', 'user.pid']));
+
+// Investment API
+router.get('/investment/business/:bid', apiResponse('Investment', 'getByBiz', false, ['params.bid']));
+router.get('/investment/organization/:oid', apiResponse('Investment', 'getByOrg', false, ['params.oid']));
+router.get('/investment/person/:pid', apiResponse('Investment', 'getByPerson', false, ['params.pid']));
+router.get('/investment/pending/business', apiResponse('Investment', 'getBizPending', false, ['user.pid']));
+router.get('/investment/pending/organization', apiResponse('Investment', 'getOrgPending', false, ['user.pid']));
+router.get('/investment/pending/person', apiResponse('Investment', 'getPersonalPending', false, ['user.pid']));
+router.put('/personalInvestment/:bid/:pid', apiResponse('Investment', 'savePersonal', false, ['params.bid', 'params.pid', 'body', 'user.pid']));
+router.put('/orgInvestment/:bid/:oid', apiResponse('Investment', 'saveOrganizational', false, ['params.bid', 'params.oid', 'body', 'user.pid']));
+router.post('/personalInvestment/:id/:bid/:pid', apiResponse('Investment', 'savePersonal', false, ['params.bid', 'params.pid', 'body', 'user.pid', 'params.id']));
+router.post('/orgInvestment/:id/:bid/:oid', apiResponse('Investment', 'saveOrganizational', false, ['params.bid', 'params.oid', 'body', 'user.pid', 'params.id']));
+router.put('/investment/:id', apiResponse('Investment', 'confirm', false, ['params.id', 'user.pid']));
+router.delete('/investment/:id', apiResponse('Investment', 'delete', false, ['params.id', 'user.pid']));
 
 module.exports = router;
