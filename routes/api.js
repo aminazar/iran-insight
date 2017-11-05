@@ -113,9 +113,12 @@ router.get('/business/product/all', apiResponse('Business', 'getAllProducts', fa
 router.get('/business/product/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
 router.delete('/business/product', apiResponse('Business', 'removeBizOfProduct', false, ['body', 'user.pid']));
 
-// Organization LCE API
-router.put('/business-lce', apiResponse('BusinessLCE', 'saveData', false, ['body']));
-router.get('/business-lce/:bid', apiResponse('BusinessLCE', 'getByBid', false, ['params.bid']));
+// Business LCE API
+router.put('/business-lce', apiResponse('Business', 'setLCE', false, ['body','user.pid']));
+router.post('/business-lce/confirm', apiResponse('Business', 'confirmLCE', false, ['user.pid','body']));
+router.get('/business-lce/:bid', apiResponse('Business', 'getLCE', false, ['user.pid', 'params.bid']));
+router.get('/business-lce/requested/:bid', apiResponse('Business', 'getRequestedLCE', false, ['user.pid' , 'params.bid']));
+router.delete('/business-lce', apiResponse('Business', 'deleteLCE', false, ['user.pid', 'body']));
 
 
 // Organization API
@@ -125,8 +128,11 @@ router.put('/organization', apiResponse('Organization', 'saveData', false, ['bod
 router.post('/organization/profile', apiResponse('Organization', 'setProfile', false, ['body', 'user.pid']));
 
 // Organization LCE API
-router.put('/organization-lce', apiResponse('OrganizationLCE', 'saveData', false, ['body']));
-router.get('/organization-lce/:oid', apiResponse('OrganizationLCE', 'getByOid', false, ['params.oid']));
+router.put('/organization-lce', apiResponse('Organization', 'setLCE', false, ['body','user.pid']));
+router.post('/organization-lce/confirm', apiResponse('Organization', 'confirmLCE', false, ['user.pid','body']));
+router.get('/organization-lce/:oid', apiResponse('Organization', 'getLCE', false, ['user.pid', 'params.oid']));
+router.get('/organization-lce/requested/:oid', apiResponse('Organization', 'getRequestedLCE', false, ['user.pid' , 'params.oid']));
+router.delete('/organization-lce', apiResponse('Organization', 'deleteLCE', false, ['user.pid', 'body']));
 
 
 // Organization type

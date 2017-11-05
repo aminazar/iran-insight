@@ -8,6 +8,7 @@ CREATE TABLE if not exists  organization_lce(
     description_fa varchar(200),
     aid integer references association(aid),
     lce_type_id integer not null references lce_type(id),
+    is_confirmed boolean default false, -- oid2 rep must confirm when oid2 is not null
   CONSTRAINT start_and_end_dates_in_sequence
   CHECK (start_date <= end_date),
   CONSTRAINT org_duplicate_records
