@@ -4,7 +4,7 @@ create table if not exists person(
     firstname_fa varchar(20),
     surname_en varchar(20),
     surname_fa varchar(20),
-    username varchar(25) not null unique,
+    username varchar(100) not null unique,
     secret varchar(200),
     image varchar(300),
     address_en varchar(500),

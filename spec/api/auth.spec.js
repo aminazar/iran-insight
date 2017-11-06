@@ -272,7 +272,7 @@ describe("Test auth APIs", () => {
           }
           else{
             expect(res.statusCode).toBe(500);
-            expect(res.body).toBe('Email is exist');
+            expect(res.body).toBe('Email already exists');
             done();
           }
         });
