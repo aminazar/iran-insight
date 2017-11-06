@@ -100,6 +100,37 @@ describe("PUT user API", () => {
       })
       .catch(lib.helpers.errorHandler.bind(this));
   });
+  it("Expect error on insert duplicate expertise => same name_en and name_fa", function (done) {
+    this.done = done;
+    let data = [];
+    data.push({
+      name_en: 'Graphic Design',
+      name_fa: 'طراحی گرافیکی',
+      is_education: false,
+    });
+    data.push({
+      name_en: 'Graphic Design',
+      name_fa: 'طراحی گرافیکی',
+      is_education: true,
+    });
+    rp({
+      method: 'put',
+      body: data,
+      uri: lib.helpers.apiTestURL('expertise'),
+      jar: adminObj.jar,
+      json: true,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        this.fail('did not failed when duplicate expertise are inserted');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(500);
+        expect(err.error).toContain('exp_duplicate_records');
+        done();
+      });
+  });
 
   it("should get error when admin is not adding new expertise", function (done) {
     this.done = done;
