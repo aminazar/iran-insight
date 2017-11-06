@@ -96,6 +96,10 @@ router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['us
 router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, ['user.pid', 'params.pid']));
 router.delete('/expertise', apiResponse('Person', 'deleteExpertise', false, ['user.pid', 'body']));
 
+
+// Notification
+router.post('/user/notify', apiResponse('Person', 'changeNotifyType', false, ['user.pid', 'body']));
+
 // Partnership
 router.get('/person/partnership/:pid', apiResponse('Person', 'getPartnership', false, ['user.pid', 'params.pid']));
 router.get('/person/requested/partnership', apiResponse('Person', 'getRequestedPartnership', false, ['user.pid']));
