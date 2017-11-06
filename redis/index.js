@@ -8,7 +8,7 @@ var env = require('../env');
 var redis_client = redis.createClient(env.isProd ? process.env.REDIS_URL : {
   socket_keepalive: true
 });
-
+console.log('redis_client', redis_client);
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
 
