@@ -8,6 +8,7 @@ const passportSocketIO = require('passport.socketio');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const redis = require('../redis');
+const env = require('../env');
 
 let io;
 
@@ -25,7 +26,7 @@ let setup = (http) => {
     success: onAuthorizeSuccess,
     fail: onAuthorizeFail
   }));
-  io.adapter(redis.redis_socket({host: 'localhost', port: 6379}));
+  io.adapter(redis.redis_socket(env.isProd ? {url: process.env.REDIS_URL} : {host: 'localhost', port: 6379}));
   // io.set('transports', ['websocket']);
 
   let socketSession = socketIOSession(sessionConfig.session_config);
@@ -34,6 +35,7 @@ let setup = (http) => {
   io.use(socketSession.parser);
 
   socketRoutes.setup(io, socketSession.parser);
+  console.log('Socket set up.')
 };
 
 function onAuthorizeSuccess(data, accept) {
