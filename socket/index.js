@@ -19,7 +19,7 @@ let setup = (http) => {
   io = require('socket.io')(http);
   io.use(passportSocketIO.authorize({
     key: 'connect.sid',
-    secret: 'HosKhedIDA',
+    secret: 'ManKhazID',
     store: sessionConfig.session_config.store,
     passport: passport,
     cookieParser: cookieParser,

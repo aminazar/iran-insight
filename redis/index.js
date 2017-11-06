@@ -1,28 +1,32 @@
 /**
  * Created by ali71 on 14/08/2017.
  */
-var bluebird = require('bluebird');
-var redis_socket = require('socket.io-redis');
-var redis = require('redis');
-var env = require('../env');
-var redis_client = redis.createClient(env.isProd ? process.env.REDIS_URL : {
-  socket_keepalive: true
-});
-console.log('redis_client', redis_client);
-bluebird.promisifyAll(redis.RedisClient.prototype);
-bluebird.promisifyAll(redis.Multi.prototype);
+const bluebird = require('bluebird');
+const redis_socket = require('socket.io-redis');
+const redis = require('redis');
+const env = require('../env');
 
 let redisIsReady = false;
+let redis_client;
 
-redis_client.on('ready', () => {
-  console.log('Redis is ready');
-  redisIsReady = true;
-});
+let redisClientInit = () => {
+  if(!redisIsReady) {
+    redis_client = redis.createClient(env.isProd ? process.env.REDIS_URL : {socket_keepalive: true});
 
-redis_client.on('error', (err) => {
-  console.log('Redis is down.The error message is: ', err);
-  redisIsReady = false;
-});
+    bluebird.promisifyAll(redis.RedisClient.prototype);
+    bluebird.promisifyAll(redis.Multi.prototype);
+
+    redis_client.on('ready', () => {
+      console.log('Redis is ready');
+      redisIsReady = true;
+    });
+
+    redis_client.on('error', (err) => {
+      console.log('Redis is down.The error message is: ', err);
+      redisIsReady = false;
+    });
+  }
+}
 
 let save = (key, value) => {
   if(redisIsReady)
@@ -42,8 +46,9 @@ let get = (key) => {
 
 
 module.exports = {
+  redisClientInit,
   redisIsReady,
-  redis_client,
+  redis_client: () => redis_client,
   redis_socket,
   save,
   get,
