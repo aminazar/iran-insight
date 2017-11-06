@@ -6,7 +6,7 @@ let session = require('express-session');
 let redisStore = require('connect-redis')(session);
 const redis = require('../redis').redis_client;
 
-var sessionStore = new redisStore({
+var sessionStore = new redisStore(env.isProd ? {url: process.env.REDIS_URL} : {
   "client": redis,
   "host": "127.0.0.1",
   "port": 6379
@@ -33,6 +33,8 @@ let setup = (app) => {
   }
 
   app.use(session(session_config));
+
+  console.log('Session set up.')
 };
 
 module.exports = {
