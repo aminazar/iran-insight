@@ -136,6 +136,16 @@ let modExp = {
     drop: sql('business_product/drop.sql'),
     removeBizProduct: sql('business_product/removeBizProduct.sql'),
   },
+  subscription: {
+    create: sql('subscription/create.sql'),
+    drop: sql('subscription/drop.sql'),
+    getBizSubscribers: sql('subscription/getBizSubscribers.sql'),
+    getOrgSubscribers: sql('subscription/getOrgSubscribers.sql'),
+    getPersonSubscribers: sql('subscription/getPersonSubscribers.sql'),
+    unsubscribeBiz: sql('subscription/unsubscribeBiz.sql'),
+    unsubscribeOrg: sql('subscription/unsubscribeOrg.sql'),
+    unsubscribePerson: sql('subscription/unsubscribePerson.sql'),
+  },
 };
 
 // Template-generated tables
