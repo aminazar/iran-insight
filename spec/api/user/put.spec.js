@@ -160,4 +160,24 @@ describe("PUT user API", () => {
         done();
       });
   });
+
+  it("user should follow specific person", function (done) {
+    this.done = done;
+    return rp({
+      method: 'put',
+      uri: lib.helpers.apiTestURL('follow/person/' + repObj.pid),
+      jar: adminObj.jar,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.subscription.getPersonSubscribers({pid: repObj.pid});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].pid).toBe(adminObj.pid);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
 });

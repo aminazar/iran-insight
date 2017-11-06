@@ -217,4 +217,28 @@ describe("Delete user API", () => {
       });
   });
 
+  it("user should unfollow specific person", function (done) {
+    this.done = done;
+    sql.test.subscription.add({
+      subscriber_id: normalUserObj.pid,
+      pid: repObj
+    })
+      .then(() =>
+        rp({
+          method: 'delete',
+          uri: lib.helpers.apiTestURL('follow/person/' + repObj.pid),
+          jar: normalUserObj.jar,
+          resolveWithFullResponse: true
+        })
+      )
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.subscription.getPersonSubscribers({pid: repObj.pid});
+      })
+      .then(res => {
+        expect(res.length).toBe(0);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
 });

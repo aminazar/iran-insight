@@ -81,7 +81,7 @@ describe("PUT Business API", () => {
             description: 'Produce with milk powder',
             description_fa: 'تولید شده از پودر شیر',
             parent_product_id: res.product_id
-          },{
+          }, {
             name: 'gumdrop',
             name_fa: 'پاستیل'
           }],
@@ -137,5 +137,31 @@ describe("PUT Business API", () => {
         expect(err.error).toBe(error.adminOnly.message);
         done();
       });
+  });
+
+  it("user should follow specific business", function (done) {
+    this.done = done;
+    let businessId = null;
+    lib.dbHelpers.addPerson('rep')
+      .then(res => lib.dbHelpers.addBusinessWithRep(res))
+      .then(res => {
+        businessId = res.bid;
+        return rp({
+          method: 'put',
+          uri: lib.helpers.apiTestURL('follow/business/' + res.bid),
+          jar: normalUserObj.jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.subscription.getBizSubscribers({bid: businessId});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        expect(res[0].pid).toBe(normalUserObj.pid);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
   });
 });
