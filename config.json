@@ -29,6 +29,9 @@
         "user": "postmaster@mg.bentoak.systems",
         "pass": "9ac5e5a1c799dace810f36d143989c0d"
       },
+      "tls": {
+        "rejectUnauthorized": false
+      },
       "from": "Iran Insight <postmaster@mg.bentoak.systems>"
     }
   }
