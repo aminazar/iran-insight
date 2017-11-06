@@ -11,7 +11,7 @@ var sessionStore = new redisStore(env.isProd ? {url: process.env.REDIS_URL} : {
   "host": "127.0.0.1",
   "port": 6379
 });
-
+console.log(sessionStore);
 let session_config = {
   secret: 'HosKhedIDA',
   key: 'connect.sid',
@@ -27,10 +27,10 @@ let setup = (app) => {
   session_config.store = sessionStore;
 
   //Initialize session with settings for production
-  if(env._env === 'production'){
-    app.set('trust proxy', 1); //Trust first proxy
-    session_config.cookie.secure = true; //Serve secure cookies
-  }
+  // if(env._env === 'production'){
+  //   app.set('trust proxy', 1); //Trust first proxy
+  //   session_config.cookie.secure = true; //Serve secure cookies
+  // }
 
   app.use(session(session_config));
 
