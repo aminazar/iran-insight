@@ -5,10 +5,15 @@ const env = require('../env');
 const QueryFile = env.pgp.QueryFile;
 const path = require('path');
 
+let cache = {};
 // Helper for linking to external query files:
 function sql(file, fixedArgs) {
-  let fullPath = path.join(__dirname, file); // generating full path;
-  let QF = new QueryFile(fullPath, {minify: !env.isDev, debug: env.isDev});
+  let QF = cache[file];
+  if (!QF) {
+    let fullPath = path.join(__dirname, file); // generating full path;
+    QF = new QueryFile(fullPath, {minify: !env.isDev, debug: env.isDev});
+    cache[file] = QF;
+  }
   if (!fixedArgs)
     return QF;
   else
