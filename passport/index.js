@@ -44,6 +44,8 @@ let setup = (app) => {
     profileFields: ['id', 'first-name', 'last-name', 'email-address', 'headline', 'picture-urls'],
     passReqToCallback: true
   }, lib.Person.passportOAuthStrategy));
+
+  console.log('Passport is set up');
 };
 
 module.exports = {

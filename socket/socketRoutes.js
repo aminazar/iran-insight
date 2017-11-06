@@ -36,7 +36,7 @@ let setup = (io, socketSessionParser) => {
 
 let saveNamespace = (namespace) => {
   return new Promise((resolve, reject) => {
-    redis.redis_client.saddAsync('namespaces', namespace)
+    redis.redis_client().saddAsync('namespaces', namespace)
       .then(res => {
         _io.of(namespace).on('connection', socket => {
           //Write any code must execute after any clients connected to specific namespace
@@ -51,7 +51,7 @@ let saveNamespace = (namespace) => {
 
 let isNamespaceExist = (namespace) => {
   return new Promise((resolve, reject) => {
-    redis.redis_client.sismemberAsync('namespaces', namespace)
+    redis.redis_client().sismemberAsync('namespaces', namespace)
       .then(res => {
         if(res)
           resolve(_io.of(namespace));
@@ -63,11 +63,13 @@ let isNamespaceExist = (namespace) => {
 };
 
 let getAllNamespace = () => {
-  return redis.redis_client.smembersAsync('namespaces');
+  if(redis.redis_client())
+  return redis.redis_client().smembersAsync('namespaces');
+  else return Promise.resolve([]);
 };
 
 let deleteNamespace = (namespace) => {
-  return redis.redis_client.sremAsync('namespaces', namespace);
+  return redis.redis_client().sremAsync('namespaces', namespace);
 };
 
 let getUserIO = () => {

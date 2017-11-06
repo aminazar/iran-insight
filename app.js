@@ -27,8 +27,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-session.setup(app);
-passport.setup(app);
+session.setup(app)
+  .then(() => {
+    passport.setup(app);
+  });
 
 app.use('/', index);
 app.use('/api', api);
