@@ -120,4 +120,29 @@ describe("DELETE Business API", () => {
         done();
       });
   });
+
+  it("user should unfollow specific business", function (done) {
+    this.done = done;
+    sql.test.subscription.add({
+      subscriber_id: normalUserObj.pid,
+      bid: businessId
+    })
+      .then(() =>
+        rp({
+          method: 'delete',
+          uri: lib.helpers.apiTestURL('follow/business/' + businessId),
+          jar: normalUserObj.jar,
+          resolveWithFullResponse: true
+        })
+      )
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.subscription.getBizSubscribers({bid: businessId});
+      })
+      .then(res => {
+        expect(res.length).toBe(0);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
 });

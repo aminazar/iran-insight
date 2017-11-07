@@ -295,6 +295,15 @@ let tablesWithSqlCreatedByHelpers = [
     get: true,
     idColumn: 'bpid',
   },
+  {
+    name: 'subscription',
+    insert: genericSafeInsert,
+    update: true,
+    select: true,
+    delete: true,
+    get: true,
+    idColumn: 'sid',
+  },
 ].concat(templateGeneratedTables
   .map(tableName => {
     return {

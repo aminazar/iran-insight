@@ -5,10 +5,15 @@ const env = require('../env');
 const QueryFile = env.pgp.QueryFile;
 const path = require('path');
 
+let cache = {};
 // Helper for linking to external query files:
 function sql(file, fixedArgs) {
-  let fullPath = path.join(__dirname, file); // generating full path;
-  let QF = new QueryFile(fullPath, {minify: !env.isDev, debug: env.isDev});
+  let QF = cache[file];
+  if (!QF) {
+    let fullPath = path.join(__dirname, file); // generating full path;
+    QF = new QueryFile(fullPath, {minify: !env.isDev, debug: env.isDev});
+    cache[file] = QF;
+  }
   if (!fixedArgs)
     return QF;
   else
@@ -135,6 +140,16 @@ let modExp = {
     create: sql('business_product/create.sql'),
     drop: sql('business_product/drop.sql'),
     removeBizProduct: sql('business_product/removeBizProduct.sql'),
+  },
+  subscription: {
+    create: sql('subscription/create.sql'),
+    drop: sql('subscription/drop.sql'),
+    getBizSubscribers: sql('subscription/getBizSubscribers.sql'),
+    getOrgSubscribers: sql('subscription/getOrgSubscribers.sql'),
+    getPersonSubscribers: sql('subscription/getPersonSubscribers.sql'),
+    unsubscribeBiz: sql('subscription/unsubscribeBiz.sql'),
+    unsubscribeOrg: sql('subscription/unsubscribeOrg.sql'),
+    unsubscribePerson: sql('subscription/unsubscribePerson.sql'),
   },
 };
 
