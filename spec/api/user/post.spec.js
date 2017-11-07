@@ -659,10 +659,12 @@ describe("POST user API", () => {
       resolveWithFullResponse: true,
     })
       .then(res => {
-        return sql.test.person.select({pid: res.body[0].pid});
+        console.log('-> ',res.body[0]);
+        return sql.test.person.get({pid: res.body[0].pid});
       })
       .then(res => {
-        expect(res[0].notify_period).toBe('d');
+        console.log('-> ',res);
+        expect(res[0].notify_period).toBe('w');
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
@@ -682,10 +684,10 @@ describe("POST user API", () => {
       resolveWithFullResponse: true,
     })
       .then(res => {
-        return sql.test.person.select({pid: res.body[0].pid});
+        return sql.test.person.get({pid: res.body[0].pid});
       })
       .then(res => {
-        expect(res[0].notify_period).toBe('d');
+        expect(res[0].notify_period).toBe('w');
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
