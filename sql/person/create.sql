@@ -12,6 +12,7 @@ create table if not exists person(
     phone_no varchar(20),
     mobile_no varchar(20),
     birth_date date,
+    notify_period varchar(1) default 'd',
     is_user boolean default true,
     display_name_en varchar(30),
     display_name_fa varchar(30)

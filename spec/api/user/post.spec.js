@@ -687,4 +687,98 @@ describe("POST user API", () => {
         done();
       });
   });
+
+  it("user should be able to change his/her notification period type => d: daily, w: weekly, n: never, i: instantly ", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        pid: normalUserObj.pid,
+        notify_period: 'w'
+      },
+      uri: lib.helpers.apiTestURL('user/notify'),
+      jar: normalUserObj.jar,
+      json: true,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        console.log('-> ',res.body[0]);
+        return sql.test.person.get({pid: res.body[0].pid});
+      })
+      .then(res => {
+        console.log('-> ',res);
+        expect(res[0].notify_period).toBe('w');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("admin should be able to change his/her notification period type => d: daily, w: weekly, n: never, i: instantly ", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        pid: normalUserObj.pid,
+        notify_period: 'w'
+      },
+      uri: lib.helpers.apiTestURL('user/notify'),
+      jar: adminObj.jar,
+      json: true,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        return sql.test.person.get({pid: res.body[0].pid});
+      })
+      .then(res => {
+        expect(res[0].notify_period).toBe('w');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+  it("Expect error when user change his/her notification period type  with incorrect type", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        pid: normalUserObj.pid,
+        notify_period: 'o'
+      },
+      uri: lib.helpers.apiTestURL('user/notify'),
+      jar: adminObj.jar,
+      json: true,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        fail('did not fail when incorrect notify type is specified');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.incorrectNotifyType.status);
+        expect(err.error).toContain(error.incorrectNotifyType.message);
+        done();
+      });
+  });
+  it("Expect error when other users want to change user notification period type", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        pid: normalUserObj.pid,
+        notify_period: 'w'
+      },
+      uri: lib.helpers.apiTestURL('user/notify'),
+      jar: repObj.jar,
+      json: true,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        fail('did not fail when incorrect notify type is specified');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.notAllowed.status);
+        expect(err.error).toContain(error.notAllowed.message);
+        done();
+      });
+  });
 });
