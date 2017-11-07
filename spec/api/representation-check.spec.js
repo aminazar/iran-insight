@@ -6,22 +6,6 @@ const sql = require('../../sql');
 const rp = require("request-promise");
 let req = request.defaults({jar: true});//enabling cookies
 
-let resExpect = (res, statusCode) => {
-  if (res.statusCode !== statusCode) {
-    let jres = JSON.parse(res.body);
-    let msg = jres.Message ? jres.Message : jres;
-    expect(res.statusCode).toBe(statusCode, `Expected response code ${statusCode}, received ${res.statusCode}. Server response: ${msg}`);
-    if (jres.Stack) {
-      let err = new Error();
-      err.message = jres.Message;
-      err.stack = jres.Stack;
-      console.log(`Server responds with unexpected error:`, err);
-    }
-    return false;
-  }
-  return true;
-};
-
 
 let orgs_info = [
   {
@@ -60,6 +44,7 @@ let orgs_type_info = [{
   name_fa: 'نیمه دولتی',
   active: true
 }];
+
 let biz_info = [{
   bid: 1,
   name: 'burgista app',
@@ -444,8 +429,9 @@ describe("Admin can get all representation requests from users and send them act
         .then(() =>  createNewMembership(mem_info[11]))
         .then(() =>  createNewMembership(mem_info[12]))
         .then(() =>  createNewMembership(mem_info[13]))
-        .then(()=>{
-          createNewMembership(mem_info[14])
+        .then(() =>  createNewMembership(mem_info[14])
+        )
+        .then(() => {
           done();
         })
         .catch(err => {
@@ -652,7 +638,7 @@ describe("Admin can get all representation requests from users and send them act
         expect(err.statusCode).toBe(500);
         done();
       });
-  });
+  });//
 
   it('admin should be able to delete a false representation request, convert him to a usual user', function (done) {
     let jar;
