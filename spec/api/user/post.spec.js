@@ -2,6 +2,7 @@ const rp = require("request-promise");
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
+const env = require('../../../env');
 
 describe("POST user API", () => {
   let orgObj = {};
@@ -227,6 +228,7 @@ describe("POST user API", () => {
 
   it("representative should add a user (just username and display_name accept)", function (done) {
     this.done = done;
+    let pid = null;
     rp({
       method: 'post',
       form: {
@@ -243,6 +245,7 @@ describe("POST user API", () => {
     })
       .then(res => {
         expect(res.statusCode).toBe(200);
+        pid = JSON.parse(res.body);
         return sql.test.person.get({username: 'asghar@mail.com'});
       })
       .then(res => {
@@ -250,6 +253,10 @@ describe("POST user API", () => {
         expect(res[0].display_name_fa).toBe('اصغر آقا');
         expect(res[0].is_user).toBe(false);
         expect(res[0].phone_no).toBe(null);
+        return env.testDb.query('select * from person join association on person.pid = association.pid join membership on association.aid = membership.assoc_id where person.pid = ' + pid);
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
@@ -641,6 +648,42 @@ describe("POST user API", () => {
       .catch(err => {
         expect(err.statusCode).toBe(500);
         expect(err.error).toBe('this organization or business already has representative');
+        done();
+      });
+  });
+
+  it("should get error when no bid and oid defined for asking admin to be representative", function (done) {
+    this.done = done;
+    let oid = null, po_id = null;
+    addOrganization()
+      .then(res => {
+        oid = res.oid;
+        return sql.test.position_type.add({
+          name: 'Manager',
+          name_fa: 'مدیر عامل',
+          suggested_by: adminObj.pid,
+          active: true,
+        })
+      })
+      .then(res => {
+        po_id = res.id;
+        return rp({
+          method: 'post',
+          form: {
+            position_id: po_id
+          },
+          uri: lib.helpers.apiTestURL('membership/introducing/rep'),
+          jar: repObj.jar,
+          resolveWithFullResponse: true,
+        });
+      })
+      .then(res => {
+        this.fail('User ask to be representative without bid or oid');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.noBizOrOrgDeclared.status);
+        expect(err.error).toBe(error.noBizOrOrgDeclared.message);
         done();
       });
   });
