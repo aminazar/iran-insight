@@ -167,6 +167,7 @@ let tablesWithSqlCreatedByHelpers = [
     update: true,
     select: true,
     delete: true,
+    get:true,
     idColumn: 'pid',
   },
   {
