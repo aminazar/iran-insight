@@ -161,7 +161,8 @@ let extraSQLMap = {
     is_lead boolean not null default false,
     constraint currency_amount check((amount is null and currency is null) or (amount is not null and currency is not null)),`,
   consultancy: `is_mentor boolean not null default false,
-    subject varchar(100),`,
+    subject varchar(100),
+    subject_fa varchar(100),`,
   lce: `is_killer boolean default false,`
 };
 // type tables
