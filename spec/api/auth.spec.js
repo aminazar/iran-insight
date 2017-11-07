@@ -197,7 +197,6 @@ describe("Test auth APIs", () => {
         req.post({
           url: base_url + 'user/auth/local/' + res[0].link + test_query,
           form: {
-            username: username,
             password: '123abc'
           }
         }, (err, res) => {

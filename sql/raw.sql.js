@@ -135,11 +135,13 @@ let modExp = {
     create: sql('product/create.sql'),
     drop: sql('product/drop.sql'),
     getById: sql('product/getById.sql'),
+    getAll: sql('product/getAll.sql'),
   },
   business_product: {
     create: sql('business_product/create.sql'),
     drop: sql('business_product/drop.sql'),
     removeBizProduct: sql('business_product/removeBizProduct.sql'),
+    getAllProducts: sql('business_product/getAllProducts.sql'),
   },
   subscription: {
     create: sql('subscription/create.sql'),

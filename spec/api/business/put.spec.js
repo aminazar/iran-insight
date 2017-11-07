@@ -47,7 +47,7 @@ describe("PUT Business API", () => {
         parent_product_id: null,
       },
       json: true,
-      uri: lib.helpers.apiTestURL('business/product'),
+      uri: lib.helpers.apiTestURL('product'),
       jar: adminObj.jar,
       resolveWithFullResponse: true,
     })
@@ -85,7 +85,7 @@ describe("PUT Business API", () => {
             name: 'gumdrop',
             name_fa: 'پاستیل'
           }],
-          uri: lib.helpers.apiTestURL('business/product'),
+          uri: lib.helpers.apiTestURL('product'),
           jar: adminObj.jar,
           json: true,
           resolveWithFullResponse: true,
@@ -124,7 +124,7 @@ describe("PUT Business API", () => {
         parent_product_id: null,
       },
       json: true,
-      uri: lib.helpers.apiTestURL('business/product'),
+      uri: lib.helpers.apiTestURL('product'),
       jar: normalUserObj.jar,
       resolveWithFullResponse: true,
     })

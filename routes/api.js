@@ -67,7 +67,7 @@ router.get('/logout', (req, res) => {
 });
 router.get('/validUser', apiResponse('Person', 'afterLogin', false, ['user.username']));
 
-// Authentication API
+// Open Authentication API
 router.get('/login/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login', 'profile', 'email']}));
 router.get('/login/google/callback', passport.authenticate('google', {}), apiResponse('Person', 'afterLogin', false, ['user.username']));
 router.get('/login/facebook', passport.authenticate('facebook'));
@@ -116,10 +116,11 @@ router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', 
 
 // Business API
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
-router.put('/business/product', apiResponse('Business', 'addProduct', true, ['body']));
+router.put('/product', apiResponse('Business', 'addProduct', true, ['body']));
 router.post('/business/product', apiResponse('Business', 'addBusinessProduct', false, ['body', 'user.pid']));
-router.get('/business/product/all', apiResponse('Business', 'getAllProducts', false));
-router.get('/business/product/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
+router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
+router.get('/business/product/all/:bid', apiResponse('Business', 'getAllBusinessProducts', false, ['params.bid']));
+router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
 router.delete('/business/product', apiResponse('Business', 'removeBizOfProduct', false, ['body', 'user.pid']));
 
 // Business LCE API
