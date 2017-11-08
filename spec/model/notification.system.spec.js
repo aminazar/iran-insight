@@ -42,7 +42,7 @@ describe("Notification model",()=> {
       },
     ];
 
-    let result = Notification.buildingMessage('d', data, '1234567890');
+    let result = Notification.buildingMessage('d', data, 1, '12345');
     helpers.sendMail(result.body_plain, result.body_html, result.subject, 'ali.71hariri@gmail.com')
       .then(res => {
         expect(res).toBeTruthy();
