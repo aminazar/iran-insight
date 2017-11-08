@@ -2,6 +2,7 @@ const rp = require("request-promise");
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
+const env = require('../../../env');
 
 describe("Get user API", () => {
   let adminObj = {
@@ -56,50 +57,74 @@ describe("Get user API", () => {
       })
   });
 
-  it(" all users should can get a user expertise", function (done) {
+  // it(" all users should can get a user expertise", function (done) {
+  //   this.done = done;
+  //
+  //   addExpertise({
+  //     name_en: 'Computer Science - Artificial Intelligence',
+  //     name_fa: 'علوم کامپیوتر - هوش مصنوعی',
+  //     is_education: true,
+  //   })
+  //     .then(res => {
+  //       addPersonExpertise({
+  //         pid: normalUserObj.pid,
+  //         expertise_id: res.expertise_id
+  //       })
+  //     })
+  //     .then(() =>
+  //       addExpertise({
+  //         name_en: 'Software architect',
+  //         name_fa: 'معماری نرم افزار',
+  //         is_education: false,
+  //       }))
+  //     .then(res => {
+  //       addPersonExpertise({
+  //         pid: normalUserObj.pid,
+  //         expertise_id: res.expertise_id
+  //       })
+  //     })
+  //     .then(() => {
+  //
+  //
+  //       rp({
+  //         method: 'get',
+  //         uri: lib.helpers.apiTestURL(`user/${normalUserObj.pid}/expertise`),
+  //         jar: repObj.jar,
+  //         resolveWithFullResponse: true
+  //       })
+  //         .then(res => {
+  //           let result = JSON.parse(res.body);
+  //           expect(res.statusCode).toBe(200);
+  //           expect(result.length).toBe(2);
+  //           done();
+  //         })
+  //         .catch(lib.helpers.errorHandler.bind(this));
+  //     });
+  // });
+
+  it("user should be able to un-subscribe from receiving email", function (done) {
     this.done = done;
 
-    addExpertise({
-      name_en: 'Computer Science - Artificial Intelligence',
-      name_fa: 'علوم کامپیوتر - هوش مصنوعی',
-      is_education: true,
-    })
-      .then(res => {
-        addPersonExpertise({
-          pid: normalUserObj.pid,
-          expertise_id: res.expertise_id
-        })
+    sql.test.person.get({pid: normalUserObj.pid}).then(res => {
+
+      let hashCode = res[0].secret.substring(0, 5);
+      rp({
+        method: 'get',
+        uri: lib.helpers.apiTestURL(`user/unsubscribe/${normalUserObj.pid}/${hashCode}`),
+        jar: repObj.jar,
+        resolveWithFullResponse: true
       })
-      .then(() =>
-        addExpertise({
-          name_en: 'Software architect',
-          name_fa: 'معماری نرم افزار',
-          is_education: false,
-        }))
-      .then(res => {
-        addPersonExpertise({
-          pid: normalUserObj.pid,
-          expertise_id: res.expertise_id
-        })
-      })
-      .then(() => {
+        .then(res => {
+          expect(res.statusCode).toBe(200);
+          return sql.test.person.select({pid: normalUserObj});
+        }).then(res => {
+
+        expect(res[0].notify_period === 'n');
+        done();
+      }).catch(lib.helpers.errorHandler.bind(this));
+    });
 
 
-        rp({
-          method: 'get',
-          uri: lib.helpers.apiTestURL(`user/${normalUserObj.pid}/expertise`),
-          jar: repObj.jar,
-          resolveWithFullResponse: true
-        })
-          .then(res => {
-            let result = JSON.parse(res.body);
-            expect(res.statusCode).toBe(200);
-            expect(result.length).toBe(2);
-            done();
-          })
-          .catch(lib.helpers.errorHandler.bind(this));
-      });
   });
-
 
 });
