@@ -550,7 +550,7 @@ describe("Admin can get all representation requests from users and send them act
       });
   });
 
-  it('admin should be able to activate another right representation request for a biz/org,and deactive other rep requests for that biz/org', function (done) {
+  xit('admin should be able to activate another right representation request for a biz/org,and deactive other rep requests for that biz/org', function (done) {
     let jar;
     sql.test.membership.get({mid:8})
       .then(res => {
@@ -607,7 +607,7 @@ describe("Admin can get all representation requests from users and send them act
       });
   });
 
-  it('admin should NOT be able to activate a rep request for a biz/org with representative', function (done) {
+  xit('admin should NOT be able to activate a rep request for a biz/org with representative', function (done) {
     let jar;
     sql.test.membership.get({mid:5})
       .then(res => {
@@ -639,8 +639,9 @@ describe("Admin can get all representation requests from users and send them act
         done();
       });
   });//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  it('admin should be able to delete a false representation request, convert him to a usual user', function (done) {
+  xit('admin should be able to delete a false representation request, convert him to a usual user', function (done) {
     let jar;
     sql.test.membership.get({mid:11})
       .then(res => {
@@ -670,8 +671,9 @@ describe("Admin can get all representation requests from users and send them act
         done();
       });
   });
+///////////////////////
 
-  it('admin should NOT be able to delete a representation request and  convert him to a usual user,with representative', function (done) {
+  xit('admin should NOT be able to delete a representation request and  convert him to a usual user,with representative', function (done) {
     let jar;
     sql.test.membership.get({mid:7})
       .then(res => {
@@ -701,8 +703,9 @@ describe("Admin can get all representation requests from users and send them act
         done();
       });
   });
+  //////////////////////////////////////////////////////
 
-  it('admin should be able to delete a false representation request from all related tables except(maybe) association', function (done) {
+  xit('admin should be able to delete a false representation request from all related tables except(maybe) association', function (done) {
     let jar;
     sql.test.membership.get({mid:3})
       .then(res => {
@@ -739,7 +742,7 @@ describe("Admin can get all representation requests from users and send them act
       });
   });
 
-  it('admin should be able to delete a false representation request from all related tables, except association', function (done) {
+  xit('admin should be able to delete a false representation request from all related tables, except association', function (done) {
     let jar;
     sql.test.membership.get({mid:6})
       .then(res => {
@@ -776,7 +779,7 @@ describe("Admin can get all representation requests from users and send them act
       });
   });
 
-  it('admin should be able to delete a false representation request from all related tables', function (done) {
+  xit('admin should be able to delete a false representation request from all related tables', function (done) {
     let jar;
     sql.test.membership.get({mid:1})
       .then(res => {
@@ -813,7 +816,7 @@ describe("Admin can get all representation requests from users and send them act
       });
   });
 
-  it('admin should be able to delete a false representation request, convert him to a usual user/2', function (done) {
+  xit('admin should be able to delete a false representation request, convert him to a usual user/2', function (done) {
     let jar;
     sql.test.membership.get({mid:4})
       .then(res => {
@@ -859,7 +862,7 @@ describe("Admin can get all representation requests from users and send them act
       });
   });
 
-  it('admin should be able to activate another right representation request/2', function (done) {
+  xit('admin should be able to activate another right representation request/2', function (done) {
     let jar;
     sql.test.membership.get({mid:9})
       .then(res => {
@@ -901,14 +904,14 @@ describe("Admin can get all representation requests from users and send them act
       });
   });
 
-  it("logs out a user(admin)", done => {
+  xit("logs out a user(admin)", done => {
     req.get(base_url + 'logout' + test_query, (err, res) => {
       expect(res.statusCode).toBe(200);
       done();
     });
   });
 
-  it("logs out a user(admin) - checking it happened", done => {
+  xit("logs out a user(admin) - checking it happened", done => {
     req.get(base_url + 'user/getRepPendingList' + test_query, (err, res) => {
       expect(res.statusCode).toBe(403);
       done();
