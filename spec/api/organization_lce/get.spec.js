@@ -195,7 +195,6 @@ describe("Get Organization LCE API", () => {
                 expect(res.statusCode).toBe(200);
 
                 let result = JSON.parse(res.body);
-                console.log('-> ', result);
                 expect(result.length).toBe(1);
                 expect(result[0].is_confirmed).toBe(true);
                 done();
