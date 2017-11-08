@@ -2,6 +2,7 @@ const rp = require("request-promise");
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
+const env = require('../../../env');
 
 describe("Get user API", () => {
   let adminObj = {
@@ -101,5 +102,54 @@ describe("Get user API", () => {
       });
   });
 
+  it("user should be able to un-subscribe from receiving email", function (done) {
+    this.done = done;
+
+    sql.test.person.get({pid: normalUserObj.pid}).then(res => {
+
+      let hashCode = res[0].secret.substring(0, 5);
+      rp({
+        method: 'get',
+        uri: lib.helpers.apiTestURL(`user/unsubscribe/${normalUserObj.pid}/${hashCode}`),
+        jar: repObj.jar,
+        resolveWithFullResponse: true
+      })
+        .then(res => {
+          expect(res.statusCode).toBe(200);
+          return sql.test.person.select({pid: normalUserObj});
+        }).then(res => {
+
+        expect(res[0].notify_period === 'n');
+        done();
+      }).catch(lib.helpers.errorHandler.bind(this));
+    });
+
+
+  });
+
+  it("Expect error when wrong hash code exist in un-subscribe from receiving email api", function (done) {
+    this.done = done;
+
+    sql.test.person.get({pid: normalUserObj.pid}).then(res => {
+
+      rp({
+        method: 'get',
+        uri: lib.helpers.apiTestURL(`user/unsubscribe/${normalUserObj.pid}/123`), // 123 is not correct hash code
+        jar: repObj.jar,
+        resolveWithFullResponse: true
+      })
+        .then(res => {
+          fail('did not fail when incorrect hash code exists in un-subscribe api');
+          done();
+        })
+        .catch(err => {
+          expect(err.statusCode).toBe(error.notAllowed.status);
+          expect(err.error).toContain(error.notAllowed.message);
+          done();
+        });
+    });
+
+
+  });
 
 });
