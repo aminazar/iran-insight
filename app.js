@@ -50,4 +50,7 @@ app.use(function(err, req, res, next) {
 
 });
 
+let ns = new lib.NotificationSystem();
+ns.start();
+
 module.exports = app;
