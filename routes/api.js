@@ -100,6 +100,7 @@ router.put('/expertise', apiResponse('Expertise', 'addExpertise', true, ['body']
 router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['user.pid', 'body']));
 router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, ['user.pid', 'params.pid']));
 router.delete('/expertise', apiResponse('Person', 'deleteExpertise', false, ['user.pid', 'body']));
+router.get('/user/unsubscribe/:pid/:hash', apiResponse('Person', 'unsubscribe', false, ['params.pid', 'params.hash']));
 
 
 // Notification
