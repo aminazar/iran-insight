@@ -398,7 +398,6 @@ describe("POST user API", () => {
         done();
       })
       .catch(err => {
-        console.log('-> ', err);
         expect(err.statusCode).toBe(error.notAllowed.status);
         expect(err.message).toContain(error.notAllowed.message);
         done();
@@ -468,7 +467,6 @@ describe("POST user API", () => {
       })
       .then(res => {
         expect(res.length).toBe(1);
-        console.log('-> ', res[0]);
         expect(res[0].name_en).toBe('Web Programming');
         expect(res[0].name_fa).toBe('برنامه نویسی وب');
         done();
@@ -702,11 +700,9 @@ describe("POST user API", () => {
       resolveWithFullResponse: true,
     })
       .then(res => {
-        console.log('-> ',res.body[0]);
         return sql.test.person.get({pid: res.body[0].pid});
       })
       .then(res => {
-        console.log('-> ',res);
         expect(res[0].notify_period).toBe('w');
         done();
       })

@@ -56,7 +56,7 @@ describe("Get user API", () => {
       })
   });
 
-  it("user should can get his/her expertise", function (done) {
+  it(" all users should can get a user expertise", function (done) {
     this.done = done;
 
     addExpertise({
@@ -88,7 +88,7 @@ describe("Get user API", () => {
         rp({
           method: 'get',
           uri: lib.helpers.apiTestURL(`user/${normalUserObj.pid}/expertise`),
-          jar: normalUserObj.jar,
+          jar: repObj.jar,
           resolveWithFullResponse: true
         })
           .then(res => {
@@ -99,75 +99,6 @@ describe("Get user API", () => {
           })
           .catch(lib.helpers.errorHandler.bind(this));
       });
-  });
-  it("other users should not can get user expertise => expect error", function (done) {
-    this.done = done;
-
-    addExpertise({
-      name_en: 'Computer Science - Artificial Intelligence',
-      name_fa: 'علوم کامپیوتر - هوش مصنوعی',
-      is_education: true,
-    }).then(() => {
-      rp({
-        method: 'get',
-        uri: lib.helpers.apiTestURL(`user/${normalUserObj.pid}/expertise`),
-        jar: repObj.jar,
-        resolveWithFullResponse: true
-      })
-        .then(res => {
-          this.fail('did not failed when other users wants to get user expertise');
-          done();
-        })
-        .catch(err => {
-          expect(err.statusCode).toBe(error.notAllowed.status);
-          expect(err.error).toContain(error.notAllowed.message);
-          done();
-        });
-
-    });
-
-
-  });
-  it("admin should can get user expertise", function (done) {
-    this.done = done;
-
-    addExpertise({
-      name_en: 'Computer Science - Artificial Intelligence',
-      name_fa: 'علوم کامپیوتر - هوش مصنوعی',
-      is_education: true,
-    })
-      .then(res => {
-        addPersonExpertise({
-          pid: normalUserObj.pid,
-          expertise_id: res.expertise_id
-        })
-      })
-      .then(() =>
-        addExpertise({
-          name_en: 'Software architect',
-          name_fa: 'معماری نرم افزار',
-          is_education: false,
-        }))
-      .then(res => {
-        addPersonExpertise({
-          pid: normalUserObj.pid,
-          expertise_id: res.expertise_id
-        })
-      }).then(() => {
-      rp({
-        method: 'get',
-        uri: lib.helpers.apiTestURL(`user/${normalUserObj.pid}/expertise`),
-        jar: adminObj.jar,
-        resolveWithFullResponse: true
-      })
-        .then(res => {
-          let result = JSON.parse(res.body);
-          expect(res.statusCode).toBe(200);
-          expect(result.length).toBe(2);
-          done();
-        })
-        .catch(lib.helpers.errorHandler.bind(this));
-    });
   });
 
 
