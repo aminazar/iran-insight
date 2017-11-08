@@ -1,4 +1,4 @@
-const Notification = require('../../lib/notification.model');
+const Notification = require('../../lib/notification.system');
 const sql  = require('../../sql');
 const helpers = require('../../lib/helpers');
 
@@ -42,8 +42,7 @@ describe("Notification model",()=> {
       },
     ];
 
-    let notification = new Notification();
-    let result = notification.buildingMessage('d', data, '1234567890');
+    let result = Notification.buildingMessage('d', data, '1234567890');
     helpers.sendMail(result.body_plain, result.body_html, result.subject, 'ali.71hariri@gmail.com')
       .then(res => {
         expect(res).toBeTruthy();
