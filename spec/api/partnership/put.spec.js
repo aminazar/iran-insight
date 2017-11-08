@@ -157,7 +157,6 @@ describe("Put partnership API", () => {
         })
           .catch(lib.helpers.errorHandler.bind(this));
       });
-
   it("user should update partnership of him/her self ", function (done) {
     this.done = done;
 
@@ -200,7 +199,7 @@ describe("Put partnership API", () => {
           .catch(lib.helpers.errorHandler.bind(this));
       });
   });
-  it("user should cannot update partnership pid1, pid2 and is_confirmed ", function (done) {
+  it("Expect error when user is updating partnership pid1, pid2 and is_confirmed ", function (done) {
     this.done = done;
 
     let newPartnershipId;
