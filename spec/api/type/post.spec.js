@@ -39,7 +39,7 @@ describe("Post Type", () => {
     this.done = done;
     rp({
       method: 'post',
-      uri: lib.helpers.apiTestURL(`type/suggest/${types[0]}`),
+      uri: lib.helpers.apiTestURL(`type/${types[0]}`),
       body: {
         name: 'snapp',
         name_fa: 'اسنپ',
@@ -50,6 +50,7 @@ describe("Post Type", () => {
     }).then(res => {
 
       expect(res.statusCode).toBe(200);
+
       return sql.test[types[0]].get({id: res.body.id});
     }).then(res => {
       expect(res.length).toBe(1);
@@ -66,7 +67,7 @@ describe("Post Type", () => {
     this.done = done;
     rp({
       method: 'post',
-      uri: lib.helpers.apiTestURL(`type/suggest/${types[0]}`),
+      uri: lib.helpers.apiTestURL(`type/${types[0]}`),
       body: {
         name: 'snapp',
         name_fa: 'اسنپ',
@@ -91,7 +92,7 @@ describe("Post Type", () => {
     this.done = done;
     rp({
       method: 'post',
-      uri: lib.helpers.apiTestURL(`type/suggest/${types[0]}`),
+      uri: lib.helpers.apiTestURL(`type/${types[0]}`),
       body: {
         name: 'snapp',
       },
@@ -121,7 +122,7 @@ describe("Post Type", () => {
     }).then(res => {
       return rp({
         method: 'post',
-        uri: lib.helpers.apiTestURL(`type/suggest/${types[0]}`),
+        uri: lib.helpers.apiTestURL(`type/${types[0]}`),
         body: {
           name: 'snapp',
           name_fa: 'اسنپ',
@@ -147,7 +148,7 @@ describe("Post Type", () => {
     this.done = done;
     rp({
       method: 'post',
-      uri: lib.helpers.apiTestURL(`type/suggest/randNewType`),
+      uri: lib.helpers.apiTestURL(`type/randNewType`),
       body: {
         name: 'snapp',
         name_fa: 'اسنپ',
@@ -172,7 +173,7 @@ describe("Post Type", () => {
     this.done = done;
     rp({
       method: 'post',
-      uri: lib.helpers.apiTestURL(`type/suggest/${types[0]}`),
+      uri: lib.helpers.apiTestURL(`type/${types[0]}`),
       body: {
       },
       json: true,

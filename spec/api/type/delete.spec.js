@@ -4,7 +4,7 @@ const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
 const types = require('../../../sql/types');
 
-describe("Put Type", () => {
+describe("Delete Type", () => {
   let adminObj = {
     pid: null,
     jar: null,
@@ -35,32 +35,32 @@ describe("Put Type", () => {
       done();
     });
   });
-  it("Admin should be able to activate a suggestion", function (done) {
+  it("Admin should be able to deleted a suggestion", function (done) {
     this.done = done;
 
     sql.test[types[0]].add({
       name: 'snapp',
       name_fa: 'اسنپ',
-      suggested_by: normalUser.pid,
-      active: false
+      suggested_by:normalUser.pid,
+      active:false
     }).then(res =>
       rp({
-        method: 'put',
-        uri: lib.helpers.apiTestURL(`type/${types[0]}/${res.id}`),
-        jar: adminObj.jar,
-        resolveWithFullResponse: true
-      })).then(res => {
+          method: 'delete',
+          uri: lib.helpers.apiTestURL(`type/${types[0]}/${res.id}`),
+          jar: adminObj.jar,
+          resolveWithFullResponse: true
+        }
+      )).then(res => {
       expect(res.statusCode).toBe(200);
-
-      let result = JSON.parse(res.body);
-      return sql.test[types[0]].get({id: result[0].id});
+      console.log('-> ',res.body);
+      return sql.test[types[0]].get({id: res.body[0].id});
     }).then(res => {
-      expect(res.length).toBe(1);
-      expect(res[0].active).toBe(true);
+      expect(res.length).toBe(0);
       done();
     })
       .catch(lib.helpers.errorHandler.bind(this));
   });
+
 
 
   it("Expect error when other users are calling api", function (done) {
@@ -71,16 +71,13 @@ describe("Put Type", () => {
       suggested_by:normalUser.pid,
       active:false
     }).then(res =>
-    rp({
-      method: 'put',
-      uri: lib.helpers.apiTestURL(`type/${types[0]}/${res.id}`),
-      body: {
-        active: true,
-      },
-      json: true,
-      jar: normalUser.jar,
-      resolveWithFullResponse: true
-    }))
+      rp({
+        method: 'delete',
+        uri: lib.helpers.apiTestURL(`type/${types[0]}/${res.id}`),
+        json: true,
+        jar: normalUser.jar,
+        resolveWithFullResponse: true
+      }))
       .then(res => {
         this.fail('did not failed when other users are calling api');
         done();
