@@ -103,7 +103,7 @@ let modExp = {
     getRequested: sql('business_lce/getRequested.sql'),
     getConfirmed: sql('business_lce/getConfirmed.sql'),
     get: sql('business_lce/get.sql'),
-
+    getSeconderData: sql('business_lce/getSeconderData.sql'),
   },
   association: {
     create: sql('association/create.sql'),
