@@ -166,7 +166,7 @@ let extraSQLMap = {
   consultancy: `is_mentor boolean not null default false,
     subject varchar(100),
     subject_fa varchar(100),`,
-  lce: `is_killer boolean default false,`
+  lce_type: `is_killer boolean default false,`
 };
 // type tables
 

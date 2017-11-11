@@ -159,7 +159,7 @@ genericSafeInsert = (tableName, idColumn, isTest) => {
 genericDelete = (tableName, idColumn, isTest) => {
   let db = chooseDb(tableName, isTest);
   return (id) => {
-    return db.query(`delete from ${tableName} where ${idColumn}=` + id)
+    return db.query(`delete from ${tableName} where ${idColumn}=` + id +' returning ' + idColumn)
   }
 };
 

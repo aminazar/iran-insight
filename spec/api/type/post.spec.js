@@ -2,8 +2,6 @@ const rp = require('request-promise');
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
-const moment = require('moment-timezone');
-const helpers = require('../../../lib/helpers');
 const types = require('../../../sql/types');
 
 describe("Post Type", () => {
