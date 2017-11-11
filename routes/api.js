@@ -80,7 +80,7 @@ router.put('/user/register', apiResponse('Person', 'registration', false, ['body
 router.get('/user/activate/link/:link', apiResponse('Person', 'checkActiveLink', false, ['params.link']));
 router.post('/user/auth/local/:link', apiResponse('Person', 'completeAuth', false, ['params.link', 'body']));
 router.post('/user/auth/link', apiResponse('Person', 'sendActivationMail', false, ['body.email']));
-router.post('/membership/introducing/rep', apiResponse('Person', 'introduceAsRep', false, ['body', 'user.display_name_en', 'user.pid']));
+router.post('/membership/introducing/rep', apiResponse('Person', 'introduceAsRep', false, ['body', 'user']));
 
 router.put('/user', apiResponse('Person', 'insert', true, ['body']));
 router.get('/user', apiResponse('Person', 'select', true));
@@ -97,7 +97,7 @@ router.delete('/follow/person/:pid', apiResponse('Person', 'unfollowingEntity', 
 
 //Expertise API
 router.put('/expertise', apiResponse('Expertise', 'addExpertise', true, ['body']));
-router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['user.pid', 'body']));
+router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['user', 'body']));
 router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, ['user.pid', 'params.pid']));
 router.delete('/expertise', apiResponse('Person', 'deleteExpertise', false, ['user.pid', 'body']));
 router.get('/user/unsubscribe/:pid/:hash', apiResponse('Person', 'unsubscribe', false, ['params.pid', 'params.hash']));
@@ -109,9 +109,9 @@ router.post('/user/notify', apiResponse('Person', 'changeNotifyType', false, ['u
 // Partnership
 router.get('/person/partnership/:pid', apiResponse('Person', 'getPartnership', false, ['user.pid', 'params.pid']));
 router.get('/person/requested/partnership', apiResponse('Person', 'getRequestedPartnership', false, ['user.pid']));
-router.put('/person/partnership', apiResponse('Person', 'setPartnership', false, ['user.pid', 'body']));
-router.post('/person/confirm/partnership', apiResponse('Person', 'confirmPartnership', false, ['user.pid', 'body']));
-router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', false, ['user.pid', 'body']));
+router.put('/person/partnership', apiResponse('Person', 'setPartnership', false, ['user', 'body']));
+router.post('/person/confirm/partnership', apiResponse('Person', 'confirmPartnership', false, ['user', 'body']));
+router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', false, ['user', 'body']));
 
 
 

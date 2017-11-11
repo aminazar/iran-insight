@@ -101,6 +101,7 @@ let modExp = {
     getAll: sql('business_lce/getAll.sql'),
     getRequested: sql('business_lce/getRequested.sql'),
     getConfirmed: sql('business_lce/getConfirmed.sql'),
+    get: sql('business_lce/get.sql'),
 
   },
   association: {
@@ -142,6 +143,7 @@ let modExp = {
     drop: sql('business_product/drop.sql'),
     removeBizProduct: sql('business_product/removeBizProduct.sql'),
     getAllProducts: sql('business_product/getAllProducts.sql'),
+    getByBizProductId: sql('business_product/getByBizProductId.sql'),
   },
   subscription: {
     create: sql('subscription/create.sql'),
