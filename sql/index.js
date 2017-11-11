@@ -226,7 +226,7 @@ let tablesWithSqlCreatedByHelpers = [
   },
   {
     name: 'association',
-    insert: genericSafeInsert,
+    safeInsert: true,
     update: true,
     select: true,
     get: true,
@@ -298,7 +298,7 @@ let tablesWithSqlCreatedByHelpers = [
   },
   {
     name: 'subscription',
-    insert: genericSafeInsert,
+    safeInsert: true,
     update: true,
     select: true,
     delete: true,
@@ -327,9 +327,13 @@ tablesWithSqlCreatedByHelpers.forEach((table) => {
     wrappedSQL.test[table] = {};
 
   if (table.insert) {
-    let func = table.insert===true ? genericInsert : table.insert;
-    wrappedSQL[table.name].add = func(table.name, table.idColumn, false);
-    wrappedSQL.test[table.name].add = func(table.name, table.idColumn, true);
+    wrappedSQL[table.name].add = genericInsert(table.name, table.idColumn, false);
+    wrappedSQL.test[table.name].add = genericInsert(table.name, table.idColumn, true);
+  }
+
+  if(table.safeInsert) {
+    wrappedSQL[table.name].add = genericSafeInsert(table.name, table.idColumn, false);
+    wrappedSQL.test[table.name].add = genericSafeInsert(table.name, table.idColumn, true);
   }
 
   if (table.update) {
