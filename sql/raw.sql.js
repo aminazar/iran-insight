@@ -4,6 +4,7 @@
 const env = require('../env');
 const QueryFile = env.pgp.QueryFile;
 const path = require('path');
+const types = require('./types');
 
 let cache = {};
 // Helper for linking to external query files:
@@ -165,22 +166,16 @@ let extraSQLMap = {
   consultancy: `is_mentor boolean not null default false,
     subject varchar(100),
     subject_fa varchar(100),`,
-  lce: `is_killer boolean default false,`
+  lce_type: `is_killer boolean default false,`
 };
 // type tables
-[
-  'attendance',
-  'position',
-  'lce',
-  'organization',
-  'business',
-].forEach(t => {
-  let typeTableName = t + '_type';
+
+types.forEach(t => {
   let extraSQL = extraSQLMap[t] ? extraSQLMap[t]  : '';
-  modExp[typeTableName] = {
-    create: sql('type/create.sql', {tableName: typeTableName, extraSQL}),
-    drop: sql('type/drop.sql', {tableName: typeTableName, extraSQL}),
-    getByName: sql('type/getByName.sql', {tableName: typeTableName, extraSQL}),
+  modExp[t] = {
+    create: sql('type/create.sql', {tableName: t, extraSQL}),
+    drop: sql('type/drop.sql', {tableName: t, extraSQL}),
+    getByName: sql('type/getByName.sql', {tableName: t, extraSQL}),
   }
 });
 
