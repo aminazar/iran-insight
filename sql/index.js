@@ -8,6 +8,7 @@
 
 const rawSql = require('./raw.sql');
 const env = require('../env');
+const types = require('./types');
 let wrappedSQL = {test: {}};
 let usingFunction = query => {
   let res = {
@@ -33,7 +34,7 @@ for (let table in rawSql) {
     let dataTransform = d => d;
     if (rawSql[table][query].fixedArgs) {
 
-      if(!templateGeneratedTables.includes(table))
+      if (!templateGeneratedTables.includes(table))
         templateGeneratedTables.push(table);
 
       let fixedArgs = rawSql[table][query].fixedArgs;
@@ -42,7 +43,7 @@ for (let table in rawSql) {
         if (d.constructor.name === 'Array') {
           d = {};
         }
-        for(let key in fixedArgs) {
+        for (let key in fixedArgs) {
           d[key] = fixedArgs[key];
         }
 
@@ -142,10 +143,12 @@ genericGet = (tableName, isTest) => {
 genericSafeInsert = (tableName, idColumn, isTest) => {
   let db = chooseDb(tableName, isTest);
 
-  return (data) => {
-    return genericGet(tableName, isTest)(data)
+  return (data , constraints) => {
+    // 'constraints' can part of 'data' => if whole of data is not going to be duplicated. but constraint is important about some keys in 'data'
+    let arg =constraints ? constraints : data;
+    return genericGet(tableName, isTest)(arg)
       .then(res => {
-        if(res.length)
+        if (res.length)
           return Promise.resolve(res[0]);
         else
           return db.one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn);
@@ -167,7 +170,7 @@ let tablesWithSqlCreatedByHelpers = [
     update: true,
     select: true,
     delete: true,
-    get:true,
+    get: true,
     idColumn: 'pid',
   },
   {
@@ -307,17 +310,23 @@ let tablesWithSqlCreatedByHelpers = [
   },
 ].concat(templateGeneratedTables
   .map(tableName => {
-    return {
-      name: tableName,
-      insert: true,
-      update: true,
-      select: true,
-      get: true,
-      delete: true,
-      idColumn: 'id',
+      return {
+        name: tableName,
+        insert: true,
+        update: true,
+        select: true,
+        get: true,
+        delete: true,
+        idColumn: 'id',
+      }
     }
-  }
-));
+  ));
+
+tablesWithSqlCreatedByHelpers.filter(table => types.includes(table.name)).map(table => {
+  delete table.insert;
+  table.safeInsert = true
+});
+
 
 tablesWithSqlCreatedByHelpers.forEach((table) => {
   if (!wrappedSQL[table])
@@ -331,7 +340,7 @@ tablesWithSqlCreatedByHelpers.forEach((table) => {
     wrappedSQL.test[table.name].add = genericInsert(table.name, table.idColumn, true);
   }
 
-  if(table.safeInsert) {
+  if (table.safeInsert) {
     wrappedSQL[table.name].add = genericSafeInsert(table.name, table.idColumn, false);
     wrappedSQL.test[table.name].add = genericSafeInsert(table.name, table.idColumn, true);
   }

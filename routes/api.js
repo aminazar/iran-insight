@@ -146,8 +146,8 @@ router.get('/organization-lce/requested/:oid', apiResponse('Organization', 'getR
 router.delete('/organization-lce', apiResponse('Organization', 'deleteLCE', false, ['user.pid', 'body']));
 
 
-// Organization type
-router.put('/organization-type', apiResponse('OrganizationType', 'saveData', false, ['body', 'id']));
+// types
+router.post('/type/suggest/:name', apiResponse('Type', 'suggest', false, [ 'user.pid', 'params.name', 'body']));
 
 // Representation-chekc API
 router.get('/user/getRepPendingList',apiResponse('Person','findRepRequests',true));
