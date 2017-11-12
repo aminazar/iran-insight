@@ -157,6 +157,8 @@ router.put('/user/confirmRep/:mid/:aid',apiResponse('Person','confirmRepByAdmin'
 router.delete('/user/deleteRep/:mid',apiResponse('Person','deleteRepRequest',true,['params.mid']));
 router.delete('/user/deleteRepBizOrg/:mid',apiResponse('Person','deleteRepAndHisCompany',true,['params.mid']));
 
+//
+
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid', '?user.pid']));
 router.put('/event', apiResponse('Event', 'saveData', false, ['body', 'user.pid']));

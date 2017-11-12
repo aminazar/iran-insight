@@ -92,18 +92,6 @@ let orgs_info = [
   }];
 
 let biz_info = [{
-  bid: 1,
-  name: 'burgista app',
-  name_fa: 'برگیستا',
-  ceo_pid : 1,
-  biz_type_id: 200,
-  address: null,
-  address_fa: null,
-  tel: null,
-  url: null,
-  general_stats: null,
-  financial_stats: null
-},{
   bid: 2,
   name: 'snap',
   name_fa: 'اسنپ',
@@ -124,18 +112,6 @@ let biz_info = [{
   address: null,
   address_fa: null,
   tel: null,
-  url: null,
-  general_stats: null,
-  financial_stats: null
-},{
-  bid: 4,
-  name: 'fara-dars',
-  name_fa: 'فرادرس',
-  ceo_pid : 2,
-  biz_type_id: 202,
-  address: null,
-  address_fa: 'تهران - هفت تیر',
-  tel: '02188888888',
   url: null,
   general_stats: null,
   financial_stats: null
@@ -332,7 +308,7 @@ describe('Representation-check, PUT API', () => {
       });
   });
 
-  it('admin should NOT be able to activate a rep request for a biz/org with representative', function (done) {
+  it('admin should NOT be able to activate a rep request for a biz/org with representative', done => {
     return rp({
       method: 'PUT',
       uri: lib.helpers.apiTestURL(`user/confirmRep/8/7`),
