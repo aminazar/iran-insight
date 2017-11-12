@@ -79,7 +79,7 @@ describe("GET Business API", () => {
       .then(res => {
         return rp({
           method: 'get',
-          uri: lib.helpers.apiTestURL('business/product/all'),
+          uri: lib.helpers.apiTestURL('product/all'),
           jar: normalUserObj.jar,
           resolveWithFullResponse: true,
         });
@@ -111,7 +111,7 @@ describe("GET Business API", () => {
       .then(res => {
         return rp({
           method: 'get',
-          uri: lib.helpers.apiTestURL('business/product/all'),
+          uri: lib.helpers.apiTestURL('product/all'),
           resolveWithFullResponse: true,
         });
       })
@@ -126,7 +126,7 @@ describe("GET Business API", () => {
       });
   });
 
-  it("get specific product of business", function (done) {
+  it("get specific product", function (done) {
     this.done = done;
 
     sql.test.business.add({
@@ -144,7 +144,7 @@ describe("GET Business API", () => {
       .then(res => {
         return rp({
           method: 'get',
-          uri: lib.helpers.apiTestURL(`business/product/${res[0]}`),
+          uri: lib.helpers.apiTestURL(`product/one/${res[0]}`),
           jar: normalUserObj.jar,
           resolveWithFullResponse: true,
         });
@@ -153,6 +153,40 @@ describe("GET Business API", () => {
         let data = JSON.parse(res.body);
         expect(res.statusCode).toBe(200);
         expect(data[0].name).toBe('Mobile app developing framework');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get all products for specific business", function (done) {
+    this.done = done;
+    let business_id = null;
+
+    sql.test.business.add({
+      name: 'BIZ',
+      name_fa: 'کسب و کار',
+    })
+      .then(res => {
+        business_id = res.bid;
+        let promiseList = [];
+        productDetails.forEach(el => {
+          promiseList.push(addProduct(el, res.bid));
+        });
+
+        return Promise.all(promiseList);
+      })
+      .then(res => {
+        return rp({
+          method: 'get',
+          uri: lib.helpers.apiTestURL(`business/product/all/${business_id}`),
+          jar: normalUserObj.jar,
+          resolveWithFullResponse: true,
+        });
+      })
+      .then(res => {
+        let data = JSON.parse(res.body);
+        expect(res.statusCode).toBe(200);
+        expect(data.length).toBe(3);
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));

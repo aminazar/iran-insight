@@ -67,7 +67,7 @@ router.get('/logout', (req, res) => {
 });
 router.get('/validUser', apiResponse('Person', 'afterLogin', false, ['user.username']));
 
-// Authentication API
+// Open Authentication API
 router.get('/login/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login', 'profile', 'email']}));
 router.get('/login/google/callback', passport.authenticate('google', {}), apiResponse('Person', 'afterLogin', false, ['user.username']));
 router.get('/login/facebook', passport.authenticate('facebook'));
@@ -100,6 +100,11 @@ router.put('/expertise', apiResponse('Expertise', 'addExpertise', true, ['body']
 router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['user.pid', 'body']));
 router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, ['user.pid', 'params.pid']));
 router.delete('/expertise', apiResponse('Person', 'deleteExpertise', false, ['user.pid', 'body']));
+router.get('/user/unsubscribe/:pid/:hash', apiResponse('Person', 'unsubscribe', false, ['params.pid', 'params.hash']));
+
+
+// Notification
+router.post('/user/notify', apiResponse('Person', 'changeNotifyType', false, ['user.pid', 'body']));
 
 // Partnership
 router.get('/person/partnership/:pid', apiResponse('Person', 'getPartnership', false, ['user.pid', 'params.pid']));
@@ -112,10 +117,11 @@ router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', 
 
 // Business API
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
-router.put('/business/product', apiResponse('Business', 'addProduct', true, ['body']));
+router.put('/product', apiResponse('Business', 'addProduct', true, ['body']));
 router.post('/business/product', apiResponse('Business', 'addBusinessProduct', false, ['body', 'user.pid']));
-router.get('/business/product/all', apiResponse('Business', 'getAllProducts', false));
-router.get('/business/product/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
+router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
+router.get('/business/product/all/:bid', apiResponse('Business', 'getAllBusinessProducts', false, ['params.bid']));
+router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
 router.delete('/business/product', apiResponse('Business', 'removeBizOfProduct', false, ['body', 'user.pid']));
 
 // Business LCE API
@@ -140,8 +146,10 @@ router.get('/organization-lce/requested/:oid', apiResponse('Organization', 'getR
 router.delete('/organization-lce', apiResponse('Organization', 'deleteLCE', false, ['user.pid', 'body']));
 
 
-// Organization type
-router.put('/organization-type', apiResponse('OrganizationType', 'saveData', false, ['body', 'id']));
+// types
+router.post('/type/:name', apiResponse('Type', 'suggest', false, [ 'user.pid', 'params.name', 'body']));
+router.put('/type/:name/:type_id', apiResponse('Type', 'activate', true, ['params.name', 'params.type_id']));
+router.delete('/type/:name/:type_id', apiResponse('Type', 'delete', true, ['params.name', 'params.type_id']));
 
 // Representation-chekc API
 router.get('/user/getRepPendingList',apiResponse('Person','findRepRequests',true));

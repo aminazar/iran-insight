@@ -1,4 +1,4 @@
-create table if not exists event(
+ create table if not exists event(
     eid serial not null primary key,
     organizer_pid integer references person(pid),
     organizer_oid integer references organization(oid),

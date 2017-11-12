@@ -4,7 +4,7 @@ create table if not exists person(
     firstname_fa varchar(20),
     surname_en varchar(20),
     surname_fa varchar(20),
-    username varchar(25) not null unique,
+    username varchar(100) not null unique,
     secret varchar(200),
     image varchar(300),
     address_en varchar(500),
@@ -12,6 +12,7 @@ create table if not exists person(
     phone_no varchar(20),
     mobile_no varchar(20),
     birth_date date,
+    notify_period varchar(1) default 'd',
     is_user boolean default true,
     display_name_en varchar(30),
     display_name_fa varchar(30)

@@ -4,6 +4,7 @@
 const env = require('../env');
 const QueryFile = env.pgp.QueryFile;
 const path = require('path');
+const types = require('./types');
 
 let cache = {};
 // Helper for linking to external query files:
@@ -137,11 +138,13 @@ let modExp = {
     create: sql('product/create.sql'),
     drop: sql('product/drop.sql'),
     getById: sql('product/getById.sql'),
+    getAll: sql('product/getAll.sql'),
   },
   business_product: {
     create: sql('business_product/create.sql'),
     drop: sql('business_product/drop.sql'),
     removeBizProduct: sql('business_product/removeBizProduct.sql'),
+    getAllProducts: sql('business_product/getAllProducts.sql'),
   },
   subscription: {
     create: sql('subscription/create.sql'),
@@ -163,23 +166,18 @@ let extraSQLMap = {
     is_lead boolean not null default false,
     constraint currency_amount check((amount is null and currency is null) or (amount is not null and currency is not null)),`,
   consultancy: `is_mentor boolean not null default false,
-    subject varchar(100),`,
-  lce: `is_killer boolean default false,`
+    subject varchar(100),
+    subject_fa varchar(100),`,
+  lce_type: `is_killer boolean default false,`
 };
 // type tables
-[
-  'attendance',
-  'position',
-  'lce',
-  'organization',
-  'business',
-].forEach(t => {
-  let typeTableName = t + '_type';
+
+types.forEach(t => {
   let extraSQL = extraSQLMap[t] ? extraSQLMap[t]  : '';
-  modExp[typeTableName] = {
-    create: sql('type/create.sql', {tableName: typeTableName, extraSQL}),
-    drop: sql('type/drop.sql', {tableName: typeTableName, extraSQL}),
-    getByName: sql('type/getByName.sql', {tableName: typeTableName, extraSQL}),
+  modExp[t] = {
+    create: sql('type/create.sql', {tableName: t, extraSQL}),
+    drop: sql('type/drop.sql', {tableName: t, extraSQL}),
+    getByName: sql('type/getByName.sql', {tableName: t, extraSQL}),
   }
 });
 

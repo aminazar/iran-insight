@@ -3,6 +3,12 @@
     "initDb":   "postgres",
     "database": "iran-insight",
     "pgConnection": "postgres://postgres:postgres@localhost:5432/",
+    "pgConnection": "postgres://postgres:13311231@localhost:5432/",
+    "mailPeriodConfig":{
+      "minute" : 5,
+      "hour" : 9,
+      "dayOfWeek" : "Mon"
+    },
     "mailConfig": {
       "host": "smtp.mailgun.org",
       "port": "465",
@@ -21,6 +27,11 @@
     "initDb":   "",
     "database": "",
     "pgConnection": "postgres://sfnjdhkwqskzws:4af96db1fc7ccfc95290cb07c0669a95058fbd3fe0f5808adfa62c3e65363729@ec2-54-247-99-159.eu-west-1.compute.amazonaws.com:5432/df5a8fhmh95kn4",
+    "mailPeriodConfig":{
+      "minute" : 5,
+      "hour" : 9,
+      "dayOfWeek" : "Mon"
+    },
     "mailConfig": {
       "host": "smtp.mailgun.org",
       "port": "465",
