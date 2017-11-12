@@ -29,7 +29,7 @@ describe("Notification System", () => {
         done();
       }, err => console.log(err));
 
-    ns.pushNotification(10, {x: 1, y: {z: 2}});
+    ns.pushNotification({x: 1, y: {z: 2}}, {pid: 10});
   });
 
   it('should reuse the channel', function (done) {
@@ -41,7 +41,7 @@ describe("Notification System", () => {
         done()
       }, err => console.log(err));
 
-    ns.pushNotification(10, {x: 2, y: {z: 3}});
+    ns.pushNotification({x: 2, y: {z: 3}}, {pid: 10});
   });
 
   it('should queue messages for fetching', function (done) {
@@ -49,7 +49,7 @@ describe("Notification System", () => {
     let range = [];
     for (let i = 0; i < 100; i++)
       range.push(i);
-    range.map(i => () => ns.pushNotification(10, {x: i})).reduce((x, y) => x.then(y), Promise.resolve())
+    range.map(i => {return () => ns.pushNotification({x: i}, {pid: 10})}).reduce((x, y) => x.then(y), Promise.resolve())
       .then(() => ns.fetchNotifications(10))
       .then(res => {
         expect(res.length).toBe(100);
@@ -71,7 +71,7 @@ describe("Notification System", () => {
 
     let i = 0;
     let s = setInterval(() => {
-      ns.pushNotification(10, {x: i++});
+      ns.pushNotification({x: i++}, {pid: 10});
       if (i > 100)
         clearInterval(s);
     }, 10);
@@ -97,7 +97,7 @@ describe("Notification System", () => {
     ns.subscribe(10, d => fail('it did not unsubscribe this one too!'));
 
     ns.deleteChannel(10);
-    ns.pushNotification(10, {})
+    ns.pushNotification({}, {pid: 10})
       .then(()=> ns.fetchNotifications(10))
       .then(res => {
         expect(res.length).toBe(1);
@@ -111,8 +111,8 @@ describe("Notification System", () => {
   it('should work with multiple channels', function (done) {
     ns.subscribe(10, d => expect(d.data).toBe(11));
     ns.subscribe(11, d => expect(d.data).toBe(10));
-    ns.pushNotification(10, {data: 11})
-      .then(() => ns.pushNotification(11,{data:10}))
+    ns.pushNotification({data: 11}, {pid: 10})
+      .then(() => ns.pushNotification({data:10}, {pid: 11}))
       .then(() => {
         setTimeout(() => {
           ns.deleteChannel(10);

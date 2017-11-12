@@ -26,9 +26,6 @@ let setup = (app) => {
           session_config.cookie.secure = true; //Serve secure cookies
         }
 
-        app.use(session(session_config));
-
-        console.log('Session set up.')
         session_config = {
           secret: 'ManKhazDI',
           key: 'connect.sid',
@@ -39,6 +36,9 @@ let setup = (app) => {
           resave: false,
           saveUninitialized: false,
         };
+        app.use(session(session_config));
+
+        console.log('Session set up.')
         resolve();
       })
       .catch(err => {
