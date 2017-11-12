@@ -1,5 +1,6 @@
 const notificationSystem = require('../../lib/notification.system');
 const redis = require('../../redis');
+const sql = require('../../sql');
 
 let ns;
 describe("Notification System", () => {
@@ -120,6 +121,96 @@ describe("Notification System", () => {
           done();
         })
       });
-  })
-})
-;
+  });
+
+  it('should send actionable notification to org rep', function (done) {
+    spyOn(sql.test.membership, 'getOrgRep').and.returnValue(Promise.resolve(
+      [{pid:12}]));
+
+    ns.subscribe(12, d => {
+      expect(d.isActionable).toBe(true);
+      expect(d.data).toBe('xyz');
+      expect(sql.test.membership.getOrgRep).toHaveBeenCalledWith({oid:2});
+      ns.deleteChannel(12);
+      done()
+    });
+
+    ns.pushNotification({data:'xyz'}, {oid:2})
+      .then(() => {
+        console.log('Message for org is pushed');
+      })
+  });
+
+  it('should send actionable notification to biz rep', function (done) {
+    spyOn(sql.test.membership, 'getBizRep').and.returnValue(Promise.resolve(
+      [{pid:12}]));
+
+    ns.subscribe(12, d => {
+      expect(d.isActionable).toBe(true);
+      expect(d.data).toBe('xyz');
+      expect(sql.test.membership.getBizRep).toHaveBeenCalledWith({bid:2});
+      ns.deleteChannel(12);
+      done()
+    });
+
+    ns.pushNotification({data:'xyz'}, {bid:2})
+      .then(() => {
+        console.log('Message for biz is pushed');
+      })
+  });
+
+  it('should send non-actionable notification to org followers', function (done) {
+    spyOn(sql.test.subscription, 'getOrgSubscribers').and.returnValue(Promise.resolve(
+      [{pid:12},{pid:15}]));
+
+    ns.subscribe(15, d => {
+      expect(d.isActionable).toBe(undefined);
+      expect(d.data).toBe('xyz');
+      expect(sql.test.subscription.getOrgSubscribers).toHaveBeenCalledWith({oid:2});
+      ns.deleteChannel(15);
+      done()
+    });
+
+    ns.pushNotification({data:'xyz', from: {oid:2}})
+      .then(() => {
+        console.log('Message for org is pushed');
+      })
+  });
+
+  it('should send actionable notification to biz rep', function (done) {
+    spyOn(sql.test.subscription, 'getBizSubscribers').and.returnValue(Promise.resolve(
+      [{pid:12},{pid:15}]));
+
+    ns.subscribe(15, d => {
+      expect(d.isActionable).toBe(undefined);
+      expect(d.data).toBe('xyz');
+      expect(sql.test.subscription.getBizSubscribers).toHaveBeenCalledWith({bid:2});
+      ns.deleteChannel(15);
+      done()
+    });
+
+    ns.pushNotification({data:'xyz', from:{bid:2}})
+      .then(() => {
+        console.log('Message for biz is pushed');
+      })
+  });
+
+  it('should send actionable notification to biz rep', function (done) {
+    spyOn(sql.test.subscription, 'getPersonSubscribers').and.returnValue(Promise.resolve(
+      [{pid:12},{pid:15}]));
+
+    ns.subscribe(15, d => {
+      expect(d.isActionable).toBe(undefined);
+      expect(d.data).toBe('xyz');
+      expect(sql.test.subscription.getPersonSubscribers).toHaveBeenCalledWith({pid:2});
+      ns.deleteChannel(15);
+      done()
+    });
+
+    ns.pushNotification({data:'xyz', from: {pid:2}})
+      .then(() => {
+        console.log('Message for person is pushed');
+      })
+  });
+
+});
