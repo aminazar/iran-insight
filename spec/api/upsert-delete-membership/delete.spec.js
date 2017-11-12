@@ -1,0 +1,251 @@
+const request = require("request");
+const lib = require('../../../lib');
+const sql = require('../../../sql');
+const rp = require("request-promise");
+let req = request.defaults({jar: true});//enabling cookies
+
+let orgs_type_info = [{
+  id: 100,
+  name: 'governmental',
+  name_fa: 'دولتی',
+  active: true
+}, {
+  id: 101,
+  name: 'non-governmental',
+  name_fa: 'غیر دولتی',
+  active: true
+}];
+
+let biz_type_info = [{
+  id: 200,
+  name: 'start_up',
+  name_fa: 'استارت آپ',
+  active : true
+}, {
+  id: 201,
+  name: 'sicence_base',
+  name_fa: 'دانش بنیان',
+  active : true
+},{
+  id: 202,
+  name: 'research_base',
+  name_fa: 'تحقیقاتی',
+  active : true
+}];
+
+let position_type_info = [{
+  id: 300,
+  name: 'CEO',
+  name_fa: 'مدیر عامل',
+  active : true
+},{
+  id: 301,
+  name: 'programmer',
+  name_fa: 'برنامه نویس',
+  active : true
+},{
+  id: 302,
+  name: 'assistant',
+  name_fa: 'معاون',
+  active : true
+},{
+  id: 303,
+  name: 'minister',
+  name_fa: 'وزیر',
+  active : true
+}];
+
+let orgs_info = [{
+    oid: 50,
+    name: 'IT Ministry',
+    name_fa: 'وزارت ارتباطات',
+    ceo_pid: 2,
+    org_type_id: 100
+  }, {
+    oid: 51,
+    name: 'bent oak systems',
+    name_fa: 'بنتوک سامانه',
+    ceo_pid: 3,
+    org_type_id: 101
+  }];
+
+let biz_info = [{
+  bid: 1,
+  name: 'snap',
+  name_fa: 'اسنپ',
+  ceo_pid : 3,
+  biz_type_id: 201,
+  address: 'Iran-Qom',
+  address_fa: 'ایران - قم',
+  tel: '025 77307730',
+  url: null,
+  general_stats: null,
+  financial_stats: null
+},{
+  bid: 2,
+  name: 'tapsi',
+  name_fa: 'تپسی',
+  ceo_pid : 3,
+  biz_type_id: 201,
+  address: 'Iran-Tehran',
+  address_fa: 'ایران - تهران',
+  tel: '02188668866',
+  url: null,
+  general_stats: null,
+  financial_stats: null
+}];
+
+let assoc_info = [{
+  aid : 1,
+  pid : 2,
+  bid : 1,
+  oid : null,
+  start_date : null,
+  end_date : null
+},{
+  aid : 2,
+  pid : 2,
+  bid : 2,
+  oid : null,
+  start_date : null,
+  end_date : null
+},{
+  aid : 3,
+  pid : 2,
+  bid : null,
+  oid : 50,
+  start_date : null,
+  end_date : null
+},{
+  aid : 4,
+  pid : 3,
+  bid : 1,
+  oid : null,
+  start_date : null,
+  end_date : null
+}];
+
+let mem_info = [{
+  mid : 1,
+  assoc_id : 1,
+  is_active : true,
+  is_representative : true,
+  position_id : 301
+},{
+  mid : 2,
+  assoc_id : 2,
+  is_active : true,
+  is_representative : true,
+  position_id : 302
+},{
+  mid : 3,
+  assoc_id : 3,
+  is_active : true,
+  is_representative : true,
+  position_id : 300
+},{
+  mid : 4,
+  assoc_id : 4,
+  is_active : true,
+  is_representative : false,
+  position_id : 303
+}];
+///////////////////////////////////////////////
+let createNewOrgType = (org_type_info) => {
+
+  return sql.test.organization_type.add(org_type_info);
+};
+
+let createNewBizType = (biz_type_info) => {
+
+  return sql.test.business_type.add(biz_type_info);
+};
+
+let createNewPositionType = (position_type_info) => {
+
+  return sql.test.position_type.add(position_type_info);
+};
+
+let createNewOrg = (org_info) => {
+
+  return sql.test.organization.add(org_info);
+};
+
+let createNewBusiness = (biz_info) => {
+
+  return sql.test.business.add(biz_info);
+};
+
+let createNewMembership = (mem_info) => {
+
+  return sql.test.membership.add(mem_info);
+};
+
+let createNewAssociation = (biz_info) => {
+
+  return sql.test.association.add(biz_info);
+};
+
+describe('Upsert/Delete membership, DELETE API', () => {
+  let adminPid, repPid, userPid, adminJar, repJar, userJar;
+  beforeEach(done => {
+    lib.dbHelpers.create()
+      .then(() => {
+        return lib.dbHelpers.addAndLoginPerson('admin', 'admin')
+      })
+      .then((res) => {
+        adminPid = res.pid;
+        adminJar = res.rpJar;
+        return lib.dbHelpers.addAdmin(adminPid);
+      })
+      .then(() => {
+        return lib.dbHelpers.addAndLoginPerson('RepUser','123456', extraData = {firstname_en : 'Mr Rep', firstname_fa:'آقای نماینده', surname_en:'Namayande Poor ', surname_fa:'نماینده پور'})
+      })
+      .then((res) => {
+        repPid = res.pid;
+        repJar = res.rpJar;
+        return lib.dbHelpers.addAndLoginPerson('RegularUser','123456',extraData = {firstname_en : 'Mr User', firstname_fa:'آقای کاربر', surname_en:'Karbar Poor', surname_fa:'کاربر پور'})
+      })
+      .then((res) => {
+        userPid = res.pid;
+        userJar = res.rpJar;
+      })
+      .then(() => { return Promise.all(orgs_type_info.map(el => createNewOrgType(el))) })
+      .then(() => { return Promise.all(biz_type_info.map(el => createNewBizType(el))) })
+      .then(() => { return Promise.all(position_type_info.map(el => createNewPositionType(el))) })
+      .then(() => { return Promise.all(orgs_info.map(el => createNewOrg(el))) })
+      .then(() => { return Promise.all(biz_info.map(el => createNewBusiness(el))) })
+      .then(() => { return Promise.all(assoc_info.map(el => createNewAssociation(el))) })
+      .then(() => { return Promise.all(mem_info.map(el => createNewMembership(el))) })
+      .then(() => {
+        done();
+      })
+      .catch(err => {
+        console.log(err.message);
+        done();
+      });
+  });
+
+  it('admin should gget all representation requests from users', done => {
+    sql.test.membership.select()
+      .then((res) => {
+        expect(res.length).toBe(4);  //all membership record numbers
+        return rp({
+          method: 'GET',
+          uri: lib.helpers.apiTestURL(`user/getRepPendingList`),
+          jar: adminJar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then((res) =>{
+        expect(res.statusCode).toBe(200);
+        expect(res.length).toBe(0);
+        done();
+      })
+      .catch((err)=>{
+        console.log(err);
+        done();
+      })
+  })
+});
+
