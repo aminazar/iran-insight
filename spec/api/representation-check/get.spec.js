@@ -439,8 +439,7 @@ describe('Representation-check, GET API', () => {
       .then((res) =>{
         expect(res.statusCode).toBe(200);
         let data = JSON.parse(res.body); //data is array of pending requests group by different users : data = [ {person : {}, business : [{}], organization : [{}]},... ]
-        if(typeof res.body !== "string") {
-          console.log('***', typeof res.body);
+        if(typeof data !== "string") {
           let repPendingLength = 0;        //number of all pending requests from users for orgs & businesses
           let tapsiReps = [];              //number of rep requests(from all users) for tapsi
           data.forEach(el => {
@@ -452,7 +451,7 @@ describe('Representation-check, GET API', () => {
             })
           });
           expect(data.length).toBe(2);
-          expect(repPendingLength).toBe(11);
+          expect(repPendingLength).toBe(10);
           expect(data[0].person.username).toBe('amin');
           expect(data[0].business.length).toBe(4);
           expect(data[1].organization.length).toBe(2);
@@ -460,7 +459,7 @@ describe('Representation-check, GET API', () => {
           done();
         }
         else {
-          console.log('----', data.length);
+          console.log("No new representation request");
           done();
         }
       })

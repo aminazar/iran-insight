@@ -2,6 +2,7 @@ const request = require("request");
 const lib = require('../../../lib');
 const sql = require('../../../sql');
 const rp = require("request-promise");
+const moment = require('moment');
 let req = request.defaults({jar: true});//enabling cookies
 
 let orgs_type_info = [{
@@ -123,6 +124,13 @@ let assoc_info = [{
   oid : null,
   start_date : null,
   end_date : null
+},{
+  aid : 5,
+  pid : 4,
+  bid : 2,
+  oid : null,
+  start_date : null,
+  end_date : null
 }];
 
 let mem_info = [{
@@ -149,8 +157,14 @@ let mem_info = [{
   is_active : true,
   is_representative : false,
   position_id : 303
+},{
+  mid : 5,
+  assoc_id : 5,
+  is_active : true,
+  is_representative : false,
+  position_id : 302
 }];
-///////////////////////////////////////////////
+
 let createNewOrgType = (org_type_info) => {
 
   return sql.test.organization_type.add(org_type_info);
@@ -187,7 +201,7 @@ let createNewAssociation = (biz_info) => {
 };
 
 describe('Upsert/Delete membership, DELETE API', () => {
-  let adminPid, repPid, userPid, adminJar, repJar, userJar;
+  let adminPid, repPid, userPid1,userPid2, adminJar, repJar, userJar1,userJar2;
   beforeEach(done => {
     lib.dbHelpers.create()
       .then(() => {
@@ -204,11 +218,16 @@ describe('Upsert/Delete membership, DELETE API', () => {
       .then((res) => {
         repPid = res.pid;
         repJar = res.rpJar;
-        return lib.dbHelpers.addAndLoginPerson('RegularUser','123456',extraData = {firstname_en : 'Mr User', firstname_fa:'آقای کاربر', surname_en:'Karbar Poor', surname_fa:'کاربر پور'})
+        return lib.dbHelpers.addAndLoginPerson('RegularUser1','123456',extraData = {firstname_en : 'Mr User1', firstname_fa:'آقای کاربر1', surname_en:'Karbar Poor1', surname_fa:'کاربر پور1'})
       })
       .then((res) => {
-        userPid = res.pid;
-        userJar = res.rpJar;
+        userPid1 = res.pid;
+        userJar1 = res.rpJar;
+        return lib.dbHelpers.addAndLoginPerson('RegularUser2','123456',extraData = {firstname_en : 'Mr User2', firstname_fa:'آقای کاربر2', surname_en:'Karbar Poor2', surname_fa:'کاربر پور2'})
+      })
+      .then((res) => {
+        userPid2 = res.pid;
+        userJar2 = res.rpJar;
       })
       .then(() => { return Promise.all(orgs_type_info.map(el => createNewOrgType(el))) })
       .then(() => { return Promise.all(biz_type_info.map(el => createNewBizType(el))) })
@@ -226,10 +245,10 @@ describe('Upsert/Delete membership, DELETE API', () => {
       });
   });
 
-  it('admin should gget all representation requests from users', done => {
+  xit('admin should get all representation requests from users', done => {
     sql.test.membership.select()
       .then((res) => {
-        expect(res.length).toBe(4);  //all membership record numbers
+        expect(res.length).toBe(5);  //all membership record numbers
         return rp({
           method: 'GET',
           uri: lib.helpers.apiTestURL(`user/getRepPendingList`),
@@ -239,13 +258,189 @@ describe('Upsert/Delete membership, DELETE API', () => {
       })
       .then((res) =>{
         expect(res.statusCode).toBe(200);
-        expect(res.length).toBe(0);
+        let data = JSON.parse(res.body);
+        expect(typeof data).toBe("string");
+        expect(data.length).toBe(30);
         done();
       })
       .catch((err)=>{
         console.log(err);
         done();
       })
+  });
+
+  xit('regular user should be able to finish a membership', done => {
+    sql.test.membership.get({mid:4})  //mid 4 is related to a regular user
+      .then(res => {
+        expect(res[0].is_active).toBe(true);
+        expect(res[0].is_representative).toBe(false);
+        expect(res[0].end_time).toBe(null);
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/4`),
+          jar: userJar1,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid:4})
+        .then(res =>{
+          expect(res[0].end_time).not.toBe(null);
+          done();
+        })
+      })
+      .catch(err => {
+        console.log(err.message);
+        done();
+      });
+  });
+
+  xit('a regular user should be able to finish ONLY the membership of her/him-self(not other users or reps)', done => {
+    sql.test.membership.get({mid:5})  //mid 5 is related to a regular user
+      .then(res => {
+        expect(res[0].is_active).toBe(true);
+        expect(res[0].is_representative).toBe(false);
+        expect(res[0].end_time).toBe(null);
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/5`),
+          jar: userJar1,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(() => {
+        this.fail('you are not allowed to finish this membership.');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(403);
+        console.log(err.message);
+        done();
+      });
+  });
+
+  xit('should NOT be able to finish a finished membership', done => {
+    sql.test.membership.update({end_time: new Date()},4)
+      .then(res => {
+        expect(res[0].end_time).not.toBe(null);
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/4`),
+          jar: userJar1,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(() => {
+        this.fail('This membership is pending yet or has finished before.');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(500);
+        console.log(err.message);
+        done();
+      });
+  });
+
+  xit("admin should be able to finish a reresentative's membership", done => {
+    sql.test.membership.get({mid:1}) // mid 1 is related to a rep
+      .then(res => {
+        expect(res[0].is_active).toBe(true);
+        expect(res[0].is_representative).toBe(true);
+        expect(res[0].end_time).toBe(null);  // this membership has not finished yet.
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/1`),
+          jar: adminJar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid:1})
+          .then(res =>{
+            expect(res[0].end_time).not.toBe(null); // this membership is finished now.
+            done();
+          })
+      })
+      .catch(err => {
+        console.log(err.message);
+        done();
+      });
+  });
+
+  xit("admin should be able to finish ONLY reresentative's membership(other regular users are related to their reps, not admin)", done => {
+    sql.test.membership.get({mid:4}) // mid 1 is related to a rep
+      .then(res => {
+        expect(res[0].is_active).toBe(true);
+        expect(res[0].is_representative).toBe(false);
+        expect(res[0].end_time).toBe(null);  // this membership has not finished yet.
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/4`),
+          jar: adminJar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(() => {
+        this.fail('admin is not allowed to finish regular user membership.');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(403);
+        console.log(err.message);
+        done();
+      });
+  });
+
+  xit('should NOT be able to finish a finished membership', done => {
+    sql.test.membership.update({end_time: new Date()},2)
+      .then(res => {
+        expect(res[0].end_time).not.toBe(null);
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/2`),
+          jar: adminJar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(() => {
+        this.fail('This membership is pending yet or has finished before.');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(500);
+        console.log(err.message);
+        done();
+      });
+  });
+
+  it('rep should be able to finish his joiner membership',  done =>{
+    sql.test.membership.get({mid:4}) // mid 4 is related to a user
+      .then(res => {
+        expect(res[0].is_active).toBe(true);
+        expect(res[0].is_representative).toBe(false);
+        expect(res[0].end_time).toBe(null);  // this membership has not finished yet.
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/4`),
+          jar: repJar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid:4})
+          .then(res =>{
+            expect(res[0].end_time).not.toBe(null); // this membership is finished now.
+            done();
+          })
+      })
+      .catch(err => {
+        console.log(err.message);
+        done();
+      });
   })
+
 });
 

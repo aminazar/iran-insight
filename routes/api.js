@@ -157,7 +157,8 @@ router.put('/user/confirmRep/:mid/:aid',apiResponse('Person','confirmRepByAdmin'
 router.delete('/user/deleteRep/:mid',apiResponse('Person','deleteRepRequest',true,['params.mid']));
 router.delete('/user/deleteRepBizOrg/:mid',apiResponse('Person','deleteRepAndHisCompany',true,['params.mid']));
 
-//
+//upsert/delete an authoritative user(rep/regular)
+router.delete('/user/deleteUserOrRepAfterConfirm/:mid',apiResponse('Person','deleteUserOrRepAfterConfirm',false,['params.mid', 'user.pid']));
 
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid', '?user.pid']));
