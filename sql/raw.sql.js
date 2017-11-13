@@ -75,6 +75,7 @@ let modExp = {
     drop: sql('organization/drop.sql'),
     getById: sql('organization/get_by_id.sql'),
     getAll: sql('organization/get_all.sql'),
+    get: sql('organization/get.sql'),
   },
   organization_lce: {
     create: sql('organization_lce/create.sql'),
@@ -108,6 +109,7 @@ let modExp = {
   association: {
     create: sql('association/create.sql'),
     drop: sql('association/drop.sql'),
+    get: sql('association/get.sql'),
   },
   membership: {
     create: sql('membership/create.sql'),

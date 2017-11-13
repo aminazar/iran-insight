@@ -78,7 +78,6 @@ describe("POST user API", () => {
       .then(res => {
         adminObj.pid = res.pid;
         adminObj.jar = res.rpJar;
-
         return lib.dbHelpers.addAdmin(res.pid);
       })
       .then(() => {

@@ -14,7 +14,7 @@ join
             from
                 association
             where
-                aid = ${aid} ))
+                aid = ${aid}))
             or
             (oid in
                 (select
