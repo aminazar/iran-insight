@@ -83,6 +83,7 @@ let modExp = {
     getAll: sql('organization_lce/getAll.sql'),
     getRequested: sql('organization_lce/getRequested.sql'),
     getConfirmed: sql('organization_lce/getConfirmed.sql'),
+    getOrganizationLCEData: sql('organization_lce/getOrganizationLCEData.sql'),
   },
   person_activation_link: {
     create: sql('person_activation_link/create.sql'),
@@ -104,7 +105,7 @@ let modExp = {
     getRequested: sql('business_lce/getRequested.sql'),
     getConfirmed: sql('business_lce/getConfirmed.sql'),
     get: sql('business_lce/get.sql'),
-    getSeconderData: sql('business_lce/getSeconderData.sql'),
+    getBusinessLCEData: sql('business_lce/getBusinessLCEData.sql'),
   },
   association: {
     create: sql('association/create.sql'),
@@ -123,6 +124,7 @@ let modExp = {
     get: sql('membership/get.sql'),
     getAllSameAssocIDsFromMembership: sql('membership/getAllSameAssocIDsFromMembership.sql'),
     checkIfRepIsExist: sql('membership/checkIfRepIsExist.sql'),
+    getBizOrgNameByRep: sql('membership/getBizOrgNameByRep.sql'),
   },
   event: {
     create: sql('event/create.sql'),

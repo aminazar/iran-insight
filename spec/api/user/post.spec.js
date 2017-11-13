@@ -730,6 +730,7 @@ describe("POST user API", () => {
       })
       .catch(lib.helpers.errorHandler.bind(this));
   });
+
   it("Expect error when user change his/her notification period type  with incorrect type", function (done) {
     this.done = done;
     rp({
@@ -753,6 +754,7 @@ describe("POST user API", () => {
         done();
       });
   });
+
   it("Expect error when other users want to change user notification period type", function (done) {
     this.done = done;
     rp({

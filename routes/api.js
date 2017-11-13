@@ -85,7 +85,7 @@ router.post('/membership/introducing/rep', apiResponse('Person', 'introduceAsRep
 router.put('/user', apiResponse('Person', 'insert', true, ['body']));
 router.get('/user', apiResponse('Person', 'select', true));
 // router.post('/user/:pid', apiResponse('Person', 'update', true, ['params.pid','body']));
-router.post('/user/profile', apiResponse('Person', 'setProfile', false, ['user.pid', 'body']));
+router.post('/user/profile', apiResponse('Person', 'setProfile', false, ['user', 'body']));
 router.delete('/user/:pid', apiResponse('Person', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body']));
 router.put('/follow/business/:bid', apiResponse('Person', 'followingEntity', false, ['user.pid', 'params.pid', 'params.bid', 'params.oid']));
@@ -99,7 +99,7 @@ router.delete('/follow/person/:pid', apiResponse('Person', 'unfollowingEntity', 
 router.put('/expertise', apiResponse('Expertise', 'addExpertise', true, ['body']));
 router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['user', 'body']));
 router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, ['user.pid', 'params.pid']));
-router.delete('/expertise', apiResponse('Person', 'deleteExpertise', false, ['user.pid', 'body']));
+router.delete('/expertise', apiResponse('Person', 'deleteExpertise', false, ['user', 'body']));
 router.get('/user/unsubscribe/:pid/:hash', apiResponse('Person', 'unsubscribe', false, ['params.pid', 'params.hash']));
 
 
@@ -129,7 +129,7 @@ router.put('/business-lce', apiResponse('Business', 'setLCE', false, ['body','us
 router.post('/business-lce/confirm', apiResponse('Business', 'confirmLCE', false, ['user.pid','body']));
 router.get('/business-lce/:bid', apiResponse('Business', 'getLCE', false, ['user.pid', 'params.bid']));
 router.get('/business-lce/requested/:bid', apiResponse('Business', 'getRequestedLCE', false, ['user.pid' , 'params.bid']));
-router.delete('/business-lce', apiResponse('Business', 'deleteLCE', false, ['user.pid', 'body']));
+router.delete('/business-lce', apiResponse('Business', 'deleteLCE', false, ['user', 'body']));
 
 
 // Organization API
@@ -143,7 +143,7 @@ router.put('/organization-lce', apiResponse('Organization', 'setLCE', false, ['b
 router.post('/organization-lce/confirm', apiResponse('Organization', 'confirmLCE', false, ['user.pid','body']));
 router.get('/organization-lce/:oid', apiResponse('Organization', 'getLCE', false, ['user.pid', 'params.oid']));
 router.get('/organization-lce/requested/:oid', apiResponse('Organization', 'getRequestedLCE', false, ['user.pid' , 'params.oid']));
-router.delete('/organization-lce', apiResponse('Organization', 'deleteLCE', false, ['user.pid', 'body']));
+router.delete('/organization-lce', apiResponse('Organization', 'deleteLCE', false, ['user', 'body']));
 
 
 // types
@@ -151,21 +151,21 @@ router.post('/type/:name', apiResponse('Type', 'suggest', false, [ 'user.pid', '
 router.put('/type/:name/:type_id', apiResponse('Type', 'activate', true, ['params.name', 'params.type_id']));
 router.delete('/type/:name/:type_id', apiResponse('Type', 'delete', true, ['params.name', 'params.type_id']));
 
-// Representation-chekc API
+// Representation-check API
 router.get('/user/getRepPendingList',apiResponse('Person','findRepRequests',true));
-router.put('/user/confirmRep/:mid/:aid',apiResponse('Person','confirmRepByAdmin',true,['params.mid','params.aid']));
+router.put('/user/confirmRep/:mid/:aid',apiResponse('Person','confirmRepByAdmin',true,['params.mid','params.aid', 'user']));
 router.delete('/user/deleteRep/:mid',apiResponse('Person','deleteRepRequest',true,['params.mid']));
 router.delete('/user/deleteRepBizOrg/:mid',apiResponse('Person','deleteRepAndHisCompany',true,['params.mid']));
 
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid', '?user.pid']));
-router.put('/event', apiResponse('Event', 'saveData', false, ['body', 'user.pid']));
-router.post('/event/:eid', apiResponse('Event', 'saveData', false, ['body', 'user.pid', 'params.eid']));
-router.delete('/event/:eid', apiResponse('Event', 'delete', false, ['params.eid', 'user.pid']));
+router.put('/event', apiResponse('Event', 'saveData', false, ['body', 'user']));
+router.post('/event/:eid', apiResponse('Event', 'saveData', false, ['body', 'user', 'params.eid']));
+router.delete('/event/:eid', apiResponse('Event', 'delete', false, ['params.eid', 'user']));
 
 // Attendance API
-router.put('/personAttends/:eid', apiResponse('Attendance', 'personAttends', false, ['params.eid', 'body', 'user.pid']));
-router.delete('/personAttends/:eid', apiResponse('Attendance', 'personUnattends', false, ['params.eid', 'user.pid']));
+router.put('/personAttends/:eid', apiResponse('Attendance', 'personAttends', false, ['params.eid', 'body', 'user']));
+router.delete('/personAttends/:eid', apiResponse('Attendance', 'personUnattends', false, ['params.eid', 'user']));
 router.put('/bizAttends/:eid/:bid', apiResponse('Attendance', 'bizAttends', false, ['params.eid', 'body', 'params.bid', 'user.pid']));
 router.delete('/bizAttends/:eid/:bid', apiResponse('Attendance', 'bizUnattends', false, ['params.eid', 'params.bid', 'user.pid']));
 router.put('/orgAttends/:eid/:oid', apiResponse('Attendance', 'orgAttends', false, ['params.eid', 'body', 'params.oid', 'user.pid']));
