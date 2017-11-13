@@ -100,6 +100,7 @@ router.put('/expertise', apiResponse('Expertise', 'addExpertise', true, ['body']
 router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['user.pid', 'body']));
 router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, ['user.pid', 'params.pid']));
 router.delete('/expertise', apiResponse('Person', 'deleteExpertise', false, ['user.pid', 'body']));
+router.get('/user/unsubscribe/:pid/:hash', apiResponse('Person', 'unsubscribe', false, ['params.pid', 'params.hash']));
 
 
 // Notification
@@ -145,8 +146,10 @@ router.get('/organization-lce/requested/:oid', apiResponse('Organization', 'getR
 router.delete('/organization-lce', apiResponse('Organization', 'deleteLCE', false, ['user.pid', 'body']));
 
 
-// Organization type
-router.put('/organization-type', apiResponse('OrganizationType', 'saveData', false, ['body', 'id']));
+// types
+router.post('/type/:name', apiResponse('Type', 'suggest', false, [ 'user.pid', 'params.name', 'body']));
+router.put('/type/:name/:type_id', apiResponse('Type', 'activate', true, ['params.name', 'params.type_id']));
+router.delete('/type/:name/:type_id', apiResponse('Type', 'delete', true, ['params.name', 'params.type_id']));
 
 // Representation-chekc API
 router.get('/user/getRepPendingList',apiResponse('Person','findRepRequests',true));

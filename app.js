@@ -42,6 +42,8 @@ session.setup(app)
       err.status = 404;
       next(err);
     });
+    let ns = new lib.NotificationSystem();
+    ns.start();
 
     // error handler
     app.use(function (err, req, res, next) {
