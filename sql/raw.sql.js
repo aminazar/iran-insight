@@ -156,6 +156,11 @@ let modExp = {
     unsubscribeOrg: sql('subscription/unsubscribeOrg.sql'),
     unsubscribePerson: sql('subscription/unsubscribePerson.sql'),
   },
+  tag: {
+    create: sql('tag/create.sql'),
+    drop: sql('tag/drop.sql'),
+  },
+
 };
 
 // Template-generated tables

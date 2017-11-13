@@ -151,6 +151,10 @@ router.post('/type/:name', apiResponse('Type', 'suggest', false, [ 'user.pid', '
 router.put('/type/:name/:type_id', apiResponse('Type', 'activate', true, ['params.name', 'params.type_id']));
 router.delete('/type/:name/:type_id', apiResponse('Type', 'delete', true, ['params.name', 'params.type_id']));
 
+// tags
+router.put('/tag/add_all', apiResponse('Tag', 'addAll', true, ['body']));
+router.post('/tag/confirm/:tid', apiResponse('Tag', 'confirm', true, ['params.tid']));
+
 // Representation-chekc API
 router.get('/user/getRepPendingList',apiResponse('Person','findRepRequests',true));
 router.put('/user/confirmRep/:mid/:aid',apiResponse('Person','confirmRepByAdmin',true,['params.mid','params.aid']));

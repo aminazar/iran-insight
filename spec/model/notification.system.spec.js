@@ -56,7 +56,7 @@ describe("Notification System", () => {
     let range = [];
     for (let i = 0; i < 100; i++)
       range.push(i);
-    range.map(i => {return () => ns.pushNotification({x: i}, {pid: 10})}).reduce((x, y) => x.then(y), Promise.resolve())
+    range.map(i => () => ns.pushNotification({x: i}, {pid: 10})).reduce((x, y) => x.then(y), Promise.resolve())
       .then(() => ns.fetchNotifications(10))
       .then(res => {
         expect(res.length).toBe(100);
