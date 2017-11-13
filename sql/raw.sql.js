@@ -124,7 +124,7 @@ let modExp = {
     get: sql('membership/get.sql'),
     getAllSameAssocIDsFromMembership: sql('membership/getAllSameAssocIDsFromMembership.sql'),
     checkIfRepIsExist: sql('membership/checkIfRepIsExist.sql'),
-    getBizOrgNameByRep: sql('membership/getBizOrgNameByRep.sql'),
+    getBizOrgNameById: sql('membership/getBizOrgNameById.sql'),
   },
   event: {
     create: sql('event/create.sql'),
@@ -202,6 +202,7 @@ types.forEach(t => {
     getPendingByOrg: sql('biz-input/getPendingByOrg.sql', param),
     getPendingByPerson: sql('biz-input/getPendingByPerson.sql', param),
     getWithAssoc: sql('biz-input/getWithAssoc.sql', param),
+    getDetails: sql('biz-input/getDetails.sql', param),
   }
 });
 
