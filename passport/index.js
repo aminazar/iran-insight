@@ -32,7 +32,7 @@ let setup = (app) => {
     clientID: authDetails.facebookAuth.clientID,
     clientSecret: authDetails.facebookAuth.clientSecret,
     callbackURL: authDetails.facebookAuth.callBackURL,
-    profileFields:  ['id', 'email', 'gender', 'name', 'photos'],
+    profileFields: ['id', 'email', 'gender', 'name', 'photos'],
     enableProof: true,
     passReqToCallback: true
   }, lib.Person.passportOAuthStrategy));

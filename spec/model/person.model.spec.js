@@ -4,7 +4,7 @@
 const Person = require('../../lib/person.model');
 const sql  = require('../../sql');
 
-describe("Person model",()=>{
+xdescribe("Person model",()=>{
   let pid;
   let u = new Person(true);
   let newU= new Person(true);
