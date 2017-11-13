@@ -10,6 +10,7 @@ let api = require('./routes/api');
 let lib = require('./lib');
 let app = express();
 let isReady = false;
+let ns; // Notification System
 const detector = require('spider-detector');
 
 const passport = require('./passport');
@@ -42,8 +43,17 @@ session.setup(app)
       err.status = 404;
       next(err);
     });
-    let ns = new lib.NotificationSystem();
-    ns.start();
+
+    lib.NotificationSystem.setup()
+      .then(()=> {
+        ns = lib.NotificationSystem.get();
+        ns.start();
+        console.log('Notification System is ready.')
+      })
+      .catch(err => {
+        console.error(err);
+        throw(err);
+      });
 
     // error handler
     app.use(function (err, req, res, next) {
@@ -60,4 +70,4 @@ session.setup(app)
 module.exports = {
   get: () => app,
   isReady: () => isReady,
-}
+};
