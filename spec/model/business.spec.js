@@ -4,7 +4,7 @@
 const env = require("../../env");
 const sql = require('../../sql');
 
-xdescribe("Test 'business' table",()=>{
+describe("Test 'business' table",()=>{
   let bid;
   beforeAll(done=>{
     sql.test.business.create()

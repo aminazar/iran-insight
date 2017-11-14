@@ -54,6 +54,7 @@ let modExp = {
     getFromById: sql('partnership/getFromById.sql'),
     getConfirmedById: sql('partnership/getConfirmedById.sql'),
     getRequestedById: sql('partnership/getRequestedById.sql'),
+    getFullData: sql('partnership/getFullData.sql'),
   },
 
   administrators: {
@@ -83,6 +84,7 @@ let modExp = {
     getAll: sql('organization_lce/getAll.sql'),
     getRequested: sql('organization_lce/getRequested.sql'),
     getConfirmed: sql('organization_lce/getConfirmed.sql'),
+    getOrganizationLCEData: sql('organization_lce/getOrganizationLCEData.sql'),
   },
   person_activation_link: {
     create: sql('person_activation_link/create.sql'),
@@ -103,7 +105,8 @@ let modExp = {
     getAll: sql('business_lce/getAll.sql'),
     getRequested: sql('business_lce/getRequested.sql'),
     getConfirmed: sql('business_lce/getConfirmed.sql'),
-
+    get: sql('business_lce/get.sql'),
+    getBusinessLCEData: sql('business_lce/getBusinessLCEData.sql'),
   },
   association: {
     create: sql('association/create.sql'),
@@ -122,6 +125,7 @@ let modExp = {
     get: sql('membership/get.sql'),
     getAllSameAssocIDsFromMembership: sql('membership/getAllSameAssocIDsFromMembership.sql'),
     checkIfRepIsExist: sql('membership/checkIfRepIsExist.sql'),
+    getBizOrgNameById: sql('membership/getBizOrgNamesById.sql'),
   },
   event: {
     create: sql('event/create.sql'),
@@ -145,6 +149,7 @@ let modExp = {
     drop: sql('business_product/drop.sql'),
     removeBizProduct: sql('business_product/removeBizProduct.sql'),
     getAllProducts: sql('business_product/getAllProducts.sql'),
+    getByBizProductId: sql('business_product/getByBizProductId.sql'),
   },
   subscription: {
     create: sql('subscription/create.sql'),
@@ -198,6 +203,7 @@ types.forEach(t => {
     getPendingByOrg: sql('biz-input/getPendingByOrg.sql', param),
     getPendingByPerson: sql('biz-input/getPendingByPerson.sql', param),
     getWithAssoc: sql('biz-input/getWithAssoc.sql', param),
+    getDetails: sql('biz-input/getDetails.sql', param),
   }
 });
 

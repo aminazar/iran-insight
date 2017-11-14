@@ -221,7 +221,7 @@ describe("Delete user API", () => {
     this.done = done;
     sql.test.subscription.add({
       subscriber_id: normalUserObj.pid,
-      pid: repObj
+      pid: repObj.pid
     })
       .then(() =>
         rp({
