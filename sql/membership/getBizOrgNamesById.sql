@@ -1,4 +1,5 @@
 select
+    business.bid as id,
     business.name,
     business.name_fa,
     association.pid,
@@ -6,11 +7,12 @@ select
 from membership
 join association on membership.assoc_id = association.aid
 join business on association.bid = business.bid
-where membership = ${mid}
+where membership.mid = ${mid}
 
 union
 
 select
+    organization.oid as id,
     organization.name,
     organization.name_fa,
     association.pid,
@@ -18,4 +20,4 @@ select
 from membership
 join association on membership.assoc_id = association.aid
 join organization on association.oid = organization.oid
-where membeship = ${mid}
+where membership.mid = ${mid}

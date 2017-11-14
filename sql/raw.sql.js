@@ -125,7 +125,7 @@ let modExp = {
     get: sql('membership/get.sql'),
     getAllSameAssocIDsFromMembership: sql('membership/getAllSameAssocIDsFromMembership.sql'),
     checkIfRepIsExist: sql('membership/checkIfRepIsExist.sql'),
-    getBizOrgNameById: sql('membership/getBizOrgNameById.sql'),
+    getBizOrgNameById: sql('membership/getBizOrgNamesById.sql'),
   },
   event: {
     create: sql('event/create.sql'),

@@ -154,7 +154,7 @@ router.delete('/type/:name/:type_id', apiResponse('Type', 'delete', true, ['para
 // Representation-check API
 router.get('/user/getRepPendingList',apiResponse('Person','findRepRequests',true));
 router.put('/user/confirmRep/:mid/:aid',apiResponse('Person','confirmRepByAdmin',true,['params.mid','params.aid', 'user']));
-router.delete('/user/deleteRep/:mid',apiResponse('Person','deleteRepRequest',true,['params.mid']));
+router.delete('/user/deleteRep/:mid',apiResponse('Person','deleteRepRequest',true,['user', 'params.mid']));
 router.delete('/user/deleteRepBizOrg/:mid',apiResponse('Person','deleteRepAndHisCompany',true,['params.mid']));
 
 //Events API
