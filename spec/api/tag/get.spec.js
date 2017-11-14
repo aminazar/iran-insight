@@ -9,10 +9,19 @@ describe("Post Tag", () => {
     pid: null,
     jar: null,
   };
+  let orgRep = {
+    pid: null,
+    jar: null,
+  };
+  let bizRep = {
+    pid: null,
+    jar: null,
+  };
   let normalUser = {
     pid: null,
     jar: null,
   };
+  let org, biz, prod1, prod2;
 
   beforeEach(done => {
     lib.dbHelpers.create()
@@ -22,20 +31,50 @@ describe("Post Tag", () => {
         adminObj.jar = res.rpJar;
         return lib.dbHelpers.addAdmin(adminObj.pid);
       })
+      .then(res => lib.dbHelpers.addAndLoginPerson('eabasir@gmail.com'))
       .then(res => {
-        return lib.dbHelpers.addAndLoginPerson('ehsan');
-
-      }).then(res => {
         normalUser.pid = res.pid;
-        normalUser.jar = res.rpJar;
-        done();
-      }
-    ).catch(err => {
-      console.log(err);
-      done();
-    });
-  });
+        normalUser.jar = res.jar;
+        return lib.dbHelpers.addAndLoginPerson('orgRep')
+      })
+      .then(res => {
+        orgRep.pid = res.pid;
+        orgRep.jar = res.jar;
+        return lib.dbHelpers.addAndLoginPerson('bizRep')
+      })
+      .then(res => {
+        bizRep.pid = res.pid;
+        bizRep.jar = res.jar;
+        return lib.dbHelpers.addOrganizationWithRep(orgRep.pid, 'MTN');
 
+      })
+      .then(res => {
+        org = res;
+        return lib.dbHelpers.addBusinessWithRep(bizRep.pid, 'snapp');
+
+      })
+      .then(res => {
+        org = res;
+        return lib.dbHelpers.addBusinessWithRep(bizRep.pid, 'snapp');
+
+      })
+      .then(res => {
+        biz = res;
+        return sql.test.product.add({name: 'android app'})
+
+      })
+      .then(res => {
+        return sql.test.business_product.add({bid: biz.bid, product_id: res.id})
+      })
+      .then(res => {
+        return sql.test.business_product.add({bid: biz.bid, product_id: res.id})
+      })
+
+      .catch(err => {
+        console.log(err);
+        done();
+      });
+  });
 
   it("Admin should be able to  confirm a tag", function (done) {
     this.done = done;
@@ -61,29 +100,5 @@ describe("Post Tag", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("Expect error when other users are calling api", function (done) {
-    this.done = done;
-    let tagId;
-    sql.test.tag.add({name: 'اینترنت', proposer: '{"biz":[1,2,3],"org":[1,2,3],"product":[1,2,3]}'})
-      .then(res => {
-        tagId = res.tid;
-        return rp({
-          method: 'post',
-          uri: lib.helpers.apiTestURL(`tag/confirm/${tagId}`),
-          jar: normalUser.jar,
-          resolveWithFullResponse: true
-        })
-      })
-      .then(res => {
-        this.fail('did not failed when other users are calling api');
-        done();
-      })
-      .catch(err => {
-        expect(err.statusCode).toBe(error.adminOnly.status);
-        expect(err.error).toBe(error.adminOnly.message);
-        done();
-      });
-
-  });
 
 });

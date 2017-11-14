@@ -153,6 +153,7 @@ router.delete('/type/:name/:type_id', apiResponse('Type', 'delete', true, ['para
 
 // tags
 router.put('/tag/add_all', apiResponse('Tag', 'addAll', true, ['body']));
+router.put('/tag/add', apiResponse('Tag', 'setTag', false, ['user.pid', 'body']));
 router.post('/tag/confirm/:tid', apiResponse('Tag', 'confirm', true, ['params.tid']));
 
 // Representation-chekc API

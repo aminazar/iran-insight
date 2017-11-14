@@ -7,6 +7,7 @@ const path = require('path');
 const types = require('./types');
 
 let cache = {};
+
 // Helper for linking to external query files:
 function sql(file, fixedArgs) {
   let QF = cache[file];
@@ -159,6 +160,8 @@ let modExp = {
   tag: {
     create: sql('tag/create.sql'),
     drop: sql('tag/drop.sql'),
+    updateProposer: sql('tag/updateProposer.sql'),
+    appendTag: sql('tag/appendTag.sql'),
   },
 
 };
@@ -178,7 +181,7 @@ let extraSQLMap = {
 // type tables
 
 types.forEach(t => {
-  let extraSQL = extraSQLMap[t] ? extraSQLMap[t]  : '';
+  let extraSQL = extraSQLMap[t] ? extraSQLMap[t] : '';
   modExp[t] = {
     create: sql('type/create.sql', {tableName: t, extraSQL}),
     drop: sql('type/drop.sql', {tableName: t, extraSQL}),
@@ -191,7 +194,7 @@ types.forEach(t => {
   'investment',
   'consultancy',
 ].forEach(t => {
-  let extraSQL = extraSQLMap[t] ? extraSQLMap[t]  : '';
+  let extraSQL = extraSQLMap[t] ? extraSQLMap[t] : '';
   let param = {tableName: t};
   modExp[t] = {
     create: sql('biz-input/create.sql', {tableName: t, extraSQL}),
