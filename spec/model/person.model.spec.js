@@ -3,8 +3,9 @@
  */
 const Person = require('../../lib/person.model');
 const sql  = require('../../sql');
+const lib = require('../../lib');
 
-xdescribe("Person model",()=>{
+describe("Person model",()=>{
   let pid;
   let u = new Person(true);
   let newU= new Person(true);
@@ -13,7 +14,7 @@ xdescribe("Person model",()=>{
 
   beforeAll(done=>{
     // sql.test.person.drop().then(()=>{}).catch(()=>{});
-    sql.test.person.create()
+    lib.dbHelpers.create()
       .then(() => sql.test.person.add({username: username.toLowerCase(), secret: pwd}))
       .then(res=>{
         pid = res.pid;
