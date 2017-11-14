@@ -155,6 +155,7 @@ router.delete('/type/:name/:type_id', apiResponse('Type', 'delete', true, ['para
 router.put('/tag/add_all', apiResponse('Tag', 'addAll', true, ['body']));
 router.put('/tag/add', apiResponse('Tag', 'setTag', false, ['user.pid', 'body']));
 router.post('/tag/confirm/:tid', apiResponse('Tag', 'confirm', true, ['params.tid']));
+router.delete('/tag/removeFrom', apiResponse('Tag', 'removeTagFromTarget', false, ['user.pid', 'body']));
 
 // Representation-chekc API
 router.get('/user/getRepPendingList',apiResponse('Person','findRepRequests',true));

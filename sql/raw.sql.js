@@ -162,6 +162,7 @@ let modExp = {
     drop: sql('tag/drop.sql'),
     updateProposer: sql('tag/updateProposer.sql'),
     appendTag: sql('tag/appendTag.sql'),
+    removeTagFromTarget: sql('tag/removeTagFromTarget.sql'),
   },
 
 };
