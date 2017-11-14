@@ -37,6 +37,7 @@
     "redis": "^2.7.1",
     "request": "^2.79.0",
     "request-promise": "^4.2.2",
+    "rxjs": "^5.5.2",
     "serve-favicon": "~2.3.0",
     "socket.io": "^2.0.3",
     "socket.io-redis": "^5.1.0",
@@ -46,6 +47,7 @@
   "devDependencies": {
     "jasmine": "^2.8.0",
     "jasmine-node": "^1.14.5",
+    "jasmine-spec-reporter": "^4.2.1",
     "request": "^2.83.0",
     "socket.io-client": "^2.0.3"
   }
