@@ -276,7 +276,6 @@ describe("Put tag for biz, org and products", () => {
       return sql.test.tag.select();
     }).then(res => {
       expect(res.length).toBe(1);
-      expect(res[0].proposer.product.length).toBe(0);
       done();
     })
       .catch(lib.helpers.errorHandler.bind(this));
