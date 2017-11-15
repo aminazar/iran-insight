@@ -168,6 +168,7 @@ let modExp = {
     updateProposer: sql('tag/updateProposer.sql'),
     appendTag: sql('tag/appendTag.sql'),
     removeTagFromTarget: sql('tag/removeTagFromTarget.sql'),
+    getActiveTags: sql('tag/getActiveTags.sql'),
   },
 
 };

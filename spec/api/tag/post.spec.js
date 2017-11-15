@@ -37,7 +37,7 @@ describe("Post Tag", () => {
   });
 
 
-  it("Admin should be able to  confirm a tag", function (done) {
+  it("Admin should be able to confirm a tag", function (done) {
     this.done = done;
     let tagId;
     sql.test.tag.add({name: 'اینترنت', proposer: '{"business":[1,2,3],"organization":[1,2,3],"product":[1,2,3]}'})

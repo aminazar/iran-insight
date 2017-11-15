@@ -156,6 +156,7 @@ router.put('/tag/add_all', apiResponse('Tag', 'addAll', true, ['body']));
 router.put('/tag/add', apiResponse('Tag', 'setTag', false, ['user.pid', 'body']));
 router.post('/tag/confirm/:tid', apiResponse('Tag', 'confirm', true, ['params.tid']));
 router.delete('/tag/removeFrom', apiResponse('Tag', 'removeTagFromTarget', false, ['user.pid', 'body']));
+router.get('/tag/:type/:id', apiResponse('Tag', 'getTags', false, ['user.pid', 'params.type' , 'params.id']));
 
 // Representation-check API
 router.get('/user/getRepPendingList',apiResponse('Person','findRepRequests',true));
