@@ -4,11 +4,22 @@
 const env = require('../env');
 const QueryFile = env.pgp.QueryFile;
 const path = require('path');
+const types = require('./types');
+
+let cache = {};
 
 // Helper for linking to external query files:
-function sql(file) {
-  let fullPath = path.join(__dirname, file); // generating full path;
-  return new QueryFile(fullPath, {minify: true, debug: env.isDev});
+function sql(file, fixedArgs) {
+  let QF = cache[file];
+  if (!QF) {
+    let fullPath = path.join(__dirname, file); // generating full path;
+    QF = new QueryFile(fullPath, {minify: !env.isDev, debug: env.isDev});
+    cache[file] = QF;
+  }
+  if (!fixedArgs)
+    return QF;
+  else
+    return {query: QF, fixedArgs: fixedArgs};
 }
 
 /*
@@ -17,7 +28,7 @@ function sql(file) {
  * Put the SQL files for any new table/schema in a new directory
  * Use the same direcoty name for nesting the queries here.
  */
-module.exports = {
+let modExp = {
   db: {
     create: sql('db/create.sql'),
     drop: sql('db/drop.sql'),
@@ -27,6 +38,30 @@ module.exports = {
     create: sql('person/create.sql'),
     drop: sql('person/drop.sql'),
     get: sql('person/get.sql'),
+    isAdmin: sql('person/isAdmin.sql'),
+    orgRep: sql('person/orgRep.sql'),
+    bizRep: sql('person/bizRep.sql'),
+    getUserById: sql('person/getUserById.sql'),
+    getListOfRepresentationRequests: sql('person/getListOfRepresentationRequests.sql'),
+    getPersonExpertise: sql('person/getPersonExpertise.sql'),
+    deleteExpertiseById: sql('person/deleteExpertiseById.sql'),
+    getAdmins: sql('person/getAdmins.sql'),
+
+  },
+  partnership: {
+    create: sql('partnership/create.sql'),
+    drop: sql('partnership/drop.sql'),
+    getById: sql('partnership/getById.sql'),
+    getFromById: sql('partnership/getFromById.sql'),
+    getConfirmedById: sql('partnership/getConfirmedById.sql'),
+    getRequestedById: sql('partnership/getRequestedById.sql'),
+    getFullData: sql('partnership/getFullData.sql'),
+  },
+
+  administrators: {
+    create: sql('administrators/create.sql'),
+    getById: sql('administrators/getById.sql'),
+    drop: sql('administrators/drop.sql'),
   },
   expertise: {
     create: sql('expertise/create.sql'),
@@ -35,46 +70,151 @@ module.exports = {
   person_expertise: {
     create: sql('person_expertise/create.sql'),
     drop: sql('person_expertise/drop.sql'),
+    getByIds: sql('person_expertise/getByIds.sql'),
   },
-
   organization: {
     create: sql('organization/create.sql'),
     drop: sql('organization/drop.sql'),
     getById: sql('organization/get_by_id.sql'),
     getAll: sql('organization/get_all.sql'),
+    get: sql('organization/get.sql'),
   },
   organization_lce: {
     create: sql('organization_lce/create.sql'),
     drop: sql('organization_lce/drop.sql'),
-    getById: sql('organization_lce/get_by_id.sql'),
-    select: sql('organization_lce/select.sql'),
-  },
-  organization_type: {
-    create: sql('organization_type/create.sql'),
-    drop: sql('organization_type/drop.sql'),
-    get: sql('organization_type/get.sql'),
-    select: sql('organization_type/select.sql'),
-  },
-  lce_type: {
-    create: sql('lce_type/create.sql'),
-    drop: sql('lce_type/drop.sql'),
-    get: sql('lce_type/get.sql'),
-    select: sql('lce_type/select.sql'),
+    getAll: sql('organization_lce/getAll.sql'),
+    getRequested: sql('organization_lce/getRequested.sql'),
+    getConfirmed: sql('organization_lce/getConfirmed.sql'),
+    getOrganizationLCEData: sql('organization_lce/getOrganizationLCEData.sql'),
   },
   person_activation_link: {
-    create:             sql('person_activation_link/create.sql'),
-    drop:               sql('person_activation_link/drop.sql'),
-    deleteByLink:       sql('person_activation_link/deleteByLink.sql'),
-    get:                sql('person_activation_link/get.sql'),
-    getByLink:          sql('person_activation_link/getByLink.sql'),
+    create: sql('person_activation_link/create.sql'),
+    drop: sql('person_activation_link/drop.sql'),
+    deleteByLink: sql('person_activation_link/deleteByLink.sql'),
+    get: sql('person_activation_link/get.sql'),
+    getByLink: sql('person_activation_link/getByLink.sql'),
   },
   business: {
-    create:     sql('business/create.sql'),
-    drop:       sql('business/drop.sql'),
+    create: sql('business/create.sql'),
+    drop: sql('business/drop.sql'),
+    get: sql('business/get.sql'),
+    getBusinessProducts: sql('business/getBusinessProducts.sql'),
+  },
+  business_lce: {
+    create: sql('business_lce/create.sql'),
+    drop: sql('business_lce/drop.sql'),
+    getAll: sql('business_lce/getAll.sql'),
+    getRequested: sql('business_lce/getRequested.sql'),
+    getConfirmed: sql('business_lce/getConfirmed.sql'),
+    get: sql('business_lce/get.sql'),
+    getBusinessLCEData: sql('business_lce/getBusinessLCEData.sql'),
+  },
+  association: {
+    create: sql('association/create.sql'),
+    drop: sql('association/drop.sql'),
+    get: sql('association/get.sql'),
+  },
+  membership: {
+    create: sql('membership/create.sql'),
+    drop: sql('membership/drop.sql'),
+    isRepresentativeOrAdmin: sql('membership/isRepresentativeOrAdmin.sql'),
+    getWithAssoc: sql('membership/getWithAssoc.sql'),
+    getWithLimitedAssoc: sql('membership/getWithLimitedAssoc.sql'),
+    repPendingUsers: sql('membership/repPendingUsers.sql'),
+    getBizRep: sql('membership/getBizRep.sql'),
+    getOrgRep: sql('membership/getOrgRep.sql'),
+    get: sql('membership/get.sql'),
+    getAllSameAssocIDsFromMembership: sql('membership/getAllSameAssocIDsFromMembership.sql'),
+    checkIfRepIsExist: sql('membership/checkIfRepIsExist.sql'),
+    getBizOrgNameById: sql('membership/getBizOrgNamesById.sql'),
   },
   event: {
-    create:     sql('event/create.sql'),
-    drop:       sql('event/drop.sql'),
+    create: sql('event/create.sql'),
+    drop: sql('event/drop.sql'),
   },
-}
-;
+  attendance: {
+    create: sql('attendance/create.sql'),
+    drop: sql('attendance/drop.sql'),
+    personUnattends: sql('attendance/person-unattend.sql'),
+    bizUnattends: sql('attendance/biz-unattend.sql'),
+    orgUnattends: sql('attendance/org-unattend.sql'),
+  },
+  product: {
+    create: sql('product/create.sql'),
+    drop: sql('product/drop.sql'),
+    getById: sql('product/getById.sql'),
+    getAll: sql('product/getAll.sql'),
+  },
+  business_product: {
+    create: sql('business_product/create.sql'),
+    drop: sql('business_product/drop.sql'),
+    removeBizProduct: sql('business_product/removeBizProduct.sql'),
+    getAllProducts: sql('business_product/getAllProducts.sql'),
+    getByBizProductId: sql('business_product/getByBizProductId.sql'),
+  },
+  subscription: {
+    create: sql('subscription/create.sql'),
+    drop: sql('subscription/drop.sql'),
+    getBizSubscribers: sql('subscription/getBizSubscribers.sql'),
+    getOrgSubscribers: sql('subscription/getOrgSubscribers.sql'),
+    getPersonSubscribers: sql('subscription/getPersonSubscribers.sql'),
+    unsubscribeBiz: sql('subscription/unsubscribeBiz.sql'),
+    unsubscribeOrg: sql('subscription/unsubscribeOrg.sql'),
+    unsubscribePerson: sql('subscription/unsubscribePerson.sql'),
+  },
+  tag: {
+    create: sql('tag/create.sql'),
+    drop: sql('tag/drop.sql'),
+    updateProposer: sql('tag/updateProposer.sql'),
+    appendTag: sql('tag/appendTag.sql'),
+    removeTagFromTarget: sql('tag/removeTagFromTarget.sql'),
+    getActiveTags: sql('tag/getActiveTags.sql'),
+  },
+
+};
+
+// Template-generated tables
+let extraSQLMap = {
+  investment: `amount money,
+    currency char(3),
+    investment_cycle smallint,
+    is_lead boolean not null default false,
+    constraint currency_amount check((amount is null and currency is null) or (amount is not null and currency is not null)),`,
+  consultancy: `is_mentor boolean not null default false,
+    subject varchar(100),
+    subject_fa varchar(100),`,
+  lce_type: `is_killer boolean default false,`
+};
+// type tables
+
+types.forEach(t => {
+  let extraSQL = extraSQLMap[t] ? extraSQLMap[t] : '';
+  modExp[t] = {
+    create: sql('type/create.sql', {tableName: t, extraSQL}),
+    drop: sql('type/drop.sql', {tableName: t, extraSQL}),
+    getByName: sql('type/getByName.sql', {tableName: t, extraSQL}),
+  }
+});
+
+// biz input tables
+[
+  'investment',
+  'consultancy',
+].forEach(t => {
+  let extraSQL = extraSQLMap[t] ? extraSQLMap[t] : '';
+  let param = {tableName: t};
+  modExp[t] = {
+    create: sql('biz-input/create.sql', {tableName: t, extraSQL}),
+    drop: sql('biz-input/drop.sql', param),
+    getByBiz: sql('biz-input/getByBiz.sql', param),
+    getByOrg: sql('biz-input/getByOrg.sql', param),
+    getByPerson: sql('biz-input/getByPerson.sql', param),
+    getPendingByBiz: sql('biz-input/getPendingByBiz.sql', param),
+    getPendingByOrg: sql('biz-input/getPendingByOrg.sql', param),
+    getPendingByPerson: sql('biz-input/getPendingByPerson.sql', param),
+    getWithAssoc: sql('biz-input/getWithAssoc.sql', param),
+    getDetails: sql('biz-input/getDetails.sql', param),
+  }
+});
+
+module.exports = modExp;

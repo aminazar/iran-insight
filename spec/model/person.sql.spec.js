@@ -3,11 +3,12 @@
  */
 const env = require("../../env");
 const sql = require('../../sql');
+const lib = require('../../lib');
 
 describe("Test 'person' table",()=>{
   let pid;
   beforeAll(done=>{
-      sql.test.person.create()
+    lib.dbHelpers.create()
         .then(() => {
           done();
         })

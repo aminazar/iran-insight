@@ -6,9 +6,11 @@ let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
 
 let index = require('./routes/index');
-let api   = require('./routes/api');
-let lib      = require('./lib');
+let api = require('./routes/api');
+let lib = require('./lib');
 let app = express();
+let isReady = false;
+let ns; // Notification System
 const detector = require('spider-detector');
 
 const passport = require('./passport');
@@ -23,32 +25,49 @@ app.set('view engine', 'pug');
 app.use(detector.middleware());
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-session.setup(app);
-passport.setup(app);
+session.setup(app)
+  .then(() => {
+    isReady = true;
+    passport.setup(app);
 
-app.use('/', index);
-app.use('/api', api);
+    app.use('/', index);
+    app.use('/api', api);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  let err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
+    // catch 404 and forward to error handler
+    app.use(function (req, res, next) {
+      let err = new Error('Not Found');
+      err.status = 404;
+      next(err);
+    });
 
-// error handler
-app.use(function(err, req, res, next) {
-  let jsonError = req.app.get('env') === 'development' ? {
-    Message: err.message,
-    Stack: err.stack,
-  } : {Message: err};
+    lib.NotificationSystem.setup()
+      .then(()=> {
+        ns = lib.NotificationSystem.get();
+        ns.start();
+        console.log('Notification System is ready.')
+      })
+      .catch(err => {
+        console.error(err);
+        throw(err);
+      });
 
-  res.status(err.status || 500).json(jsonError);
-  console.log(err);
-});
+    // error handler
+    app.use(function (err, req, res, next) {
+      let jsonError = req.app.get('env') === 'development' ? {
+        Message: err.message,
+        Stack: err.stack,
+      } : {Message: err};
+      res.status(err.status || 500).json(jsonError);
 
-module.exports = app;
+    });
+  });
+
+
+module.exports = {
+  get: () => app,
+  isReady: () => isReady,
+};

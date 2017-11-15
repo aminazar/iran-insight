@@ -32,7 +32,7 @@ let setup = (app) => {
     clientID: authDetails.facebookAuth.clientID,
     clientSecret: authDetails.facebookAuth.clientSecret,
     callbackURL: authDetails.facebookAuth.callBackURL,
-    profileFields:  ['id', 'email', 'gender', 'name'],
+    profileFields: ['id', 'email', 'gender', 'name', 'photos'],
     enableProof: true,
     passReqToCallback: true
   }, lib.Person.passportOAuthStrategy));
@@ -41,7 +41,7 @@ let setup = (app) => {
     consumerKey: authDetails.linkedinAuth.clientID,
     consumerSecret: authDetails.linkedinAuth.clientSecret,
     callbackURL: authDetails.linkedinAuth.callBackURL,
-    profileFields: ['id', 'first-name', 'last-name', 'email-address', 'headline'],
+    profileFields: ['id', 'first-name', 'last-name', 'email-address', 'headline', 'picture-urls'],
     passReqToCallback: true
   }, lib.Person.passportOAuthStrategy));
 };

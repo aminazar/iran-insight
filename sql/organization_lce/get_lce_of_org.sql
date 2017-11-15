@@ -1,1 +1,0 @@
-select * from organization_lce where oid1 =${oid}
