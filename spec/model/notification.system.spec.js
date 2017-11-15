@@ -241,4 +241,116 @@ describe("Notification System", () => {
       })
   });
 
+  it("should get correct object", function (done) {
+    let data = {
+      person_name: 'Ali Alavi',
+      person_username: 'aa',
+      person_id: 12,
+    };
+
+    let rcvMsg = notificationSystem.get().composeMessage(notificationSystem.get().getNotificationCategory().UserUpdateProfile, data);
+    expect(rcvMsg.msg).toBe('Ali Alavi was updated his/her profile data');
+    expect(rcvMsg.link).toBe('https://iran-insight.com/user/profile/12');
+    done();
+  });
+
+  it("should generate notification mail content", function (done) {
+    let data = [
+      {
+        from: {pid: 1},
+        about: notificationSystem.get().getNotificationCategory().RejectRepRequest,
+        aboutData: {
+          person_name: ' ',
+          person_username: 'a@gmail.com',
+          org_biz_name: 'Snapp',
+          is_business: true,
+        },
+        isActionable: false
+      },
+      {
+        from: {oid: 12},
+        about: notificationSystem.get().getNotificationCategory().OrganizationUpdateProfile,
+        aboutData: {
+          organization_name: 'BIG ORG',
+          organization_id: 12,
+        },
+        isActionable: false
+      },
+      {
+        from: {pid: 3},
+        about: notificationSystem.get().getNotificationCategory().PersonRequestPartnership,
+        aboutData: {
+          person_name: ' ',
+          person_username: 'a@gmail.com',
+          partnership_description: 'Dinner Party',
+        },
+        isActionable: false
+      },
+      {
+        from: {pid: 4},
+        about: notificationSystem.get().getNotificationCategory().IntroducingRep,
+        aboutData: {
+          person_name: 'Taghi Taghavi',
+          orgBiz_name: 'FoodLatency',
+        },
+        isActionable: true,
+      }
+    ];
+
+    let rcvData = notificationSystem.get().composeMail('d', data, 9, '12345');
+    expect(rcvData.subject).toBe('The daily report of Iran-Insight');
+    expect(rcvData.body_plain).toContain('Dinner Party');
+    expect(rcvData.body_html).toContain('BIG ORG');
+    done();
+  });
+
+  it("should generate list of notifications", function (done) {
+    let data = [
+      {
+        from: {pid: 1},
+        about: notificationSystem.get().getNotificationCategory().RejectRepRequest,
+        aboutData: {
+          person_name: ' ',
+          person_username: 'a@gmail.com',
+          org_biz_name: 'Snapp',
+          is_business: true,
+        },
+        isActionable: false
+      },
+      {
+        from: {oid: 12},
+        about: notificationSystem.get().getNotificationCategory().OrganizationUpdateProfile,
+        aboutData: {
+          organization_name: 'BIG ORG',
+          organization_id: 12,
+        },
+        isActionable: false
+      },
+      {
+        from: {pid: 3},
+        about: notificationSystem.get().getNotificationCategory().PersonRequestPartnership,
+        aboutData: {
+          person_name: ' ',
+          person_username: 'a@gmail.com',
+          partnership_description: 'Dinner Party',
+        },
+        isActionable: false
+      },
+      {
+        from: {pid: 4},
+        about: notificationSystem.get().getNotificationCategory().IntroducingRep,
+        aboutData: {
+          person_name: 'Taghi Taghavi',
+          orgBiz_name: 'FoodLatency',
+        },
+        isActionable: true,
+      }
+    ];
+
+    let rcvData = notificationSystem.get().composeNotification(data);
+    expect(rcvData.length).toBe(data.length);
+    expect(rcvData.map(el => el.msg)).toContain('a@gmail.com rejects your request to being representative Snapp business', 'Profile of BIG ORG organization was updated');
+    expect(rcvData.map(el => el.link)).toContain( 'https://iran-insight.com/organization/profile/12');
+    done();
+  });
 });

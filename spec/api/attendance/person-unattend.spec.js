@@ -40,7 +40,6 @@ describe('DELETE Person attendance API', () => {
       });
   });
 
-
   it('removes an attendance', function (done) {
     this.done = done;
     rp({
