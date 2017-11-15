@@ -1,4 +1,4 @@
-select business.bid
+select person.*
 from business
 join association on association.bid = business.bid
 join membership on association.aid = membership.assoc_id
