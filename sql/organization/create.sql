@@ -1,7 +1,9 @@
 CREATE TABLE if not exists organization(
     oid serial not null primary key,
-    name varchar(50) not null unique,
-    name_fa varchar(50) not null unique,
+    name varchar(50) unique,
+    name_fa varchar(50) unique,
     ceo_pid integer references person(pid),
-    org_type_id integer references organization_type(id)
+    org_type_id integer references organization_type(id),
+    tags text[],
+    constraint chk_name check (name is not null or name_fa is not null)
 )
