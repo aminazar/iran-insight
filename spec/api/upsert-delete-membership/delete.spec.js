@@ -275,12 +275,15 @@ describe('Upsert/Delete membership, DELETE API', () => {
   });
 
   it("admin should be able to finish reresentative's membership ONLY,(other regular users are related to their reps, not admin)", done => {
-    rp({
-      method: 'DELETE',
-      uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/1`),
-      jar: adminJar,
-      resolveWithFullResponse: true,
-    })
+    sql.test.membership.update({end_time: moment(new Date()).add(7,'day')}, 1)
+      .then(()=>{
+        rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/1`),
+          jar: adminJar,
+          resolveWithFullResponse: true,
+        })
+      })
       .then(res => {
         expect(res.statusCode).toBe(200);
         return sql.test.membership.get({mid: 1})
@@ -295,7 +298,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
       });
   });
 
-  it('should threw an error when admin is going to finish regular users', done => {
+  it('should threw an error when admin is going to finish regular users', function(done) {
     rp({
       method: 'DELETE',
       uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/5`),
@@ -313,8 +316,11 @@ describe('Upsert/Delete membership, DELETE API', () => {
       });
   });
 
-  it('admin should NOT be able to finish a finished membership of a rep', done => {
-    sql.test.membership.update({end_time: new Date()}, 1)
+  it('admin should NOT be able to finish a finished membership of a rep', function(done) {
+    sql.test.membership.update({start_time: moment(new Date()).add(-7,'day')}, 1)
+      .then((res) => {
+        return sql.test.membership.update({end_time: moment(new Date()).add(-3,'day')}, 1)
+      })
       .then(res => {
         expect(res[0].end_time).not.toBe(null);
         return rp({
@@ -325,7 +331,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
         })
       })
       .then(() => {
-        this.fail('This membership has finished before.');
+        this.fail('Thiss membership has finished before.');
         done();
       })
       .catch(err => {
@@ -377,7 +383,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
       });
   });
 
-  it('should threw an error when a rep-user is going to finish another rep membership', done => {
+  it('should threw an error when a rep-user is going to finish another rep membership',function(done){
     sql.test.association.update({pid : 3},3)
       .then(res => {
         return rp({
@@ -398,7 +404,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
       });
   });
 
-  it('should threw an error when a rep-user is going to finish other rep joiners membership',  done =>{
+  it('should threw an error when a rep-user is going to finish other rep joiners membership', function(done) {
     sql.test.association.update({pid : 3},2)   // make user1 to be rep of biz2 and user2 is joiner of user1...//rep user is rep of biz1,user1 is also joiner of repuser
       .then(res => {
         return rp({
@@ -440,7 +446,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
       });
   });
 
-  it('should threw an error when a regular user is going to finish another user except her/himself', done => {
+  it('should threw an error when a regular user is going to finish another user except her/himself', function(done) {
     rp({
       method: 'DELETE',
       uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/5`),
