@@ -114,7 +114,6 @@ describe('PUT Joiner API', () => {
             expect(res[0].is_active).toBe(true);
             done();
           });
-
       })
       .catch(err => {
         this.fail(lib.helpers.parseServerErrorToString(err));
