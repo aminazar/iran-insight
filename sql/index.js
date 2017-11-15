@@ -146,7 +146,7 @@ genericSafeInsert = (tableName, idColumn, isTest) => {
   return (data , constraints) => {
     // 'constraints' can part of 'data' => if whole of data is not going to be duplicated. but constraint is important about some keys in 'data'
     let arg =constraints ? constraints : data;
-    return genericGet(tableName, isTest)(arg)
+  return genericGet(tableName, isTest)(arg)
       .then(res => {
         if (res.length)
           return Promise.resolve(res[0]);
@@ -178,6 +178,7 @@ let tablesWithSqlCreatedByHelpers = [
     insert: true,
     idColumn: 'admin_id',
     select: true,
+    get: true
   },
   {
     name: 'partnership',
@@ -309,6 +310,15 @@ let tablesWithSqlCreatedByHelpers = [
     get: true,
     idColumn: 'sid',
   },
+  {
+    name: 'tag',
+    safeInsert: true,
+    update: true,
+    select: true,
+    delete: true,
+    get: true,
+    idColumn: 'tid',
+  }
 ].concat(templateGeneratedTables
   .map(tableName => {
       return {

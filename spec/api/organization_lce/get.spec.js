@@ -43,7 +43,7 @@ describe("Get Organization LCE API", () => {
         return lib.dbHelpers.addAndLoginPerson('ehsan');
       })
       .then(res => {
-        return lib.dbHelpers.addAndLoginPerson('rep1');
+          return lib.dbHelpers.addAndLoginPerson('rep1');
       })
       .then(res => {
         rep1.pid = res.pid;

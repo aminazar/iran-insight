@@ -395,5 +395,4 @@ describe('Representation-check, DELETE API', () => {
         done();
       });
   });
-
 });

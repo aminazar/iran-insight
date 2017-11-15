@@ -151,11 +151,21 @@ router.post('/type/:name', apiResponse('Type', 'suggest', false, [ 'user.pid', '
 router.put('/type/:name/:type_id', apiResponse('Type', 'activate', true, ['params.name', 'params.type_id']));
 router.delete('/type/:name/:type_id', apiResponse('Type', 'delete', true, ['params.name', 'params.type_id']));
 
+// tags
+router.put('/tag/add_all', apiResponse('Tag', 'addAll', true, ['body']));
+router.put('/tag/add', apiResponse('Tag', 'setTag', false, ['user.pid', 'body']));
+router.post('/tag/confirm/:tid', apiResponse('Tag', 'confirm', true, ['params.tid']));
+router.delete('/tag/removeFrom', apiResponse('Tag', 'removeTagFromTarget', false, ['user.pid', 'body']));
+router.get('/tag/:type/:id', apiResponse('Tag', 'getTags', false, ['user.pid', 'params.type' , 'params.id']));
+
 // Representation-check API
 router.get('/user/getRepPendingList',apiResponse('Person','findRepRequests',true));
 router.put('/user/confirmRep/:mid/:aid',apiResponse('Person','confirmRepByAdmin',true,['params.mid','params.aid', 'user']));
 router.delete('/user/deleteRep/:mid',apiResponse('Person','deleteRepRequest',true,['user', 'params.mid']));
 router.delete('/user/deleteRepBizOrg/:mid',apiResponse('Person','deleteRepAndHisCompany',true,['params.mid']));
+
+//upsert/delete an authoritative user(rep/regular)
+router.delete('/user/deleteUserOrRepAfterConfirm/:mid',apiResponse('Person','deleteUserOrRepAfterConfirm',false,['params.mid', 'user.pid']));
 
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid', '?user.pid']));

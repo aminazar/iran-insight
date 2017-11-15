@@ -23,4 +23,5 @@ module.exports = [ // Name tables in order of dependency
   'product',
   'business_product',
   'subscription',
+  'tag',
 ];

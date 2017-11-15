@@ -81,13 +81,13 @@ let orgs_info = [
     oid: 51,
     name: 'bent oak systems',
     name_fa: 'بنتوک سامانه',
-    ceo_pid: 3,
+    ceo_pid: 2,
     org_type_id: 101
   }, {
     oid: 52,
     name: 'Iran Insight',
     name_fa: 'ایران اینسایت',
-    ceo_pid: 2,
+    ceo_pid: 3,
     org_type_id: null
   }];
 
@@ -95,7 +95,7 @@ let biz_info = [{
   bid: 1,
   name: 'burgista app',
   name_fa: 'برگیستا',
-  ceo_pid : 1,
+  ceo_pid : 2,
   biz_type_id: 200,
   address: null,
   address_fa: null,
@@ -119,7 +119,7 @@ let biz_info = [{
   bid: 3,
   name: 'tapsi',
   name_fa: 'تپسی',
-  ceo_pid : 3,
+  ceo_pid : 2,
   biz_type_id: 201,
   address: null,
   address_fa: null,
@@ -226,6 +226,13 @@ let assoc_info = [
     oid : null,
     start_date : null,
     end_date : null
+  },{
+    aid : 13,
+    pid : 3,
+    bid : 4,
+    oid : null,
+    start_date : null,
+    end_date : null
   }];
 
 let mem_info = [{
@@ -318,6 +325,12 @@ let mem_info = [{
   is_active : false,
   is_representative : false,
   position_id : 300
+},{
+  mid : 16,
+  assoc_id : 13,
+  is_active : false,
+  is_representative : false,
+  position_id : 303
 }];
 ///////////////////////////////////////////////
 let createNewOrgType = (org_type_info) => {
@@ -368,7 +381,7 @@ describe('Representation-check, GET API', () => {
         return lib.dbHelpers.addAdmin(adminPid);
       })
       .then(() => {
-        return lib.dbHelpers.addAndLoginPerson('amin', '123456')
+        return lib.dbHelpers.addAndLoginPerson('amin', '123456',extraData = {firstname_en : 'Mr Amin', firstname_fa:'امین', surname_en:'Amini', surname_fa:'امینی'})
       })
       .then((res) => {
         aminPid = res.pid;
@@ -413,32 +426,42 @@ describe('Representation-check, GET API', () => {
   })
 
   it('admin should get all representation requests from users', done => {
-    return rp({
-      method: 'GET',
-      uri: lib.helpers.apiTestURL(`user/getRepPendingList`),
-      jar: adminJar,
-      resolveWithFullResponse: true,
-    })
+    return sql.test.membership.select()
+    .then((res) => {
+      expect(res.length).toBe(16);  //all membership record numbers
+      return rp({
+        method: 'GET',
+        uri: lib.helpers.apiTestURL(`user/getRepPendingList`),
+        jar: adminJar,
+        resolveWithFullResponse: true,
+      })
+      })
       .then((res) =>{
         expect(res.statusCode).toBe(200);
         let data = JSON.parse(res.body); //data is array of pending requests group by different users : data = [ {person : {}, business : [{}], organization : [{}]},... ]
-        let repPendingLength = 0;        //number of all pending requests from users for orgs & businesses
-        let tapsiReps = [];              //number of rep requests(from all users) for tapsi
-        data.forEach( el => {
-          repPendingLength = repPendingLength + el.business.length + el.organization.length;
-        })
-        data.forEach( el => {
-          el.business.forEach( a => {
-            if(a.bizname === "tapsi") tapsiReps.push(a);
+        if(typeof data !== "string") {
+          let repPendingLength = 0;        //number of all pending requests from users for orgs & businesses
+          let tapsiReps = [];              //number of rep requests(from all users) for tapsi
+          data.forEach(el => {
+            repPendingLength = repPendingLength + el.business.length + el.organization.length;
           })
-        } );
-        expect(data.length).toBe(2);
-        expect(repPendingLength).toBe(10);
-        expect(data[0].person.username).toBe('amin');
-        expect(data[0].business.length).toBe(4);
-        expect(data[1].organization.length).toBe(2);
-        expect(tapsiReps.length).toBe(3);
-        done();
+          data.forEach(el => {
+            el.business.forEach(a => {
+              if (a.bizname === "tapsi") tapsiReps.push(a);
+            })
+          });
+          expect(data.length).toBe(2);
+          expect(repPendingLength).toBe(10);
+          expect(data[0].person.username).toBe('amin');
+          expect(data[0].business.length).toBe(4);
+          expect(data[1].organization.length).toBe(2);
+          expect(tapsiReps.length).toBe(3);
+          done();
+        }
+        else {
+          console.log("No new representation request");
+          done();
+        }
       })
       .catch((err)=>{
         console.log(err);
@@ -446,16 +469,4 @@ describe('Representation-check, GET API', () => {
       })
   })
 
-  it('should return just those records of membership table that their is_active is false & their is_representative is true', done =>{
-    //maybe it should be test in model not in api tests...
-    sql.test.membership.select()
-    .then((res) => {
-      expect(res.length).toBe(15);
-      done();
-    })
-    .catch((err)=>{
-      console.log(err);
-      done();
-    })
-  })
 });
