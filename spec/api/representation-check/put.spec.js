@@ -308,8 +308,8 @@ describe('Representation-check, PUT API', () => {
       });
   });
 
-  it('admin should NOT be able to activate a rep request for a biz/org with representative', done => {
-    return rp({
+  it('admin should NOT be able to activate a rep request for a biz/org with representative', function (done) {
+    rp({
       method: 'PUT',
       uri: lib.helpers.apiTestURL(`user/confirmRep/8/7`),
       jar: adminJar,

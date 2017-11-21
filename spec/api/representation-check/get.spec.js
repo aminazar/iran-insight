@@ -409,7 +409,7 @@ describe('Representation-check, GET API', () => {
   });
 
   it('a normal user() except admin should not be able to get representation requests', done =>{
-    return rp({
+    rp({
       method: 'GET',
       uri: lib.helpers.apiTestURL(`user/getRepPendingList`),
       jar: aminJar,
@@ -420,13 +420,13 @@ describe('Representation-check, GET API', () => {
         done();
       })
       .catch((err)=>{
-        console.log(err);
+        console.log(err.message);
         done();
       })
   })
 
   it('admin should get all representation requests from users', done => {
-    return sql.test.membership.select()
+    sql.test.membership.select()
     .then((res) => {
       expect(res.length).toBe(16);  //all membership record numbers
       return rp({
@@ -464,7 +464,7 @@ describe('Representation-check, GET API', () => {
         }
       })
       .catch((err)=>{
-        console.log(err);
+        console.log(err.message);
         done();
       })
   })

@@ -279,7 +279,7 @@ describe('Representation-check, DELETE API', () => {
       });
   });
 
-  it('admin should be able to delete a false representation request, convert him to a usual user', done => {
+  it('admin should be able to delete a false representation request, convert him to a usual user', function (done) {
     sql.test.membership.get({mid:11})
     .then(res => {
       expect(res[0].is_active).toBe(false);
@@ -306,7 +306,7 @@ describe('Representation-check, DELETE API', () => {
     });
   });
 
-  it('admin should NOT be able to delete a representation request and  convert him to a usual user,with representative', done => {
+  it('admin should NOT be able to delete a representation request and  convert him to a usual user,with representative', function (done) {
     sql.test.membership.get({mid:7})
       .then(res => {
         expect(res[0].is_active).toBe(true);
