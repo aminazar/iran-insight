@@ -280,207 +280,233 @@ describe('Upsert/Delete membership, POST API', () => {
       });
   });
 
-  // it("admin sould be able to update a confirmed rep membership", done => {
-  //   sql.test.membership.get({mid: 1})
-  //     .then((res) => {
-  //       expect(res[0].is_active).toBe(true);
-  //       expect(res[0].is_representative).toBe(true);
-  //       expect(res[0].position_id).toBe(301)
-  //       expect(res[0].end_time).toBe(null);
-  //       return rp({
-  //         method: 'post',
-  //         form: {
-  //           aid: res[0].assoc_id,
-  //           position_id: 300,
-  //           end_time: moment(new Date()).add(20,'day').format()
-  //         },
-  //         uri: lib.helpers.apiTestURL('user/updateMembershipForUser/1'),
-  //         jar: adminJar,
-  //         resolveWithFullResponse: true
-  //       })
-  //     })
-  //     .then((res) => {
-  //       expect(res.statusCode).toBe(200);
-  //       return sql.test.membership.get({mid: 1})
-  //     })
-  //     .then(res => {
-  //       expect(res[0].end_time).not.toBe(null);
-  //       return sql.test.membership.get({mid: 7})
-  //     })
-  //     .then(res => {
-  //       expect(res[0].assoc_id).toBe(1);
-  //       expect(res[0].position_id).toBe(300);
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       expect(err.statusCode).not.toBe(500);
-  //       console.log('error:',err.message);
-  //       done();
-  //     });
-  // });
-  //
-  // it("admin sould be able to update a confirmed regular user membership", done => {
-  //   sql.test.membership.get({mid: 5})
-  //     .then((res) => {
-  //       expect(res[0].is_active).toBe(true);
-  //       expect(res[0].is_representative).toBe(false);
-  //       expect(res[0].position_id).toBe(302)
-  //       expect(res[0].end_time).toBe(null);
-  //       return rp({
-  //         method: 'post',
-  //         form: {
-  //           aid: res[0].assoc_id,
-  //           position_id: 303,
-  //           start_time: moment(new Date()).add(5,'day').format()
-  //         },
-  //         uri: lib.helpers.apiTestURL('user/updateMembershipForUser/5'),
-  //         jar: adminJar,
-  //         resolveWithFullResponse: true
-  //       })
-  //     })
-  //     .then((res) => {
-  //       expect(res.statusCode).toBe(200);
-  //       return sql.test.membership.get({mid: 5})
-  //     })
-  //     .then(res => {
-  //       expect(res[0].end_time).not.toBe(null);
-  //       return sql.test.membership.get({mid: 7})
-  //     })
-  //     .then(res => {
-  //       expect(res[0].assoc_id).toBe(5);
-  //       expect(res[0].position_id).toBe(303);
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       expect(err.statusCode).not.toBe(500);
-  //       console.log('error:',err.message);
-  //       done();
-  //     });
-  // });
-  //
-  // it("a representative sould be able to update a her/his membership", done => {
-  //   sql.test.membership.update({end_time: moment(new Date()).add(7,'day')}, 2)
-  //     .then((res) =>{
-  //       return sql.test.membership.get({mid: 2})
-  //     })
-  //     .then((res) => {
-  //       expect(res[0].is_active).toBe(true);
-  //       expect(res[0].is_representative).toBe(true);
-  //       expect(res[0].position_id).toBe(302);
-  //       expect(res[0].end_time).not.toBe(null);
-  //       return rp({
-  //         method: 'post',
-  //         form: {
-  //           aid: res[0].assoc_id,
-  //           position_id: 301,
-  //         },
-  //         uri: lib.helpers.apiTestURL('user/updateMembershipForUser/2'),
-  //         jar: repJar,
-  //         resolveWithFullResponse: true
-  //       })
-  //     })
-  //     .then((res) => {
-  //       expect(res.statusCode).toBe(200);
-  //       return sql.test.membership.get({mid: 2})
-  //     })
-  //     .then(res => {
-  //       expect(res[0].end_time).not.toBe(moment(new Date()).add(7,'day'));
-  //       expect(res[0].end_time).not.toBe(null);
-  //       return sql.test.membership.get({mid: 7})
-  //     })
-  //     .then(res => {
-  //       expect(res[0].assoc_id).toBe(2);
-  //       expect(res[0].position_id).toBe(301);
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       expect(err.statusCode).not.toBe(500);
-  //       console.log('error:',err.message);
-  //       done();
-  //     });
-  // });
-  //
-  // it("a representative sould be able to update a her/his joiner membership", done => {
-  //     return sql.test.membership.get({mid: 4})
-  //     .then((res) => {
-  //       expect(res[0].is_active).toBe(true);
-  //       expect(res[0].is_representative).toBe(false);
-  //       expect(res[0].position_id).toBe(303);
-  //       expect(res[0].end_time).toBe(null);
-  //       return rp({
-  //         method: 'post',
-  //         form: {
-  //           aid: res[0].assoc_id,
-  //           position_id: 300,
-  //           end_time: moment(new Date()).add(10,'day').format()
-  //         },
-  //         uri: lib.helpers.apiTestURL('user/updateMembershipForUser/4'),
-  //         jar: repJar,
-  //         resolveWithFullResponse: true
-  //       })
-  //     })
-  //     .then((res) => {
-  //       expect(res.statusCode).toBe(200);
-  //       return sql.test.membership.get({mid: 4})
-  //     })
-  //     .then(res => {
-  //       expect(res[0].end_time).not.toBe(null);
-  //       return sql.test.membership.get({mid: 7})
-  //     })
-  //     .then(res => {
-  //       expect(res[0].assoc_id).toBe(4);
-  //       expect(res[0].position_id).toBe(300);
-  //       expect(res[0].end_time).not.toBe(null);
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       expect(err.statusCode).not.toBe(500);
-  //       console.log('error:',err.message);
-  //       done();
-  //     });
-  // });
-  //
-  // it("a regular user sould be able to update a her/his membership", done => {
-  //   return sql.test.membership.get({mid: 5})
-  //     .then((res) => {
-  //       expect(res[0].is_active).toBe(true);
-  //       expect(res[0].is_representative).toBe(false);
-  //       expect(res[0].position_id).toBe(302);
-  //       expect(res[0].end_time).toBe(null);
-  //       return rp({
-  //         method: 'post',
-  //         form: {
-  //           aid: res[0].assoc_id,
-  //           position_id: 300,
-  //         },
-  //         uri: lib.helpers.apiTestURL('user/updateMembershipForUser/5'),
-  //         jar: userJar2,
-  //         resolveWithFullResponse: true
-  //       })
-  //     })
-  //     .then((res) => {
-  //       expect(res.statusCode).toBe(200);
-  //       return sql.test.membership.get({mid: 5})
-  //     })
-  //     .then(res => {
-  //       expect(res[0].end_time).not.toBe(null);
-  //       return sql.test.membership.get({mid: 7})
-  //     })
-  //     .then(res => {
-  //       expect(res[0].assoc_id).toBe(5);
-  //       expect(res[0].position_id).toBe(300);
-  //       expect(res[0].end_time).toBe(null);
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       expect(err.statusCode).not.toBe(500);
-  //       console.log('error:',err.message);
-  //       done();
-  //     });
-  // });
+  it("admin should be able to update a confirmed rep membership", done => {
+    sql.test.membership.get({mid: 1})
+      .then((res) => {
+        expect(res[0].is_active).toBe(true);
+        expect(res[0].is_representative).toBe(true);
+        expect(res[0].position_id).toBe(301);
+        expect(res[0].end_time).toBe(null);
+        return rp({
+          method: 'post',
+          form: {
+            aid: res[0].assoc_id,
+            position_id: 300,
+            end_time: moment(new Date()).add(20, 'day').format()
+          },
+          uri: lib.helpers.apiTestURL('user/updateMembershipForUser/1'),
+          jar: adminJar,
+          resolveWithFullResponse: true
+        })
+      })
+      .then((res) => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid: 1})
+      })
+      .then(res => {
+        expect(res[0].end_time).not.toBe(null);
+        return sql.test.membership.get({mid: 7})
+      })
+      .then(res => {
+        expect(res[0].assoc_id).toBe(1);
+        expect(res[0].position_id).toBe(300);
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).not.toBe(500);
+        console.log('error:', err.message);
+        done();
+      });
+  });
 
-  it("a regular user sould NOT be able to update a another regular user membership", function(done) {
-    return sql.test.membership.get({mid: 5})
+  it("admin should be able to update a confirmed regular user membership", done => {
+    sql.test.membership.get({mid: 5})
+      .then((res) => {
+        expect(res[0].is_active).toBe(true);
+        expect(res[0].is_representative).toBe(false);
+        expect(res[0].position_id).toBe(302)
+        expect(res[0].end_time).toBe(null);
+        return rp({
+          method: 'post',
+          form: {
+            aid: res[0].assoc_id,
+            position_id: 303,
+            start_time: moment(new Date()).add(5, 'day').format()
+          },
+          uri: lib.helpers.apiTestURL('user/updateMembershipForUser/5'),
+          jar: adminJar,
+          resolveWithFullResponse: true
+        })
+      })
+      .then((res) => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid: 5})
+      })
+      .then(res => {
+        expect(res[0].end_time).not.toBe(null);
+        return sql.test.membership.get({mid: 7})
+      })
+      .then(res => {
+        expect(res[0].assoc_id).toBe(5);
+        expect(res[0].position_id).toBe(303);
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).not.toBe(500);
+        console.log('error:', err.message);
+        done();
+      });
+  });
+
+  it("a representative should be able to update a her/his membership", done => {
+    sql.test.membership.update({end_time: moment(new Date()).add(7, 'day')}, 2)
+      .then((res) => {
+        return sql.test.membership.get({mid: 2})
+      })
+      .then((res) => {
+        expect(res[0].is_active).toBe(true);
+        expect(res[0].is_representative).toBe(true);
+        expect(res[0].position_id).toBe(302);
+        expect(res[0].end_time).not.toBe(null);
+        return rp({
+          method: 'post',
+          form: {
+            aid: res[0].assoc_id,
+            position_id: 301,
+          },
+          uri: lib.helpers.apiTestURL('user/updateMembershipForUser/2'),
+          jar: repJar,
+          resolveWithFullResponse: true
+        })
+      })
+      .then((res) => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid: 2})
+      })
+      .then(res => {
+        expect(res[0].end_time).not.toBe(moment(new Date()).add(7, 'day'));
+        expect(res[0].end_time).not.toBe(null);
+        return sql.test.membership.get({mid: 7})
+      })
+      .then(res => {
+        expect(res[0].assoc_id).toBe(2);
+        expect(res[0].position_id).toBe(301);
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).not.toBe(500);
+        console.log('error:', err.message);
+        done();
+      });
+  });
+
+  it("a representative should be able to update a her/his joiner membership", done => {
+    sql.test.membership.get({mid: 4})
+      .then((res) => {
+        expect(res[0].is_active).toBe(true);
+        expect(res[0].is_representative).toBe(false);
+        expect(res[0].position_id).toBe(303);
+        expect(res[0].end_time).toBe(null);
+        return rp({
+          method: 'post',
+          form: {
+            aid: res[0].assoc_id,
+            position_id: 300,
+            end_time: moment(new Date()).add(10, 'day').format()
+          },
+          uri: lib.helpers.apiTestURL('user/updateMembershipForUser/4'),
+          jar: repJar,
+          resolveWithFullResponse: true
+        })
+      })
+      .then((res) => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid: 4})
+      })
+      .then(res => {
+        expect(res[0].end_time).not.toBe(null);
+        return sql.test.membership.get({mid: 7})
+      })
+      .then(res => {
+        expect(res[0].assoc_id).toBe(4);
+        expect(res[0].position_id).toBe(300);
+        expect(res[0].end_time).not.toBe(null);
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).not.toBe(500);
+        console.log('error:', err.message);
+        done();
+      });
+  });
+
+  it("a regular user should be able to update a her/his membership", done => {
+    sql.test.membership.get({mid: 5})
+      .then((res) => {
+        expect(res[0].is_active).toBe(true);
+        expect(res[0].is_representative).toBe(false);
+        expect(res[0].position_id).toBe(302);
+        expect(res[0].end_time).toBe(null);
+        return rp({
+          method: 'post',
+          form: {
+            aid: res[0].assoc_id,
+            position_id: 300,
+          },
+          uri: lib.helpers.apiTestURL('user/updateMembershipForUser/5'),
+          jar: userJar2,
+          resolveWithFullResponse: true
+        })
+      })
+      .then((res) => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid: 5})
+      })
+      .then(res => {
+        expect(res[0].end_time).not.toBe(null);
+        return sql.test.membership.get({mid: 7})
+      })
+      .then(res => {
+        expect(res[0].assoc_id).toBe(5);
+        expect(res[0].position_id).toBe(300);
+        expect(res[0].end_time).toBe(null);
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).not.toBe(500);
+        console.log('error:', err.message);
+        done();
+      });
+  });
+
+  it("a representative should NOT be able to update another rep's joiner membership", function (done) {
+    sql.test.membership.update({is_representative: false}, 2)
+      .then((res) => {
+        return rp({
+          method: 'post',
+          form: {
+            aid: res[0].assoc_id,
+            position_id: 300,
+            end_time: moment(new Date()).add(10, 'day').format()
+          },
+          uri: lib.helpers.apiTestURL('user/updateMembershipForUser/5'),
+          jar: repJar,
+          resolveWithFullResponse: true
+        })
+      })
+      .then(() => {
+        this.fail('you are not allowed to update this membership.');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(403);
+        console.log(err.message);
+        done();
+      });
+  });
+
+  it("a regular user should NOT be able to update a another regular user membership", function (done) {
+    sql.test.membership.get({mid: 5})
       .then((res) => {
         expect(res[0].is_active).toBe(true);
         expect(res[0].is_representative).toBe(false);
