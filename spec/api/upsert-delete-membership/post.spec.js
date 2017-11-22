@@ -211,7 +211,7 @@ describe('Upsert/Delete membership, POST API', () => {
   beforeEach(done => {
     lib.dbHelpers.create()
       .then(() => {
-        return lib.dbHelpers.addAndLoginPerson('admin', 'admin')
+        return lib.dbHelpers.addAndLoginPerson('admin', 'admin');
       })
       .then((res) => {
         adminPid = res.pid;
@@ -219,7 +219,8 @@ describe('Upsert/Delete membership, POST API', () => {
         return lib.dbHelpers.addAdmin(adminPid);
       })
       .then(() => {
-        return lib.dbHelpers.addAndLoginPerson('RepUser', '123456', extraData = {
+        return lib.dbHelpers.addAndLoginPerson('RepUser', '123456',
+          {
           firstname_en: 'Mr Rep',
           firstname_fa: 'آقای نماینده',
           surname_en: 'Namayande Poor ',
@@ -229,7 +230,8 @@ describe('Upsert/Delete membership, POST API', () => {
       .then((res) => {
         repPid = res.pid;
         repJar = res.rpJar;
-        return lib.dbHelpers.addAndLoginPerson('RegularUser1', '123456', extraData = {
+        return lib.dbHelpers.addAndLoginPerson('RegularUser1', '123456',
+          {
           firstname_en: 'Mr User1',
           firstname_fa: 'آقای کاربر1',
           surname_en: 'Karbar Poor1',
@@ -239,7 +241,8 @@ describe('Upsert/Delete membership, POST API', () => {
       .then((res) => {
         userPid1 = res.pid;
         userJar1 = res.rpJar;
-        return lib.dbHelpers.addAndLoginPerson('RegularUser2', '123456', extraData = {
+        return lib.dbHelpers.addAndLoginPerson('RegularUser2', '123456',
+          {
           firstname_en: 'Mr User2',
           firstname_fa: 'آقای کاربر2',
           surname_en: 'Karbar Poor2',
@@ -249,8 +252,6 @@ describe('Upsert/Delete membership, POST API', () => {
       .then((res) => {
         userPid2 = res.pid;
         userJar2 = res.rpJar;
-      })
-      .then(() => {
         return Promise.all(orgs_type_info.map(el => createNewOrgType(el)))
       })
       .then(() => {
@@ -488,16 +489,15 @@ describe('Upsert/Delete membership, POST API', () => {
       jar: userJar1,
       resolveWithFullResponse: true
     })
-
-      .then(() => {
-        this.fail('you are not allowed to update this membership.');
-        done();
-      })
-      .catch(err => {
-        expect(err.statusCode).toBe(403);
-        console.log(err.message);
-        done();
-      });
+    .then(() => {
+      this.fail('you are not allowed to update this membership.');
+      done();
+    })
+    .catch(err => {
+      expect(err.statusCode).toBe(403);
+      console.log(err.message);
+      done();
+    });
   });
 
 });

@@ -224,8 +224,8 @@ describe('Representation-check, PUT API', () => {
       .then((res) => {
         rezaPid = res.pid;
         rezaJar = res.rpJar;
+        return Promise.all(orgs_type_info.map(el => createNewOrgType(el)))
       })
-      .then(() => { return Promise.all(orgs_type_info.map(el => createNewOrgType(el))) })
       .then(() => { return Promise.all(biz_type_info.map(el => createNewBizType(el))) })
       .then(() => { return Promise.all(position_type_info.map(el => createNewPositionType(el))) })
       .then(() => { return Promise.all(orgs_info.map(el => createNewOrg(el))) })
