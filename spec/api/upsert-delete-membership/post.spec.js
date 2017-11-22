@@ -281,24 +281,17 @@ describe('Upsert/Delete membership, POST API', () => {
   });
 
   it("admin should be able to update a confirmed rep membership", done => {
-    sql.test.membership.get({mid: 1})
-      .then((res) => {
-        expect(res[0].is_active).toBe(true);
-        expect(res[0].is_representative).toBe(true);
-        expect(res[0].position_id).toBe(301);
-        expect(res[0].end_time).toBe(null);
-        return rp({
-          method: 'post',
-          form: {
-            aid: res[0].assoc_id,
-            position_id: 300,
-            end_time: moment(new Date()).add(20, 'day').format()
-          },
-          uri: lib.helpers.apiTestURL('user/updateMembershipForUser/1'),
-          jar: adminJar,
-          resolveWithFullResponse: true
-        })
-      })
+    rp({
+      method: 'post',
+      form: {
+        aid: 1,
+        position_id: 300,
+        end_time: moment(new Date()).add(20, 'day').format()
+      },
+      uri: lib.helpers.apiTestURL('user/updateMembershipForUser/1'),
+      jar: adminJar,
+      resolveWithFullResponse: true
+    })
       .then((res) => {
         expect(res.statusCode).toBe(200);
         return sql.test.membership.get({mid: 1})
@@ -320,24 +313,17 @@ describe('Upsert/Delete membership, POST API', () => {
   });
 
   it("admin should be able to update a confirmed regular user membership", done => {
-    sql.test.membership.get({mid: 5})
-      .then((res) => {
-        expect(res[0].is_active).toBe(true);
-        expect(res[0].is_representative).toBe(false);
-        expect(res[0].position_id).toBe(302)
-        expect(res[0].end_time).toBe(null);
-        return rp({
-          method: 'post',
-          form: {
-            aid: res[0].assoc_id,
-            position_id: 303,
-            start_time: moment(new Date()).add(5, 'day').format()
-          },
-          uri: lib.helpers.apiTestURL('user/updateMembershipForUser/5'),
-          jar: adminJar,
-          resolveWithFullResponse: true
-        })
-      })
+    rp({
+      method: 'post',
+      form: {
+        aid: 5,
+        position_id: 303,
+        start_time: moment(new Date()).add(5, 'day').format()
+      },
+      uri: lib.helpers.apiTestURL('user/updateMembershipForUser/5'),
+      jar: adminJar,
+      resolveWithFullResponse: true
+    })
       .then((res) => {
         expect(res.statusCode).toBe(200);
         return sql.test.membership.get({mid: 5})
@@ -401,24 +387,17 @@ describe('Upsert/Delete membership, POST API', () => {
   });
 
   it("a representative should be able to update a her/his joiner membership", done => {
-    sql.test.membership.get({mid: 4})
-      .then((res) => {
-        expect(res[0].is_active).toBe(true);
-        expect(res[0].is_representative).toBe(false);
-        expect(res[0].position_id).toBe(303);
-        expect(res[0].end_time).toBe(null);
-        return rp({
-          method: 'post',
-          form: {
-            aid: res[0].assoc_id,
-            position_id: 300,
-            end_time: moment(new Date()).add(10, 'day').format()
-          },
-          uri: lib.helpers.apiTestURL('user/updateMembershipForUser/4'),
-          jar: repJar,
-          resolveWithFullResponse: true
-        })
-      })
+    rp({
+      method: 'post',
+      form: {
+        aid: 4,
+        position_id: 300,
+        end_time: moment(new Date()).add(10, 'day').format()
+      },
+      uri: lib.helpers.apiTestURL('user/updateMembershipForUser/4'),
+      jar: repJar,
+      resolveWithFullResponse: true
+    })
       .then((res) => {
         expect(res.statusCode).toBe(200);
         return sql.test.membership.get({mid: 4})
@@ -441,23 +420,16 @@ describe('Upsert/Delete membership, POST API', () => {
   });
 
   it("a regular user should be able to update a her/his membership", done => {
-    sql.test.membership.get({mid: 5})
-      .then((res) => {
-        expect(res[0].is_active).toBe(true);
-        expect(res[0].is_representative).toBe(false);
-        expect(res[0].position_id).toBe(302);
-        expect(res[0].end_time).toBe(null);
-        return rp({
-          method: 'post',
-          form: {
-            aid: res[0].assoc_id,
-            position_id: 300,
-          },
-          uri: lib.helpers.apiTestURL('user/updateMembershipForUser/5'),
-          jar: userJar2,
-          resolveWithFullResponse: true
-        })
-      })
+    rp({
+      method: 'post',
+      form: {
+        aid: 5,
+        position_id: 300,
+      },
+      uri: lib.helpers.apiTestURL('user/updateMembershipForUser/5'),
+      jar: userJar2,
+      resolveWithFullResponse: true
+    })
       .then((res) => {
         expect(res.statusCode).toBe(200);
         return sql.test.membership.get({mid: 5})
@@ -485,7 +457,7 @@ describe('Upsert/Delete membership, POST API', () => {
         return rp({
           method: 'post',
           form: {
-            aid: res[0].assoc_id,
+            aid: 5,
             position_id: 300,
             end_time: moment(new Date()).add(10, 'day').format()
           },
@@ -506,23 +478,17 @@ describe('Upsert/Delete membership, POST API', () => {
   });
 
   it("a regular user should NOT be able to update a another regular user membership", function (done) {
-    sql.test.membership.get({mid: 5})
-      .then((res) => {
-        expect(res[0].is_active).toBe(true);
-        expect(res[0].is_representative).toBe(false);
-        expect(res[0].position_id).toBe(302);
-        expect(res[0].end_time).toBe(null);
-        return rp({
-          method: 'post',
-          form: {
-            aid: res[0].assoc_id,
-            position_id: 300,
-          },
-          uri: lib.helpers.apiTestURL('user/updateMembershipForUser/5'),
-          jar: userJar1,
-          resolveWithFullResponse: true
-        })
-      })
+    rp({
+      method: 'post',
+      form: {
+        aid: 5,
+        position_id: 300,
+      },
+      uri: lib.helpers.apiTestURL('user/updateMembershipForUser/5'),
+      jar: userJar1,
+      resolveWithFullResponse: true
+    })
+
       .then(() => {
         this.fail('you are not allowed to update this membership.');
         done();
