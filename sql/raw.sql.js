@@ -170,7 +170,17 @@ let modExp = {
     removeTagFromTarget: sql('tag/removeTagFromTarget.sql'),
     getActiveTags: sql('tag/getActiveTags.sql'),
   },
-
+  search: {
+    searchOnPerson: sql('search/searchOnPerson.sql'),
+    searchOnBusiness: sql('search/searchOnBusiness.sql'),
+    searchOnProduct: sql('search/searchOnProduct.sql'),
+    searchOnOrganization: sql('search/searchOnOrganization.sql'),
+    searchOnLCE: sql('search/searchOnLCE.sql'),
+    searchOnEvent: sql('search/searchOnEvent.sql'),
+    searchOnExpertise: sql('search/searchOnExpertise.sql'),
+    searchOnInvestment: sql('search/searchOnInvestment.sql'),
+    searchOnConsultancy: sql('search/searchOnConsultancy.sql'),
+  },
 };
 
 // Template-generated tables
