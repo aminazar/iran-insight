@@ -381,7 +381,7 @@ describe('Representation-check, GET API', () => {
         return lib.dbHelpers.addAdmin(adminPid);
       })
       .then(() => {
-        return lib.dbHelpers.addAndLoginPerson('amin', '123456', extraData = {
+        return lib.dbHelpers.addAndLoginPerson('amin', '123456',{
           firstname_en: 'Mr Amin',
           firstname_fa: 'امین',
           surname_en: 'Amini',

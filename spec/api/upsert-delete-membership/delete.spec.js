@@ -215,10 +215,8 @@ describe('Upsert/Delete membership, DELETE API', () => {
       .then(() => {
         return lib.dbHelpers.addAndLoginPerson('RepUser', '123456',
           {
-          firstname_en: 'Mr Rep',
-          firstname_fa: 'آقای نماینده',
-          surname_en: 'Namayande Poor ',
-          surname_fa: 'نماینده پور'
+          firstname_en: 'MrRep',
+          surname_en: 'NamayandePoor ',
         });
       })
       .then((res) => {
@@ -226,10 +224,8 @@ describe('Upsert/Delete membership, DELETE API', () => {
         repJar = res.rpJar;
         return lib.dbHelpers.addAndLoginPerson('RegularUser1', '123456',
           {
-          firstname_en: 'Mr User1',
-          firstname_fa: 'آقای کاربر1',
-          surname_en: 'Karbar Poor1',
-          surname_fa: 'کاربر پور1'
+          firstname_en: 'MrUser1',
+          surname_en: 'KarbarPoor1'
         })
       })
       .then((res) => {
@@ -237,10 +233,8 @@ describe('Upsert/Delete membership, DELETE API', () => {
         userJar1 = res.rpJar;
         return lib.dbHelpers.addAndLoginPerson('RegularUser2', '123456',
           {
-          firstname_en: 'Mr User2',
-          firstname_fa: 'آقای کاربر2',
-          surname_en: 'Karbar Poor2',
-          surname_fa: 'کاربر پور2'
+          firstname_en: 'MrUser2',
+          surname_en: 'KarbarPoor2'
         })
       })
       .then((res) => {
