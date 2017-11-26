@@ -214,4 +214,7 @@ router.post('/orgConsultancy/:id/:bid/:oid', apiResponse('Consultancy', 'saveOrg
 router.put('/consultancy/:id', apiResponse('Consultancy', 'confirm', false, ['params.id', 'user']));
 router.delete('/consultancy/:id', apiResponse('Consultancy', 'delete', false, ['params.id', 'user']));
 
+//Search API
+router.post('/search/:offset', apiResponse('SearchSystem', 'search', false, ['body', 'params.offset']));
+
 module.exports = router;
