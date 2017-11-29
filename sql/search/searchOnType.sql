@@ -12,7 +12,7 @@ where
            lower(name) like '%'||lower(${phrase})||'%'
         or lower(name_fa) like '%'||lower(${phrase})||'%'
     )
-    or (${is_active} is not null and active = ${is_active}))
+    and ((${is_active} is not null and active = ${is_active}) or (${is_active} is null)))
 union
 (select
     'organization' as table_name,
@@ -27,7 +27,7 @@ where
            lower(name) like '%'||lower(${phrase})||'%'
         or lower(name_fa) like '%'||lower(${phrase})||'%'
     )
-    or (${is_active} is not null and active = ${is_active}))
+    and ((${is_active} is not null and active = ${is_active}) or (${is_active} is null)))
 union
 (select
     'lce' as table_name,
@@ -42,7 +42,7 @@ where
            lower(name) like '%'||lower(${phrase})||'%'
         or lower(name_fa) like '%'||lower(${phrase})||'%'
     )
-    or (${is_active} is not null and active = ${is_active}))
+    and ((${is_active} is not null and active = ${is_active}) or (${is_active} is null)))
 union
 (select
     'attendance' as table_name,
@@ -57,7 +57,7 @@ where
            lower(name) like '%'||lower(${phrase})||'%'
         or lower(name_fa) like '%'||lower(${phrase})||'%'
     )
-    or (${is_active} is not null and active = ${is_active}))
+    and ((${is_active} is not null and active = ${is_active}) or (${is_active} is null)))
 union
 (select
     'position' as table_name,
@@ -72,5 +72,5 @@ where
            lower(name) like '%'||lower(${phrase})||'%'
         or lower(name_fa) like '%'||lower(${phrase})||'%'
     )
-    or (${is_active} is not null and active = ${is_active}))) as t
-order by id limit ${limit} offset ${offset}
+    and ((${is_active} is not null and active = ${is_active}) or (${is_active} is null)))) as t
+order by id DESC limit ${limit} offset ${offset}
