@@ -180,6 +180,7 @@ let modExp = {
     searchOnExpertise: sql('search/searchOnExpertise.sql'),
     searchOnInvestment: sql('search/searchOnInvestment.sql'),
     searchOnConsultancy: sql('search/searchOnConsultancy.sql'),
+    searchOnType: sql('search/searchOnType.sql'),
   },
 };
 
