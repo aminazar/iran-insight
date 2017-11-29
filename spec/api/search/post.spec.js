@@ -673,7 +673,7 @@ describe("Search System", () => {
         expect(res.statusCode).toBe(200);
         expect(res.body.product).toBeTruthy();
         expect(res.body.product.length).toBe(1);
-        expect(res.body.product[0].name.toLowerCase()).toBe('product 16');
+        expect(res.body.product[0].name.toLowerCase()).toBe('product 6');
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
@@ -692,7 +692,7 @@ describe("Search System", () => {
           show_all: true,
         }
       },
-      uri: lib.helpers.apiTestURL('search/0'),
+      uri: lib.helpers.apiTestURL('search/10'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
@@ -700,7 +700,7 @@ describe("Search System", () => {
       .then(res => {
         expect(res.statusCode).toBe(200);
         expect(res.body.product).toBeTruthy();
-        expect(res.body.product.length).toBe(10);
+        expect(res.body.product.length).toBe(6);
         expect(res.body.product.map(el => el.name.toLowerCase())).toContain('candy');
         done();
       })

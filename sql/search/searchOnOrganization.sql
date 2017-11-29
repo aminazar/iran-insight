@@ -12,4 +12,4 @@ where
         or lower(organization_type.name) like '%'||lower(${phrase})||'%'
         or lower(organization_type.name_fa) like '%'||lower(${phrase})||'%'
     )
-order by oid limit ${limit} offset ${offset}
+order by oid DESC limit ${limit} offset ${offset}

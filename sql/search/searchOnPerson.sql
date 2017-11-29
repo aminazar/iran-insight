@@ -29,4 +29,4 @@ where
         or lower(display_name_en) like '%'||lower(${phrase})||'%'
         or lower(display_name_fa) like '%'||lower(${phrase})||'%'
     )
-order by pid limit ${limit} offset ${offset}
+order by pid DESC limit ${limit} offset ${offset}

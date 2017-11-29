@@ -30,4 +30,4 @@ where
         or ((${is_lead} = true or ${is_lead} = false) and investment.is_lead = ${is_lead})
     )
     and investment.is_confirmed = true
-order by investment.id limit ${limit} offset ${offset}
+order by investment.id DESC limit ${limit} offset ${offset}

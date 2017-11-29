@@ -25,4 +25,4 @@ where
         or ((${is_mentor} = true or ${is_mentor} = false) and consultancy.is_mentor = ${is_mentor})
     )
     and consultancy.is_confirmed = true
-order by consultancy.id limit ${limit} offset ${offset}
+order by consultancy.id DESC limit ${limit} offset ${offset}
