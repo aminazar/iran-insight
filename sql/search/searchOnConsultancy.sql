@@ -22,7 +22,7 @@ where
     or(
            lower(consultancy.subject) like '%'||lower(${phrase})||'%'
         or lower(consultancy.subject_fa) like '%'||lower(${phrase})||'%'
-        or ((${is_mentor} = true or ${is_mentor} = false) and consultancy.is_mentor = ${is_mentor})
+        and ((${is_mentor} is not null and consultancy.is_mentor = ${is_mentor}) or (${is_mentor} is null))
     )
     and consultancy.is_confirmed = true
 order by consultancy.id DESC limit ${limit} offset ${offset}

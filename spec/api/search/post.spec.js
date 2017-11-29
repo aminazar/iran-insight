@@ -431,7 +431,7 @@ describe("Search System", () => {
       .then(res => {
         expect(res.statusCode).toBe(200);
         expect(res.body.consultancy).toBeTruthy();
-        expect(res.body.consultancy.length).toBe(2);
+        expect(res.body.consultancy.length).toBe(1);
         expect(res.body.consultancy.map(el => el.subject && el.subject.toLowerCase())).toContain('increasing marketing');
         done();
       })

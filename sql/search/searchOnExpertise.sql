@@ -6,5 +6,5 @@ where
            lower(name_en) like '%'||lower(${phrase})||'%'
         or lower(name_fa) like '%'||lower(${phrase})||'%'
     )
-    or ((${is_education} = true or ${is_education} = false) and is_education = ${is_education})
+    and ((${is_education} is not null and is_education = ${is_education}) or (${is_education} is null))
 order by expertise_id DESC limit ${limit} offset ${offset}
