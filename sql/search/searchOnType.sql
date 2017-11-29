@@ -3,7 +3,8 @@ select * from
     'business' as table_name,
     id,
     name,
-    name_fa
+    name_fa,
+    active
 from business_type
 where
     (${show_all} = true)
@@ -17,7 +18,8 @@ union
     'organization' as table_name,
     id,
     name,
-    name_fa
+    name_fa,
+    active
 from organization_type
 where
     (${show_all} = true)
@@ -31,7 +33,8 @@ union
     'lce' as table_name,
     id,
     name,
-    name_fa
+    name_fa,
+    active
 from lce_type
 where
     (${show_all} = true)
@@ -45,7 +48,8 @@ union
     'attendance' as table_name,
     id,
     name,
-    name_fa
+    name_fa,
+    active
 from attendance_type
 where
     (${show_all} = true)
@@ -59,7 +63,8 @@ union
     'position' as table_name,
     id,
     name,
-    name_fa
+    name_fa,
+    active
 from position_type
 where
     (${show_all} = true)
