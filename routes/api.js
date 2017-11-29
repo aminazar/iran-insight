@@ -114,7 +114,6 @@ router.post('/person/confirm/partnership', apiResponse('Person', 'confirmPartner
 router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', false, ['user', 'body']));
 
 
-
 // Business API
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
 router.put('/product', apiResponse('Business', 'addProduct', true, ['body']));
@@ -125,10 +124,10 @@ router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', fal
 router.delete('/business/product', apiResponse('Business', 'removeBizOfProduct', false, ['body', 'user.pid']));
 
 // Business LCE API
-router.put('/business-lce', apiResponse('Business', 'setLCE', false, ['body','user.pid']));
-router.post('/business-lce/confirm', apiResponse('Business', 'confirmLCE', false, ['user.pid','body']));
+router.put('/business-lce', apiResponse('Business', 'setLCE', false, ['body', 'user.pid']));
+router.post('/business-lce/confirm', apiResponse('Business', 'confirmLCE', false, ['user.pid', 'body']));
 router.get('/business-lce/:bid', apiResponse('Business', 'getLCE', false, ['user.pid', 'params.bid']));
-router.get('/business-lce/requested/:bid', apiResponse('Business', 'getRequestedLCE', false, ['user.pid' , 'params.bid']));
+router.get('/business-lce/requested/:bid', apiResponse('Business', 'getRequestedLCE', false, ['user.pid', 'params.bid']));
 router.delete('/business-lce', apiResponse('Business', 'deleteLCE', false, ['user', 'body']));
 
 
@@ -139,33 +138,35 @@ router.put('/organization', apiResponse('Organization', 'saveData', false, ['bod
 router.post('/organization/profile', apiResponse('Organization', 'setProfile', false, ['body', 'user.pid']));
 
 // Organization LCE API
-router.put('/organization-lce', apiResponse('Organization', 'setLCE', false, ['body','user.pid']));
-router.post('/organization-lce/confirm', apiResponse('Organization', 'confirmLCE', false, ['user.pid','body']));
+router.put('/organization-lce', apiResponse('Organization', 'setLCE', false, ['body', 'user.pid']));
+router.post('/organization-lce/confirm', apiResponse('Organization', 'confirmLCE', false, ['user.pid', 'body']));
 router.get('/organization-lce/:oid', apiResponse('Organization', 'getLCE', false, ['user.pid', 'params.oid']));
-router.get('/organization-lce/requested/:oid', apiResponse('Organization', 'getRequestedLCE', false, ['user.pid' , 'params.oid']));
+router.get('/organization-lce/requested/:oid', apiResponse('Organization', 'getRequestedLCE', false, ['user.pid', 'params.oid']));
 router.delete('/organization-lce', apiResponse('Organization', 'deleteLCE', false, ['user', 'body']));
 
 
 // types
-router.post('/type/:name', apiResponse('Type', 'suggest', false, [ 'user.pid', 'params.name', 'body']));
-router.put('/type/:name/:type_id', apiResponse('Type', 'activate', true, ['params.name', 'params.type_id']));
+router.post('/type/:name', apiResponse('Type', 'suggest', false, ['user.pid', 'params.name', 'body']));
+router.put('/type/:name/:type_id', apiResponse('Type', 'update', true, ['params.name', 'params.type_id', 'body']));
 router.delete('/type/:name/:type_id', apiResponse('Type', 'delete', true, ['params.name', 'params.type_id']));
+router.get('/type/getCats', apiResponse('Type', 'getTypes', true, []));
+router.get('/type/:name/:type_id', apiResponse('Type', 'getInfo', true, ['params.name', 'params.type_id']));
 
 // tags
 router.put('/tag/add_all', apiResponse('Tag', 'addAll', true, ['body']));
 router.put('/tag/add', apiResponse('Tag', 'setTag', false, ['user.pid', 'body']));
 router.post('/tag/confirm/:tid', apiResponse('Tag', 'confirm', true, ['params.tid']));
 router.delete('/tag/removeFrom', apiResponse('Tag', 'removeTagFromTarget', false, ['user.pid', 'body']));
-router.get('/tag/:type/:id', apiResponse('Tag', 'getTags', false, ['user.pid', 'params.type' , 'params.id']));
+router.get('/tag/:type/:id', apiResponse('Tag', 'getTags', false, ['user.pid', 'params.type', 'params.id']));
 
 // Representation-check API
-router.get('/user/getRepPendingList',apiResponse('Person','findRepRequests',true));
-router.put('/user/confirmRep/:mid/:aid',apiResponse('Person','confirmRepByAdmin',true,['params.mid','params.aid', 'user']));
-router.delete('/user/deleteRep/:mid',apiResponse('Person','deleteRepRequest',true,['user', 'params.mid']));
-router.delete('/user/deleteRepBizOrg/:mid',apiResponse('Person','deleteRepAndHisCompany',true,['params.mid']));
+router.get('/user/getRepPendingList', apiResponse('Person', 'findRepRequests', true));
+router.put('/user/confirmRep/:mid/:aid', apiResponse('Person', 'confirmRepByAdmin', true, ['params.mid', 'params.aid', 'user']));
+router.delete('/user/deleteRep/:mid', apiResponse('Person', 'deleteRepRequest', true, ['user', 'params.mid']));
+router.delete('/user/deleteRepBizOrg/:mid', apiResponse('Person', 'deleteRepAndHisCompany', true, ['params.mid']));
 
 //upsert/delete an authoritative user(rep/regular)
-router.delete('/user/deleteUserOrRepAfterConfirm/:mid',apiResponse('Person','deleteUserOrRepAfterConfirm',false,['params.mid', 'user.pid']));
+router.delete('/user/deleteUserOrRepAfterConfirm/:mid', apiResponse('Person', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
 
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid', '?user.pid']));
