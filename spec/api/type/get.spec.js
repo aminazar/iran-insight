@@ -82,35 +82,4 @@ describe("Get Type", () => {
     });
   });
 
-  // it("Expect error when other users are calling api", function (done) {
-  //   this.done = done;
-  //   sql.test[types[0]].add({
-  //     name: 'snapp',
-  //     name_fa: 'اسنپ',
-  //     suggested_by:normalUser.pid,
-  //     active:false
-  //   }).then(res =>
-  //     rp({
-  //       method: 'put',
-  //       uri: lib.helpers.apiTestURL(`type/${types[0]}/${res.id}`),
-  //       body: {
-  //         active: true,
-  //       },
-  //       json: true,
-  //       jar: normalUser.jar,
-  //       resolveWithFullResponse: true
-  //     }))
-  //     .then(res => {
-  //       this.fail('did not failed when other users are calling api');
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       expect(err.statusCode).toBe(error.adminOnly.status);
-  //       expect(err.error).toBe(error.adminOnly.message);
-  //       done();
-  //     });
-  //
-  // });
-
-
 });
