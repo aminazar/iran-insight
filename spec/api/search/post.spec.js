@@ -717,6 +717,7 @@ describe("Search System", () => {
           target: {
             type: true,
           },
+          is_active: true,
         }
       },
       uri: lib.helpers.apiTestURL('search/0'),
