@@ -201,8 +201,9 @@ types.forEach(t => {
   let extraSQL = extraSQLMap[t] ? extraSQLMap[t] : '';
   modExp[t] = {
     create: sql('type/create.sql', {tableName: t, extraSQL}),
-    drop: sql('type/drop.sql', {tableName: t, extraSQL}),
-    getByName: sql('type/getByName.sql', {tableName: t, extraSQL}),
+    drop: sql('type/drop.sql', {tableName: t}),
+    getByName: sql('type/getByName.sql', {tableName: t}),
+    getInfo: sql('type/getInfo.sql', {tableName: t}),
   }
 });
 
