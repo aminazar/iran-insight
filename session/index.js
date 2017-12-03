@@ -21,11 +21,6 @@ let setup = (app) => {
         });
 
         //Initialize session with settings for production
-        if (env.isProd) {
-          app.set('trust proxy', 1); //Trust first proxy
-          session_config.cookie.secure = true; //Serve secure cookies
-        }
-
         session_config = {
           secret: 'ManKhazDI',
           key: 'connect.sid',
@@ -36,9 +31,15 @@ let setup = (app) => {
           resave: false,
           saveUninitialized: false,
         };
+
+        if (env.isProd) {
+          app.set('trust proxy', 1); //Trust first proxy
+          session_config.cookie.secure = true; //Serve secure cookies
+        }
+
         app.use(session(session_config));
 
-        console.log('Session set up.')
+        console.log('Session set up.');
         resolve();
       })
       .catch(err => {
