@@ -8,4 +8,4 @@ where
         or lower(description) like '%'||lower(${phrase})||'%'
         or lower(description_fa) like '%'||lower(${phrase})||'%'
     )
-order by product_id limit ${limit} offset ${offset}
+order by product_id DESC limit ${limit} offset ${offset}

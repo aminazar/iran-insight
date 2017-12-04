@@ -16,4 +16,4 @@ where
         or lower(business_type.name) like '%'||lower(${phrase})||'%'
         or lower(business_type.name_fa) like '%'||lower(${phrase})||'%'
     )
-order by business.bid limit ${limit} offset ${offset}
+order by business.bid DESC limit ${limit} offset ${offset}

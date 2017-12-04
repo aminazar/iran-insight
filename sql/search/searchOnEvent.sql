@@ -35,4 +35,4 @@ where
         or lower(event.description) like '%'||lower(${phrase})||'%'
         or lower(event.description_fa) like '%'||lower(${phrase})||'%'
     )
-order by event.eid limit ${limit} offset ${offset}
+order by event.eid DESC limit ${limit} offset ${offset}

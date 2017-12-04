@@ -36,6 +36,7 @@ describe("Search System", () => {
   let businessTypeList = [{
     id: 1,
     name: 'Transportation',
+    active: true,
   },{
     id: 2,
     name: 'Creative',
@@ -430,7 +431,7 @@ describe("Search System", () => {
       .then(res => {
         expect(res.statusCode).toBe(200);
         expect(res.body.consultancy).toBeTruthy();
-        expect(res.body.consultancy.length).toBe(2);
+        expect(res.body.consultancy.length).toBe(1);
         expect(res.body.consultancy.map(el => el.subject && el.subject.toLowerCase())).toContain('increasing marketing');
         done();
       })
@@ -672,7 +673,7 @@ describe("Search System", () => {
         expect(res.statusCode).toBe(200);
         expect(res.body.product).toBeTruthy();
         expect(res.body.product.length).toBe(1);
-        expect(res.body.product[0].name.toLowerCase()).toBe('product 16');
+        expect(res.body.product[0].name.toLowerCase()).toBe('product 6');
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
@@ -691,7 +692,7 @@ describe("Search System", () => {
           show_all: true,
         }
       },
-      uri: lib.helpers.apiTestURL('search/0'),
+      uri: lib.helpers.apiTestURL('search/10'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
@@ -699,8 +700,38 @@ describe("Search System", () => {
       .then(res => {
         expect(res.statusCode).toBe(200);
         expect(res.body.product).toBeTruthy();
-        expect(res.body.product.length).toBe(10);
+        expect(res.body.product.length).toBe(6);
         expect(res.body.product.map(el => el.name.toLowerCase())).toContain('candy');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get search on type", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: ' e',
+        options: {
+          target: {
+            type: true,
+          },
+          is_active: true,
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        console.log(res.body);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.type).toBeTruthy();
+        expect(res.body.type.length).toBe(2);
+        expect(res.body.type.map(el => el.name && el.name.toLowerCase())).toContain('lce 2');
+        expect(res.body.type.map(el => el.table_name.toLowerCase())).toContain('lce');
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));

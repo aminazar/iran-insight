@@ -71,11 +71,10 @@ describe("Get Type", () => {
         .then(res => {
           expect(res.statusCode).toBe(200);
           let result = JSON.parse(res.body);
-          expect(result.type_name).toBe(types[0]);
-          expect(result.name).toBe('snapp');
-          expect(result.name_fa).toBe('اسنپ');
-          expect(result.active).toBe(true);
-          expect(result.username).toBe('admin');
+          expect(result[0].name).toBe('snapp');
+          expect(result[0].name_fa).toBe('اسنپ');
+          expect(result[0].active).toBe(true);
+          expect(result[0].username).toBe('admin');
           done();
         })
         .catch(lib.helpers.errorHandler.bind(this));

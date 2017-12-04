@@ -86,6 +86,7 @@ router.put('/user', apiResponse('Person', 'insert', true, ['body']));
 router.get('/user', apiResponse('Person', 'select', true));
 // router.post('/user/:pid', apiResponse('Person', 'update', true, ['params.pid','body']));
 router.post('/user/profile', apiResponse('Person', 'setProfile', false, ['user', 'body']));
+router.get('/user/profile/:pid', apiResponse('Person', 'getPersonInfo', false, ['user.pid', 'params.pid']));
 router.delete('/user/:pid', apiResponse('Person', 'delete', true, ['params.pid']));
 router.put('/user/message', apiResponse('Person', 'socketHandler', false, ['body']));
 router.put('/follow/business/:bid', apiResponse('Person', 'followingEntity', false, ['user.pid', 'params.pid', 'params.bid', 'params.oid']));
@@ -97,6 +98,7 @@ router.delete('/follow/person/:pid', apiResponse('Person', 'unfollowingEntity', 
 
 //Expertise API
 router.put('/expertise', apiResponse('Expertise', 'addExpertise', true, ['body']));
+router.get('/expertise', apiResponse('Expertise', 'getAll', false, ['body']));
 router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['user', 'body']));
 router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, ['user.pid', 'params.pid']));
 router.delete('/expertise', apiResponse('Person', 'deleteExpertise', false, ['user', 'body']));

@@ -25,13 +25,9 @@ where
             or
             (${amount_gt} = true and investment.amount::numeric > ${amount})
             or
-            (${amount_lte} = true and investment.amount::numeric <= ${amount})
-            or
-            (${amount_gte} = true and investment.amount::numeric >= ${amount})
-            or
             (${amount_eq} = true and investment.amount::numeric = ${amount})
             )
-        or ((${is_lead} = true or ${is_lead} = false) and investment.is_lead = ${is_lead})
+        and ((${is_lead} is not null and investment.is_lead = ${is_lead}) or (${is_lead} is null))
     )
     and investment.is_confirmed = true
-order by investment.id limit ${limit} offset ${offset}
+order by investment.id DESC limit ${limit} offset ${offset}

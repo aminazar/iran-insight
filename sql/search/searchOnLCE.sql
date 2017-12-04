@@ -67,4 +67,4 @@ where
     )
     and organization_lce.is_confirmed = true
     and lce_type.active = true
-order by organization_lce.oid1, organization_lce.oid2 limit ${limit} offset ${offset})
+order by organization_lce.oid1 DESC, organization_lce.oid2 DESC limit ${limit} offset ${offset})
