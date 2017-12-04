@@ -1,4 +1,7 @@
-select
+select *
+from
+(select
+    count(*) over () as total,
     event.*,
     person.pid as person_id,
     person.firstname_en as person_firstname_en,
@@ -34,5 +37,5 @@ where
            )
         or lower(event.description) like '%'||lower(${phrase})||'%'
         or lower(event.description_fa) like '%'||lower(${phrase})||'%'
-    )
-order by event.eid DESC limit ${limit} offset ${offset}
+    )) as t
+order by t.eid DESC limit ${limit} offset ${offset}

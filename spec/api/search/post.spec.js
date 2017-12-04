@@ -554,6 +554,7 @@ describe("Search System", () => {
       .then(res => {
         expect(res.statusCode).toBe(200);
         expect(res.body.expertise).toBeTruthy();
+        expect(res.body.expertise.map(el => parseInt(el.total))).toContain(1);
         expect(res.body.expertise.length).toBe(1);
         expect(res.body.expertise[0].name_en.toLowerCase()).toContain('researcher');
         done();
@@ -672,6 +673,7 @@ describe("Search System", () => {
       .then(res => {
         expect(res.statusCode).toBe(200);
         expect(res.body.product).toBeTruthy();
+        expect(res.body.product.map(el => parseInt(el.total))).toContain(11);
         expect(res.body.product.length).toBe(1);
         expect(res.body.product[0].name.toLowerCase()).toBe('product 6');
         done();
@@ -732,6 +734,34 @@ describe("Search System", () => {
         expect(res.body.type.length).toBe(2);
         expect(res.body.type.map(el => el.name && el.name.toLowerCase())).toContain('lce 2');
         expect(res.body.type.map(el => el.table_name.toLowerCase())).toContain('lce');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get all data when page size is bigger than results number", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: 'product',
+        options: {
+          target: {
+            product: true,
+          }
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/20'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.product).toBeTruthy();
+        expect(res.body.product.length).toBe(11);
+        expect(res.body.product.map(el => el.name.toLowerCase())).toContain('product 6');
+        expect(res.body.product.map(el => el.name.toLowerCase())).toContain('product 16');
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));

@@ -1,4 +1,7 @@
-select
+select *
+from
+(select
+    count(*) over () as total,
     person.pid,
     person.firstname_en,
     person.firstname_fa,
@@ -28,5 +31,5 @@ where
         or lower(address_fa) like '%'||lower(${phrase})||'%'
         or lower(display_name_en) like '%'||lower(${phrase})||'%'
         or lower(display_name_fa) like '%'||lower(${phrase})||'%'
-    )
-order by pid DESC limit ${limit} offset ${offset}
+    )) as t
+order by t.pid DESC limit ${limit} offset ${offset}

@@ -1,4 +1,7 @@
-select
+select *
+from
+(select
+    count(*) over () as total,
     organization.*,
     organization_type.name as organization_type_name,
     organization_type.name_fa as organization_type_name_fa
@@ -11,5 +14,5 @@ where
         or lower(organization.name_fa) like '%'||lower(${phrase})||'%'
         or lower(organization_type.name) like '%'||lower(${phrase})||'%'
         or lower(organization_type.name_fa) like '%'||lower(${phrase})||'%'
-    )
-order by oid DESC limit ${limit} offset ${offset}
+    )) as t
+order by t.oid DESC limit ${limit} offset ${offset}
