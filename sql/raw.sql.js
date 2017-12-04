@@ -170,7 +170,17 @@ let modExp = {
     removeTagFromTarget: sql('tag/removeTagFromTarget.sql'),
     getActiveTags: sql('tag/getActiveTags.sql'),
   },
-
+  search: {
+    searchOnPerson: sql('search/searchOnPerson.sql'),
+    searchOnBusiness: sql('search/searchOnBusiness.sql'),
+    searchOnProduct: sql('search/searchOnProduct.sql'),
+    searchOnOrganization: sql('search/searchOnOrganization.sql'),
+    searchOnLCE: sql('search/searchOnLCE.sql'),
+    searchOnEvent: sql('search/searchOnEvent.sql'),
+    searchOnExpertise: sql('search/searchOnExpertise.sql'),
+    searchOnInvestment: sql('search/searchOnInvestment.sql'),
+    searchOnConsultancy: sql('search/searchOnConsultancy.sql'),
+  },
 };
 
 // Template-generated tables
@@ -191,8 +201,9 @@ types.forEach(t => {
   let extraSQL = extraSQLMap[t] ? extraSQLMap[t] : '';
   modExp[t] = {
     create: sql('type/create.sql', {tableName: t, extraSQL}),
-    drop: sql('type/drop.sql', {tableName: t, extraSQL}),
-    getByName: sql('type/getByName.sql', {tableName: t, extraSQL}),
+    drop: sql('type/drop.sql', {tableName: t}),
+    getByName: sql('type/getByName.sql', {tableName: t}),
+    getInfo: sql('type/getInfo.sql', {tableName: t}),
   }
 });
 

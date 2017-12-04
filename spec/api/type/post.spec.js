@@ -43,6 +43,7 @@ describe("Post Type", () => {
       body: {
         name: 'snapp',
         name_fa: 'اسنپ',
+        active: true
       },
       json: true,
       jar: adminObj.jar,
@@ -63,7 +64,7 @@ describe("Post Type", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("user should be able to suggest deactivated type even active:true exists in body ", function (done) {
+  it("user should be able to suggest deactivated type", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -71,6 +72,7 @@ describe("Post Type", () => {
       body: {
         name: 'snapp',
         name_fa: 'اسنپ',
+        active: false
       },
       json: true,
       jar: normalUser.jar,
