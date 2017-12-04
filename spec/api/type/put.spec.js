@@ -58,7 +58,9 @@ describe("Put Type", () => {
       })).then(res => {
       expect(res.statusCode).toBe(200);
 
-      return sql.test[types[0]].get({id: res.body[0].id});
+      console.log(res.body);
+
+      return sql.test[types[0]].get({id: res.body.id});
     }).then(res => {
       console.log('-> ',res);
       expect(res.length).toBe(1);
