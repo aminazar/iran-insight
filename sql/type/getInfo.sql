@@ -1,3 +1,4 @@
+
 select
 ${tableName~}.*,
 person.username
