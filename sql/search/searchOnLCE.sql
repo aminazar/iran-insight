@@ -1,4 +1,8 @@
-(select
+select
+    count(*) over () as total,
+    t.*
+from
+((select
     business_lce.bid1 as part1_id,
     business_lce.bid2 as part2_id,
     business_lce.start_date,
@@ -28,8 +32,7 @@ where
         (${start_date} is null and ${end_date} is not null and business_lce.end_date <= ${end_date})
         )
     and business_lce.is_confirmed = true
-    and lce_type.active = true
-order by business_lce.bid1, business_lce.bid2 limit ${limit} offset ${offset})
+    and lce_type.active = true)
 
 union
 
@@ -66,5 +69,5 @@ where
             )
     )
     and organization_lce.is_confirmed = true
-    and lce_type.active = true
-order by organization_lce.oid1 DESC, organization_lce.oid2 DESC limit ${limit} offset ${offset})
+    and lce_type.active = true)) as t
+order by t.part1_id DESC, t.part2_id DESC limit ${limit} offset ${offset}

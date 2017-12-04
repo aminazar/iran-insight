@@ -1,4 +1,7 @@
-select
+select *
+from
+(select
+    count(*) over () as total,
     business.*,
     business_type.name as business_type_name,
     business_type.name_fa as business_type_name_fa
@@ -15,5 +18,5 @@ where
         or lower(business.url) like '%'||lower(${phrase})||'%'
         or lower(business_type.name) like '%'||lower(${phrase})||'%'
         or lower(business_type.name_fa) like '%'||lower(${phrase})||'%'
-    )
-order by business.bid DESC limit ${limit} offset ${offset}
+    )) as t
+order by t.bid DESC limit ${limit} offset ${offset}

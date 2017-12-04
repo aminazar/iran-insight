@@ -1,4 +1,7 @@
-select
+select *
+from
+(select
+    count(*) over () as total,
     investment.*,
     person.pid as person_id,
     person.firstname_en as person_firstname_en,
@@ -29,5 +32,5 @@ where
             )
         and ((${is_lead} is not null and investment.is_lead = ${is_lead}) or (${is_lead} is null))
     )
-    and investment.is_confirmed = true
-order by investment.id DESC limit ${limit} offset ${offset}
+    and investment.is_confirmed = true) as t
+order by t.id DESC limit ${limit} offset ${offset}

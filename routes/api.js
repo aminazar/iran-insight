@@ -79,7 +79,7 @@ router.get('/login/linkedin/callback', passport.authenticate('linkedin', {}), ap
 router.put('/user/register', apiResponse('Person', 'registration', false, ['body']));
 router.get('/user/activate/link/:link', apiResponse('Person', 'checkActiveLink', false, ['params.link']));
 router.post('/user/auth/local/:link', apiResponse('Person', 'completeAuth', false, ['params.link', 'body']));
-router.post('/user/auth/link', apiResponse('Person', 'sendActivationMail', false, ['body.email']));
+router.post('/user/auth/link', apiResponse('Person', 'sendActivationMail', false, ['body.email', 'body.is_forgot_mail']));
 router.post('/membership/introducing/rep', apiResponse('Person', 'introduceAsRep', false, ['body', 'user']));
 
 router.put('/user', apiResponse('Person', 'insert', true, ['body']));
@@ -218,6 +218,6 @@ router.put('/consultancy/:id', apiResponse('Consultancy', 'confirm', false, ['pa
 router.delete('/consultancy/:id', apiResponse('Consultancy', 'delete', false, ['params.id', 'user']));
 
 //Search API
-router.post('/search/:offset', apiResponse('SearchSystem', 'search', false, ['body', 'params.offset']));
+router.post('/search/:offset/:limit', apiResponse('SearchSystem', 'search', false, ['body', 'params.offset', 'params.limit']));
 
 module.exports = router;

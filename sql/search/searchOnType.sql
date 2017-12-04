@@ -1,4 +1,7 @@
-select * from
+select
+    count(*) over () as total,
+    t.*
+from
 ((select
     'business' as table_name,
     id,
