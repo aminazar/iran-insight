@@ -1,4 +1,7 @@
-select
+select *
+from
+(select
+    count(*) over () as total,
     consultancy.*,
     person.pid as person_id,
     person.firstname_en as person_firstname_en,
@@ -24,5 +27,5 @@ where
         or lower(consultancy.subject_fa) like '%'||lower(${phrase})||'%'
         and ((${is_mentor} is not null and consultancy.is_mentor = ${is_mentor}) or (${is_mentor} is null))
     )
-    and consultancy.is_confirmed = true
-order by consultancy.id DESC limit ${limit} offset ${offset}
+    and consultancy.is_confirmed = true) as t
+order by t.id DESC limit ${limit} offset ${offset}
