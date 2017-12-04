@@ -154,7 +154,7 @@ describe("Test auth APIs", () => {
           });
       }
     });
-  }, 15000);
+  }, 20000);
 
   it("should choose password then click on activation link from mail", function(done) {
     let outerContext = this;
