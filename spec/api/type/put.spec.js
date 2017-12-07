@@ -42,21 +42,31 @@ describe("Put Type", () => {
       name: 'snapp',
       name_fa: 'اسنپ',
       suggested_by: normalUser.pid,
-      active: false
+      active: true
     }).then(res =>
       rp({
         method: 'put',
         uri: lib.helpers.apiTestURL(`type/${types[0]}/${res.id}`),
+        body:{
+          name: 'snapppp',
+          name_fa: 'اسنپپپ',
+          active: false
+        },
+        json: true,
         jar: adminObj.jar,
         resolveWithFullResponse: true
       })).then(res => {
       expect(res.statusCode).toBe(200);
 
-      let result = JSON.parse(res.body);
-      return sql.test[types[0]].get({id: result[0].id});
+      console.log(res.body);
+
+      return sql.test[types[0]].get({id: res.body.id});
     }).then(res => {
+      console.log('-> ',res);
       expect(res.length).toBe(1);
-      expect(res[0].active).toBe(true);
+      expect(res[0].active).toBe(false);
+      expect(res[0].name).toBe('snapppp');
+      expect(res[0].name_fa).toBe('اسنپپپ');
       done();
     })
       .catch(lib.helpers.errorHandler.bind(this));
@@ -76,6 +86,7 @@ describe("Put Type", () => {
       uri: lib.helpers.apiTestURL(`type/${types[0]}/${res.id}`),
       body: {
         active: true,
+
       },
       json: true,
       jar: normalUser.jar,
