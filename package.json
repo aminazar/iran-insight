@@ -5,8 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "test": "jasmine & jasmine-node --verbose spec/api --forceexit --captureExceptions",
-    "model_test": "jasmine",
-    "postinstall": "node configure.js"
+    "model_test": "jasmine"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
