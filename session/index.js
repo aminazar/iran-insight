@@ -40,6 +40,7 @@ let setup = (app) => {
         app.use(session(session_config));
 
         console.log('Session set up.');
+
         resolve();
       })
       .catch(err => {
