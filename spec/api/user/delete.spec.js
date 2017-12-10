@@ -95,7 +95,7 @@ describe("Delete user API", () => {
             expertise_id: eid2
           },
           json: true,
-          uri: lib.helpers.apiTestURL('expertise'),
+          uri: lib.helpers.apiTestURL('expertise/' + normalUserObj.pid + '/' + eid2),
           jar: normalUserObj.jar,
           resolveWithFullResponse: true
         })
@@ -148,7 +148,7 @@ describe("Delete user API", () => {
             expertise_id: eid2
           },
           json: true,
-          uri: lib.helpers.apiTestURL('expertise'),
+          uri: lib.helpers.apiTestURL('expertise/' + normalUserObj.pid + '/' + eid2),
           jar: adminObj.jar,
           resolveWithFullResponse: true
         })
@@ -201,7 +201,7 @@ describe("Delete user API", () => {
             expertise_id: eid2
           },
           json: true,
-          uri: lib.helpers.apiTestURL('expertise'),
+          uri: lib.helpers.apiTestURL('expertise/' + normalUserObj.pid + '/' + eid2),
           jar: repObj.jar,
           resolveWithFullResponse: true
         })

@@ -286,7 +286,7 @@ describe("Search System", () => {
         .then(res => {
           pJar = res.rpJar;
           needSetup = false;
-          done()
+          done();
         })
         .catch(err => {
           console.log(err);
@@ -308,7 +308,7 @@ describe("Search System", () => {
           }
         }
       },
-      uri: lib.helpers.apiTestURL('search/a'),
+      uri: lib.helpers.apiTestURL('search/a/0'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true,
@@ -334,7 +334,7 @@ describe("Search System", () => {
           }
         }
       },
-      uri: lib.helpers.apiTestURL('search/null'),
+      uri: lib.helpers.apiTestURL('search/null/null'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
@@ -365,7 +365,7 @@ describe("Search System", () => {
           }
         }
       },
-      uri: lib.helpers.apiTestURL('search/0'),
+      uri: lib.helpers.apiTestURL('search/0/10'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
@@ -394,7 +394,7 @@ describe("Search System", () => {
           }
         }
       },
-      uri: lib.helpers.apiTestURL('search/0'),
+      uri: lib.helpers.apiTestURL('search/0/10'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
@@ -423,7 +423,7 @@ describe("Search System", () => {
           is_mentor: false,
         }
       },
-      uri: lib.helpers.apiTestURL('search/0'),
+      uri: lib.helpers.apiTestURL('search/0/10'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
@@ -452,7 +452,7 @@ describe("Search System", () => {
           is_lead: true,
         }
       },
-      uri: lib.helpers.apiTestURL('search/0'),
+      uri: lib.helpers.apiTestURL('search/0/10'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
@@ -487,7 +487,7 @@ describe("Search System", () => {
           }
         }
       },
-      uri: lib.helpers.apiTestURL('search/0'),
+      uri: lib.helpers.apiTestURL('search/0/10'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
@@ -515,7 +515,7 @@ describe("Search System", () => {
           start_date: new Date(2010, 1, 1),
         }
       },
-      uri: lib.helpers.apiTestURL('search/0'),
+      uri: lib.helpers.apiTestURL('search/0/10'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
@@ -546,7 +546,7 @@ describe("Search System", () => {
           is_education: true,
         }
       },
-      uri: lib.helpers.apiTestURL('search/0'),
+      uri: lib.helpers.apiTestURL('search/0/10'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
@@ -575,7 +575,7 @@ describe("Search System", () => {
           start_date: '2015-09-09',
         }
       },
-      uri: lib.helpers.apiTestURL('search/0'),
+      uri: lib.helpers.apiTestURL('search/0/10'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
@@ -606,7 +606,7 @@ describe("Search System", () => {
           },
         }
       },
-      uri: lib.helpers.apiTestURL('search/0'),
+      uri: lib.helpers.apiTestURL('search/0/10'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
@@ -636,7 +636,7 @@ describe("Search System", () => {
 
         }
       },
-      uri: lib.helpers.apiTestURL('search/0'),
+      uri: lib.helpers.apiTestURL('search/0/10'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
@@ -665,7 +665,7 @@ describe("Search System", () => {
           }
         }
       },
-      uri: lib.helpers.apiTestURL('search/10'),
+      uri: lib.helpers.apiTestURL('search/10/10'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
@@ -694,7 +694,7 @@ describe("Search System", () => {
           show_all: true,
         }
       },
-      uri: lib.helpers.apiTestURL('search/10'),
+      uri: lib.helpers.apiTestURL('search/10/10'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
@@ -722,7 +722,7 @@ describe("Search System", () => {
           is_active: true,
         }
       },
-      uri: lib.helpers.apiTestURL('search/0'),
+      uri: lib.helpers.apiTestURL('search/0/10'),
       jar: pJar,
       json: true,
       resolveWithFullResponse: true
