@@ -25,6 +25,7 @@ function apiResponse(className, functionName, adminOnly = false, reqFuncs = []) 
     return obj;
   };
   return (function (req, res) {
+
     req.test = lib.helpers.isTestReq(req);
 
     lib.Person.adminCheck(adminOnly, req.user, req.test)
@@ -48,7 +49,7 @@ function apiResponse(className, functionName, adminOnly = false, reqFuncs = []) 
           .json(data);
       })
       .catch(err => {
-        console.log(`${className}/${functionName}: `, err.message);
+        console.log(`${className}/${functionName}: `,  err);
         res.status(err.status || 500)
           .send(err.message || err);
       });
@@ -124,6 +125,11 @@ router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
 router.get('/business/product/all/:bid', apiResponse('Business', 'getAllBusinessProducts', false, ['params.bid']));
 router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
 router.delete('/business/product', apiResponse('Business', 'removeBizOfProduct', false, ['body', 'user.pid']));
+
+// Product API
+router.post('/update-product/:product_id', apiResponse('Business', 'updateProduct', true, ['params.product_id','body']));
+router.delete('/delete-product/:product_id', apiResponse('Business', 'deleteProduct', true, ['params.product_id']));
+
 
 // Business LCE API
 router.put('/business-lce', apiResponse('Business', 'setLCE', false, ['body', 'user.pid']));

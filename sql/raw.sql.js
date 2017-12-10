@@ -151,6 +151,7 @@ let modExp = {
     removeBizProduct: sql('business_product/removeBizProduct.sql'),
     getAllProducts: sql('business_product/getAllProducts.sql'),
     getByBizProductId: sql('business_product/getByBizProductId.sql'),
+    deleteBizProductByAdmin: sql('business_product/deleteBizProductByAdmin.sql'),
   },
   subscription: {
     create: sql('subscription/create.sql'),
