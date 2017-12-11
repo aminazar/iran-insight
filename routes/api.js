@@ -185,6 +185,8 @@ router.put('/orgAttends/:eid/:oid', apiResponse('Attendance', 'orgAttends', fals
 router.delete('/orgAttends/:eid/:oid', apiResponse('Attendance', 'orgUnattends', false, ['params.eid', 'params.oid', 'user.pid']));
 
 // Joiners API
+router.get('/joiners/org/:oid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid','?params.oid']));
+router.get('/joiners/biz/:bid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid','?params.oid']));
 router.get('/joiners', apiResponse('Joiner', 'select', false, ['user.pid']));
 router.put('/joiner/:mid', apiResponse('Joiner', 'saveData', false, ['params.mid', 'user']));
 router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['params.mid', 'params.aid', 'user']));
