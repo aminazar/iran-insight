@@ -25,6 +25,7 @@ function apiResponse(className, functionName, adminOnly = false, reqFuncs = []) 
     return obj;
   };
   return (function (req, res) {
+
     req.test = lib.helpers.isTestReq(req);
 
     lib.Person.adminCheck(adminOnly, req.user, req.test)
@@ -48,7 +49,7 @@ function apiResponse(className, functionName, adminOnly = false, reqFuncs = []) 
           .json(data);
       })
       .catch(err => {
-        console.log(`${className}/${functionName}: `, err.message);
+        console.log(`${className}/${functionName}: `,  err);
         res.status(err.status || 500)
           .send(err.message || err);
       });
@@ -125,6 +126,11 @@ router.get('/business/product/all/:bid', apiResponse('Business', 'getAllBusiness
 router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
 router.delete('/business/product', apiResponse('Business', 'removeBizOfProduct', false, ['body', 'user.pid']));
 
+// Product API
+router.post('/update-product/:product_id', apiResponse('Business', 'updateProduct', true, ['params.product_id','body']));
+router.delete('/delete-product/:product_id', apiResponse('Business', 'deleteProduct', true, ['params.product_id']));
+
+
 // Business LCE API
 router.put('/business-lce', apiResponse('Business', 'setLCE', false, ['body', 'user.pid']));
 router.post('/business-lce/confirm', apiResponse('Business', 'confirmLCE', false, ['user.pid', 'body']));
@@ -168,7 +174,8 @@ router.delete('/user/deleteRep/:mid', apiResponse('Person', 'deleteRepRequest', 
 router.delete('/user/deleteRepBizOrg/:mid', apiResponse('Person', 'deleteRepAndHisCompany', true, ['params.mid']));
 
 //upsert/delete an authoritative user(rep/regular)
-router.delete('/user/deleteUserOrRepAfterConfirm/:mid', apiResponse('Person', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
+router.post('/user/updateMembershipForUser/:mid',apiResponse('Person','updateMembershipForUser',false,['params.mid','body','user.pid']));
+router.delete('/user/deleteUserOrRepAfterConfirm/:mid',apiResponse('Person','deleteUserOrRepAfterConfirm',false,['params.mid','user.pid']));
 
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid', '?user.pid']));
