@@ -11,7 +11,7 @@ let redis_client, redis_sub;
 
 let redisClientInit = () => {
   return new Promise((resolve, reject) => {
-    if (!redisIsReady) {
+    if (!redisIsReady && !redis_client && !redis_sub) {
       redis_client = redis.createClient(env.isProd ? process.env.REDIS_URL : {socket_keepalive: true});
       redis_sub = redis.createClient(env.isProd ? process.env.REDIS_URL : {socket_keepalive: true});
 
