@@ -3,7 +3,6 @@
     "initDb":   "postgres",
     "database": "iran-insight",
     "pgConnection": "postgres://postgres:postgres@localhost:5432/",
-    "pgConnection": "postgres://postgres:13311231@localhost:5432/",
     "mailPeriodConfig":{
       "minute" : 5,
       "hour" : 9,
