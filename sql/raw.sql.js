@@ -66,6 +66,7 @@ let modExp = {
   expertise: {
     create: sql('expertise/create.sql'),
     drop: sql('expertise/drop.sql'),
+    get: sql('expertise/get.sql'),
   },
   person_expertise: {
     create: sql('person_expertise/create.sql'),
@@ -182,6 +183,9 @@ let modExp = {
     searchOnConsultancy: sql('search/searchOnConsultancy.sql'),
     searchOnType: sql('search/searchOnType.sql'),
   },
+  suggest: {
+    suggestion: sql('suggest/suggestion.sql'),
+  }
 };
 
 // Template-generated tables
