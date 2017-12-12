@@ -1,5 +1,6 @@
 {
   "development": {
+    "appName" : "IranInsight.com",
     "initDb":   "postgres",
     "database": "iran-insight",
     "pgConnection": "postgres://postgres:admin@127.0.0.1:5432/",
@@ -23,6 +24,7 @@
     }
   },
   "production": {
+    "appName" : "IranInsight.com",
     "initDb":   "",
     "database": "",
     "pgConnection": "postgres://sfnjdhkwqskzws:4af96db1fc7ccfc95290cb07c0669a95058fbd3fe0f5808adfa62c3e65363729@ec2-54-247-99-159.eu-west-1.compute.amazonaws.com:5432/df5a8fhmh95kn4",
