@@ -796,7 +796,6 @@ describe('Search System', () => {
           body: {
             table: 'expertise',
             phrase: 'نو',
-            id: pId,
             fieldName: 'name_fa',
             idColumn: 'expertise_id',
             currentIds: [1, 5]
@@ -815,14 +814,13 @@ describe('Search System', () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("(suggestion) should get error when pid not defined in object", function (done) {
+  it("(suggestion) should get error when idColumn not defined in object", function (done) {
     rp({
       method: 'post',
       body: {
         table: 'expertise',
         phrase: 'web',
         fieldName: 'name_en',
-        idColumn: 'expertise_id',
       },
       json: true,
       uri: lib.helpers.apiTestURL('suggest'),
@@ -833,8 +831,8 @@ describe('Search System', () => {
         done();
       })
       .catch(err => {
-        expect(err.statusCode).toBe(error.noIdGen.status);
-        expect(err.error).toBe(error.noIdGen.message);
+        expect(err.statusCode).toBe(error.noIdColumn.status);
+        expect(err.error).toBe(error.noIdColumn.message);
         done();
       });
   });
@@ -850,7 +848,6 @@ describe('Search System', () => {
         body: {
           table: 'expertise',
           pid: pId,
-          id: pId,
           fieldName: 'name_en',
           idColumn: 'expertise_id',
           currentIds: [1],

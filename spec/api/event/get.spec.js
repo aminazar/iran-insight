@@ -7,7 +7,7 @@ describe('GET Event API', () => {
 
   beforeEach(function (done) {
     lib.dbHelpers.create()
-      .then(() => lib.dbHelpers.addAndLoginPerson('amin'))
+      .then(() => lib.dbHelpers.addAndLoginPerson('amin', '123', {display_name_en: 'Amin', display_name_fa: 'امین'}))
       .then(res => {
         pid = res.pid;
         eventData.organizer_pid = pid;
@@ -46,6 +46,8 @@ describe('GET Event API', () => {
         expect(body.title_fa).toBe(eventData.title_fa);
         expect(body.start_date).toBe(eventData.start_date);
         expect(body.attendance).toBeUndefined();
+        expect(body.organizer_name).toBe('Amin');
+        expect(body.organizer_name_fa).toBe('امین');
         done();
       })
       .catch(err => {

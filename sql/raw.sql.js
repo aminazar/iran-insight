@@ -133,6 +133,7 @@ let modExp = {
   event: {
     create: sql('event/create.sql'),
     drop: sql('event/drop.sql'),
+    getById: sql('event/getById.sql'),
   },
   attendance: {
     create: sql('attendance/create.sql'),
