@@ -31,11 +31,11 @@ let setup = (app) => {
           resave: false,
           saveUninitialized: false,
         };
-        //TODO: Enable this after moving to real host
-        // if (env.isProd) {
-        //   app.set('trust proxy', 1); //Trust first proxy
-        //   session_config.cookie.secure = true; //Serve secure cookies
-        // }
+
+        if (env.isProd) {
+          app.set('trust proxy', 1); //Trust first proxy
+          session_config.cookie.secure = true; //Serve secure cookies
+        }
 
         app.use(session(session_config));
 
