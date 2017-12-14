@@ -228,5 +228,6 @@ router.delete('/consultancy/:id', apiResponse('Consultancy', 'delete', false, ['
 
 //Search API
 router.post('/search/:offset/:limit', apiResponse('SearchSystem', 'search', false, ['body', 'params.offset', 'params.limit']));
+router.post('/searchOnProduct/:offset/:limit', apiResponse('SearchSystem', 'searchOnProduct', false, ['product','body', 'params.offset', 'params.limit']));
 
 module.exports = router;
