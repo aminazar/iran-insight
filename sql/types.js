@@ -1,4 +1,4 @@
-/**
+ /**
  * types are those tables which has same logic in suggestion
  * @type {[string,string,string,string,string]}
  */

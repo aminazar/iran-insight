@@ -1,6 +1,6 @@
 const request = require("request");
 const base_url = "http://localhost:3000/api/";
-const test_query = '?test=tEsT';
+const test_query = '?test.js=tEsT';
 const lib = require('../../lib');
 const sql = require('../../sql');
 let req = request.defaults({jar: true});//enabling cookies
@@ -27,7 +27,7 @@ describe("Test auth APIs", () => {
       done();
   });
 
-  // For below test, we just want to make sure the API exists
+  // For below test.js, we just want to make sure the API exists
   // so if it takes a long time and reach timeout, it is ok
   it("should call google authentication API", (done) => {
     setTimeout(()=> {
@@ -48,7 +48,7 @@ describe("Test auth APIs", () => {
     })
   }, 10000);
 
-  // For below test, we just want to make sure the API exists
+  // For below test.js, we just want to make sure the API exists
   // so if it takes a long time and reach timeout, it is ok
   it("should call facebook authentication API", (done) => {
     setTimeout(()=> {
@@ -68,7 +68,7 @@ describe("Test auth APIs", () => {
     });
   }, 10000);
 
-  // For below test, we just want to make sure the API exists
+  // For below test.js, we just want to make sure the API exists
   // so if it takes a long time and reach timeout, it is ok
   it("should call linkedin authentication API", (done) => {
     setTimeout(()=> {

@@ -1,3 +1,3 @@
 select *
-from business_lce
+from ${tableName~}
 where id = ${lce_id}
