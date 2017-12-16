@@ -4,7 +4,7 @@ const sql = require('../../../sql/index');
 const moment = require('moment');
 
 describe('PUT Event API', () => {
-  let eid = 0, pid = 0, eventData = {title: 'test event', title_fa: 'همایش تست', start_date: '20171010'}, aminJar, aliJar, adminJar;
+  let eid = 0, pid = 0, eventData = {title: 'test.js event', title_fa: 'همایش تست', start_date: '20171010'}, aminJar, aliJar, adminJar;
 
   beforeEach(function (done) {
     lib.dbHelpers.create()
@@ -102,7 +102,7 @@ describe('PUT Event API', () => {
   });
 
   it('has an insert API by admin', function (done) {
-    eventData = {title: 'test event 2', title_fa: 'همایش تست 2', start_date: '20171010'}
+    eventData = {title: 'test.js event 2', title_fa: 'همایش تست 2', start_date: '20171010'}
     eventData.organizer_pid = pid;
     rp({
       method: 'PUT',

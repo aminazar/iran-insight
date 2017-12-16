@@ -5,7 +5,7 @@ const error = require('../../../lib/errors.list');
 const moment = require('moment-timezone');
 const helpers = require('../../../lib/helpers');
 
-describe("Get Organization LCE API", () => {
+describe("Get Biz LCE API", () => {
   let adminObj = {
     pid: null,
     jar: null,
@@ -22,11 +22,11 @@ describe("Get Organization LCE API", () => {
     pid: null,
     jar: null,
   };
-  let org1, org2;
+  let biz1, biz2;
   let lce_type_id1, lce_type_id2;
 
   let addLCE = (newLCE) => {
-    return sql.test.organization_lce.add(newLCE)
+    return sql.test.business_lce.add(newLCE)
   };
 
   beforeEach(done => {
@@ -43,7 +43,7 @@ describe("Get Organization LCE API", () => {
         return lib.dbHelpers.addAndLoginPerson('ehsan');
       })
       .then(res => {
-          return lib.dbHelpers.addAndLoginPerson('rep1');
+        return lib.dbHelpers.addAndLoginPerson('rep1');
       })
       .then(res => {
         rep1.pid = res.pid;
@@ -53,14 +53,14 @@ describe("Get Organization LCE API", () => {
       .then(res => {
         rep2.pid = res.pid;
         rep2.jar = res.rpJar;
-        return lib.dbHelpers.addOrganizationWithRep(rep1.pid, 'MTN')
+        return lib.dbHelpers.addBusinessWithRep(rep1.pid, 'MTN')
       })
       .then(res => {
-        org1 = res;
-        return lib.dbHelpers.addOrganizationWithRep(rep2.pid, 'IT Ministry')
+        biz1 = res;
+        return lib.dbHelpers.addBusinessWithRep(rep2.pid, 'IT Ministry')
       })
       .then(res => {
-        org2 = res;
+        biz2 = res;
         return sql.test.lce_type.add({
           name: 'management change',
           name_fa: 'تغییر میدیرت',
@@ -86,21 +86,21 @@ describe("Get Organization LCE API", () => {
         done();
       });
   });
-  it("admin should get list of org1 lce", function (done) {
+  it("admin should get list of biz1 lce", function (done) {
     this.done = done;
     let lceId1, lceId2;
 
     addLCE({
-      oid1: org1.oid,
-      oid2: org2.oid,
+      id1: biz1.bid,
+      id2: biz2.bid,
       start_date: moment.utc('2017-09-08 10:00:00').format(),
       lce_type_id: lce_type_id1
     })
       .then(res => {
         lceId1 = res.id;
         return addLCE({
-          oid1: org1.oid,
-          oid2: org2.oid,
+          id1: biz1.bid,
+          id2: biz2.bid,
           start_date: moment.utc('2017-09-10 10:00:00').format(),
           lce_type_id: lce_type_id2,
           is_confirmed: true
@@ -109,7 +109,7 @@ describe("Get Organization LCE API", () => {
             lceId2 = res.id;
             rp({
               method: 'get',
-              uri: lib.helpers.apiTestURL(`organization-lce/${org1.oid}`),
+              uri: lib.helpers.apiTestURL(`/lce/business/${biz1.bid}`),
               jar: adminObj.jar,
               resolveWithFullResponse: true
             })
@@ -125,21 +125,21 @@ describe("Get Organization LCE API", () => {
       });
 
   });
-  it("rep1 should get list of org1 lce", function (done) {
+  it("rep1 should get list of biz1 lce", function (done) {
     this.done = done;
     let lceId1, lceId2;
 
     addLCE({
-      oid1: org1.oid,
-      oid2: org2.oid,
+      id1: biz1.bid,
+      id2: biz2.bid,
       start_date: moment.utc('2017-09-08 10:00:00').format(),
       lce_type_id: lce_type_id1
     })
       .then(res => {
         lceId1 = res.id;
         return addLCE({
-          oid1: org1.oid,
-          oid2: org2.oid,
+          id1: biz1.bid,
+          id2: biz2.bid,
           start_date: moment.utc('2017-09-10 10:00:00').format(),
           lce_type_id: lce_type_id2,
           is_confirmed: true
@@ -148,7 +148,7 @@ describe("Get Organization LCE API", () => {
             lceId2 = res.id;
             rp({
               method: 'get',
-              uri: lib.helpers.apiTestURL(`organization-lce/${org1.oid}`),
+              uri: lib.helpers.apiTestURL(`/lce/business/${biz1.bid}`),
               jar: rep1.jar,
               resolveWithFullResponse: true
             })
@@ -164,21 +164,21 @@ describe("Get Organization LCE API", () => {
       });
 
   });
-  it("Other users should see only confirmed lce of org", function (done) {
+  it("Other users should see only confirmed lce of biz", function (done) {
     this.done = done;
     let lceId1, lceId2;
 
     addLCE({
-      oid1: org1.oid,
-      oid2: org2.oid,
+      id1: biz1.bid,
+      id2: biz2.bid,
       start_date: moment.utc('2017-09-08 10:00:00').format(),
       lce_type_id: lce_type_id1
     })
       .then(res => {
         lceId1 = res.id;
         return addLCE({
-          oid1: org1.oid,
-          oid2: org2.oid,
+          id1: biz1.bid,
+          id2: biz2.bid,
           start_date: moment.utc('2017-09-10 10:00:00').format(),
           lce_type_id: lce_type_id2,
           is_confirmed: true
@@ -187,7 +187,7 @@ describe("Get Organization LCE API", () => {
             lceId2 = res.id;
             rp({
               method: 'get',
-              uri: lib.helpers.apiTestURL(`organization-lce/${org1.oid}`),
+              uri: lib.helpers.apiTestURL(`/lce/business/${biz1.bid}`),
               jar: rep2.jar,
               resolveWithFullResponse: true
             })
@@ -205,21 +205,21 @@ describe("Get Organization LCE API", () => {
       });
 
   });
-  it("admin should see requested lce of org", function (done) {
+  it("admin should see requested lce of biz", function (done) {
     this.done = done;
     let lceId1, lceId2;
 
     addLCE({
-      oid1: org1.oid,
-      oid2: org2.oid,
+      id1: biz1.bid,
+      id2: biz2.bid,
       start_date: moment.utc('2017-09-08 10:00:00').format(),
       lce_type_id: lce_type_id1
     })
       .then(res => {
         lceId1 = res.id;
         return addLCE({
-          oid1: org1.oid,
-          oid2: org2.oid,
+          id1: biz1.bid,
+          id2: biz2.bid,
           start_date: moment.utc('2017-09-10 10:00:00').format(),
           lce_type_id: lce_type_id2,
           is_confirmed: true
@@ -228,7 +228,7 @@ describe("Get Organization LCE API", () => {
             lceId2 = res.id;
             rp({
               method: 'get',
-              uri: lib.helpers.apiTestURL(`organization-lce/requested/${org2.oid}`),
+              uri: lib.helpers.apiTestURL(`/lce/business/requested/${biz2.bid}`),
               jar: adminObj.jar,
               resolveWithFullResponse: true
             })

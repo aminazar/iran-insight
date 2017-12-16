@@ -1,6 +1,6 @@
 const request = require("request");
 const base_url = "http://localhost:3000/api/";
-const test_query = '?test=tEsT';
+const test_query = '?test.js=tEsT';
 const lib = require('../../lib');
 const sql = require('../../sql');
 let req = request.defaults({jar: true});//enabling cookies
@@ -131,7 +131,7 @@ describe("REST API", () => {
     // it("allows admin to update a username - checking that update happened", done => {
     //   req.post({
     //     url: base_url + 'loginCheck' + test_query,
-    //     form: {username: 'aminazar', password: 'test'}
+    //     form: {username: 'aminazar', password: 'test.js'}
     //   }, (err, res) => {
     //     expect(res.statusCode).toBe(200);
     //     done();
