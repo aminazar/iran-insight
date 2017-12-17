@@ -63,7 +63,7 @@ router.post('/login', passport.authenticate('local', {}), apiResponse('Person', 
 router.post('/loginCheck', apiResponse('Person', 'loginCheck', false, ['body.username', 'body.password']));
 router.get('/logout', (req, res) => {
   req.logout();
-  res.sendStatus(200)
+  res.status(200).json('')
 });
 router.get('/validUser', apiResponse('Person', 'afterLogin', false, ['user.username']));
 
@@ -96,13 +96,15 @@ router.delete('/follow/business/:bid', apiResponse('Person', 'unfollowingEntity'
 router.delete('/follow/organization/:oid', apiResponse('Person', 'unfollowingEntity', false, ['user.pid', 'params.pid', 'params.bid', 'params.oid']));
 router.delete('/follow/person/:pid', apiResponse('Person', 'unfollowingEntity', false, ['user.pid', 'params.pid', 'params.bid', 'params.oid']));
 
+router.get('/user/unsubscribe/:pid/:hash', apiResponse('Person', 'unsubscribe', false, ['params.pid', 'params.hash']));
+
 //Expertise API
 router.put('/expertise', apiResponse('Expertise', 'addExpertise', true, ['body']));
 router.get('/expertise', apiResponse('Expertise', 'getAll', false, ['body']));
+router.get('/expertise/:expertise_id', apiResponse('Expertise', 'get', false, ['params.expertise_id']));
 router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['user', 'body']));
 router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, ['user.pid', 'params.pid']));
 router.delete('/expertise/:pid/:expertise_id', apiResponse('Person', 'deleteExpertise', false, ['user', 'params.pid', 'params.expertise_id']));
-router.get('/user/unsubscribe/:pid/:hash', apiResponse('Person', 'unsubscribe', false, ['params.pid', 'params.hash']));
 
 
 // Notification
@@ -215,5 +217,6 @@ router.delete('/consultancy/:id', apiResponse('Consultancy', 'delete', false, ['
 
 //Search API
 router.post('/search/:offset/:limit', apiResponse('SearchSystem', 'search', false, ['body', 'params.offset', 'params.limit']));
+router.post('/suggest', apiResponse('SearchSystem', 'suggest', false, ['body']));
 
 module.exports = router;
