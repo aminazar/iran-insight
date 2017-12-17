@@ -88,7 +88,7 @@ describe("Get Biz LCE API", () => {
   });
   it("admin should get list of biz1 lce", function (done) {
     this.done = done;
-    let lceId1, lceId2;
+    let lceId1, lceId2, lceId3;
 
     addLCE({
       id1: biz1.bid,
@@ -105,8 +105,18 @@ describe("Get Biz LCE API", () => {
           lce_type_id: lce_type_id2,
           is_confirmed: true
         })
+      })
+      .then(res => {
+        lceId2 = res.id;
+        return addLCE({
+          id1: biz2.bid,
+          id2: biz1.bid,
+          start_date: moment.utc('2017-09-11 10:00:00').format(),
+          lce_type_id: lce_type_id2,
+          is_confirmed: true
+        })
           .then(res => {
-            lceId2 = res.id;
+            lceId3 = res.id;
             rp({
               method: 'get',
               uri: lib.helpers.apiTestURL(`/lce/business/${biz1.bid}`),
@@ -116,7 +126,10 @@ describe("Get Biz LCE API", () => {
               .then(res => {
                 expect(res.statusCode).toBe(200);
                 let result = JSON.parse(res.body);
-                expect(result.length).toBe(2);
+                expect(result.length).toBe(3);
+                result.forEach(r =>{
+                  expect(r.id).not.toBeNull(null);
+                });
                 done();
               })
               .catch(lib.helpers.errorHandler.bind(this));

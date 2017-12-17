@@ -319,7 +319,7 @@ describe("Put Biz LCE API", () => {
         body: {
           id: res.id,
           id1: biz1.bid,
-          id2: 200,
+          id2: 200, // some other bid
           start_date: moment.utc('2017-09-10 10:00:00').format(),
           lce_type_id: lce_type_id2,
           is_confirmed: true,

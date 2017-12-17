@@ -6,8 +6,9 @@ select
     lt.is_killer
 from (
         select
+            temp.id,
             temp.name as joiner1_name,
-            temp.name_fa as joiner2_name_fa,
+            temp.name_fa as joiner1_name_fa,
             joiner.name as joiner2_name,
             joiner.name_fa as joiner2_name_fa,
             temp.start_date,
@@ -19,7 +20,7 @@ from (
                 select * from
                 ${tableName~} as lce -- tableName: lce or organization_lce
                 inner join ${joinerName~} as joiner -- JoinerName: business or organization
-                on lce.${targetId~} = joiner.${joinerIdName~} -- targetId: id1 or id2, joinerIdName: bid or oid
+                on lce.id1 = joiner.${joinerIdName~} or lce.id2 = joiner.${joinerIdName~}  -- joinerIdName: bid or oid
                 where joiner.${joinerIdName~} = ${joinerId} and ${condition^} -- weather show all or confirmed or requested lce
              ) as temp
         left outer join  ${joinerName~} as joiner
