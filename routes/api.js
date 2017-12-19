@@ -36,7 +36,10 @@ function apiResponse(className, functionName, adminOnly = false, reqFuncs = []) 
             dynamicArgs.push((typeof reqFuncs[i] === 'function') ? reqFuncs[i](req) : deepFind(req, reqFuncs[i]));
 
           let allArgs = dynamicArgs.concat(args);
-          lib[className].test = req.test;
+
+          for (cn in lib)
+            lib[cn].test = req.test;
+
           let isStaticFunction = typeof lib[className][functionName] === 'function';
           let model = isStaticFunction ? lib[className] : new lib[className](req.test);
           return model[functionName].apply(isStaticFunction ? null : model, allArgs);
