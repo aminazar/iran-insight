@@ -2,6 +2,12 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 
+// Test request identifier
+router.use(function(req, res, next) {
+  req.test = req.app.get('env') === 'development' ? req.query.test==='tEsT': false;
+  next();
+});
+
 /* Diverting unknown routes to Angular router */
 router.all("*",function(req,res,next){
   if(req.originalUrl.indexOf('api') === -1 && !req.isSpider() && !req.headers.debug) {
