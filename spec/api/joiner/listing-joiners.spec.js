@@ -4,7 +4,7 @@ const sql = require('../../../sql/index');
 
 describe('GET Joiners API', () => {
   let pid = 0, aliPid = 0, orgData, bizData,
-    aminJar, moJar, adminJar, joseData;
+    aminJar, moJar, adminJar, joseData, hasanData, ;
 
   beforeEach(function (done) {
     lib.dbHelpers.create()
