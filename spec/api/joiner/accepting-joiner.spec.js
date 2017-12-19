@@ -4,7 +4,7 @@ const sql = require('../../../sql/index');
 
 describe('PUT Joiner API', () => {
   let pid = 0, aliMid = 0, orgData, bizData,
-    aminJar, moJar, adminJar, joseData;
+    aminJar, moJar, adminJar, joseData, hasanData, moPid;
 
   beforeEach(function (done) {
     lib.dbHelpers.create()
