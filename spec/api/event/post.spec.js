@@ -4,7 +4,7 @@ const sql = require('../../../sql/index');
 const moment = require('moment');
 
 describe('POST Event API', () => {
-  let eid = 0, pid = 0, aliPid = 0, eventData = {title: 'test event', title_fa: 'همایش تست', start_date: '20171010'},
+  let eid = 0, pid = 0, aliPid = 0, eventData = {title: 'test.js event', title_fa: 'همایش تست', start_date: '20171010'},
     aminJar, aliJar, adminJar;
 
   beforeEach(function (done) {

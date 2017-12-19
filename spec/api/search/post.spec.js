@@ -4,28 +4,29 @@ const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
 const moment = require('moment');
 
-describe("Search System", () => {
+describe('Search System', () => {
   let needSetup = true;
   let pJar = null;
+  let pId = null;
 
   let personList = [{
-    pid: 1,
+    pid: 10,
     firstname_fa: 'علی',
     surname_fa: 'علوی',
     username: 'a@gmail.com',
-  },{
-    pid: 2,
+  }, {
+    pid: 20,
     display_name_en: 'Asghar Taraghe',
     address_fa: 'کوچه شیرزاد، منتهی علیه سمت چپ - درب مشکی',
     username: 'asghar@taraghe.com',
-  },{
-    pid: 3,
+  }, {
+    pid: 30,
     firstname_en: 'John',
     surname_en: 'Smith',
     display_name_en: 'JS',
     username: 'JohnSmith@hotmail.com',
-  },{
-    pid: 4,
+  }, {
+    pid: 40,
     firstname_fa: 'امیر',
     surname_en: 'Mir',
     mobile_no: '09999991234',
@@ -37,7 +38,7 @@ describe("Search System", () => {
     id: 1,
     name: 'Transportation',
     active: true,
-  },{
+  }, {
     id: 2,
     name: 'Creative',
     name_fa: 'خلاق',
@@ -48,7 +49,7 @@ describe("Search System", () => {
     name: 'Snapp',
     name_fa: 'اصنپ',
     biz_type_id: 1,
-  },{
+  }, {
     bid: 2,
     name_fa: 'تک ماکارون',
     tel: '+7110203040',
@@ -72,14 +73,14 @@ describe("Search System", () => {
 
   let associationList = [{
     aid: 1,
-    pid: 1,
+    pid: 10,
     bid: 2,
     start_date: moment(new Date()),
     end_date: moment(new Date(2020, 10, 5)),
     oid: null,
   }, {
     aid: 2,
-    pid: 1,
+    pid: 10,
     bid: 2,
     oid: null,
   }, {
@@ -94,12 +95,12 @@ describe("Search System", () => {
     oid: 2,
   }, {
     aid: 5,
-    pid: 1,
+    pid: 10,
     bid: null,
     oid: 2,
   }, {
     aid: 6,
-    pid: 2,
+    pid: 20,
     bid: 2,
     oid: null,
   }];
@@ -139,7 +140,7 @@ describe("Search System", () => {
     product_id: 2,
     name: 'Choocolate',
     name_fa: 'شکلات'
-  },{
+  }, {
     product_id: 3,
     name: 'Milky way traveling'
   }, {
@@ -152,7 +153,7 @@ describe("Search System", () => {
   }, {
     product_id: 6,
     name: 'product 6',
-  },{
+  }, {
     product_id: 7,
     name: 'product 7',
   }, {
@@ -185,22 +186,27 @@ describe("Search System", () => {
   }];
 
   let expertiseList = [{
+    expertise_id: 1,
     name_en: 'Javascript programmer',
     name_fa: 'برنامه نویس جاوااسکریپت',
     is_education: false,
   }, {
+    expertise_id: 2,
     name_en: 'Musician',
     name_fa: 'نوازنده',
     is_education: false,
   }, {
+    expertise_id: 3,
     name_en: 'Researcher',
     name_fa: 'محقق',
     is_education: true,
   }, {
+    expertise_id: 4,
     name_en: 'unemployed',
     name_fa: 'بیکار',
     is_education: false,
   }, {
+    expertise_id: 5,
     name_en: 'Italian Chef',
     name_fa: 'آشپز ایتالیایی',
     is_education: false,
@@ -211,66 +217,71 @@ describe("Search System", () => {
     amount: 200,
     currency: 'USD',
     is_lead: true,
-    claimed_by: 1,
+    claimed_by: 10,
     is_confirmed: true,
   }, {
     assoc_id: 3,
     amount: 30,
     currency: 'EUR',
     investment_cycle: 10,
-    claimed_by: 3,
+    claimed_by: 30,
     is_confirmed: true,
   }];
 
   let consultancyList = [{
     assoc_id: 2,
     subject_fa: 'چگونگی ساخت شیشه',
-    claimed_by: 2,
+    claimed_by: 20,
     is_mentor: true,
     is_confirmed: true,
   }, {
     assoc_id: 4,
     subject: 'Increasing marketing',
     subject_fa: 'افزایش فروش',
-    claimed_by: 3,
+    claimed_by: 30,
     is_confirmed: true,
   }, {
     assoc_id: 6,
     subject: 'Learning business marketing',
     subject_fa: 'آموزش بازاریابی',
-    claimed_by: 1,
+    claimed_by: 10,
   }];
 
   let eventList = [{
-    organizer_pid: 2,
+    organizer_pid: 20,
     title: 'Shake well before using',
     title_fa: 'قبل از مصرف خوب تکان دهید',
     description_fa: 'چرا باید تکان داد',
     address: 'Online event course',
     start_date: moment({years: 2010, month: 2, date: 9}),
     end_date: moment({years: 2010, month: 2, date: 12}),
-    saved_by: 3,
+    saved_by: 30,
   }, {
     organizer_bid: 3,
     title: 'Be Creative',
     title_fa: 'خلاق باش',
     address: 'not set',
     start_date: moment({years: 2018, month: 3, date: 5}),
-    saved_by: 4,
+    saved_by: 40,
   }, {
     organizer_oid: 2,
     title: 'ICT in world',
     title_fa: 'ICT در دنیا',
-    description: "An analysis on ICT effeteness",
+    description: 'An analysis on ICT effeteness',
     start_date: new Date(),
-    saved_by: 1,
+    saved_by: 10,
   }];
 
   beforeEach(done => {
     let expertise1_id, expertise2_id;
     if (needSetup)
       lib.dbHelpers.create()
-        .then(() => Promise.all(personList.map(el => sql.test.person.add(el))))
+        .then(() => lib.dbHelpers.addAndLoginPerson('e3', '123'))
+        .then(res => {
+          pId = res.pid;
+          pJar = res.rpJar;
+          return Promise.all(personList.map(el => sql.test.person.add(el)))
+        })
         .then(() => Promise.all(businessTypeList.map(el => sql.test.business_type.add(el))))
         .then(() => Promise.all(businessList.map(el => sql.test.business.add(el))))
         .then(() => Promise.all(organizationList.map(el => sql.test.organization.add(el))))
@@ -282,10 +293,8 @@ describe("Search System", () => {
         .then(() => Promise.all(investmentList.map(el => sql.test.investment.add(el))))
         .then(() => Promise.all(consultancyList.map(el => sql.test.consultancy.add(el))))
         .then(() => Promise.all(eventList.map(el => sql.test.event.add(el))))
-        .then(() => lib.dbHelpers.addAndLoginPerson('e3', '123', {pid: 50}))
-        .then(res => {
-          pJar = res.rpJar;
-          needSetup = false;
+        .then(() => {
+          // needSetup = false;
           done();
         })
         .catch(err => {
@@ -296,7 +305,8 @@ describe("Search System", () => {
       done();
   });
 
-  it("should get first page when offset is invalid", function (done) {
+  // Searching and filtering
+  it("(searching) should get first page when offset is invalid", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -321,7 +331,7 @@ describe("Search System", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should search person", function (done) {
+  it("(searching) should search person", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -353,7 +363,7 @@ describe("Search System", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should search business", function (done) {
+  it("(searching) should search business", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -382,7 +392,7 @@ describe("Search System", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should search on product (should trimming)", function (done) {
+  it("(searching) should search on product (should trimming)", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -410,7 +420,7 @@ describe("Search System", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should search on consultancy", function (done) {
+  it("(searching) should search on consultancy", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -438,7 +448,7 @@ describe("Search System", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should search on investment (without comparison type)", function (done) {
+  it("(searching) should search on investment (without comparison type)", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -469,7 +479,7 @@ describe("Search System", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("shoule search on investment (with comparison type)", function (done) {
+  it("(searching) should search on investment (with comparison type)", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -502,7 +512,7 @@ describe("Search System", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should search on event", function (done) {
+  it("(searching) should search on event", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -533,7 +543,7 @@ describe("Search System", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should search on expertise", function (done) {
+  it("(searching) should search on expertise", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -562,7 +572,7 @@ describe("Search System", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should search on lce", function (done) {
+  it("(searching) should search on lce", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -591,7 +601,7 @@ describe("Search System", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should search on multi targets", function (done) {
+  it("(searching) should search on multi targets", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -626,7 +636,7 @@ describe("Search System", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should search without setting target", function (done) {
+  it("(searching) should search without setting target", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -653,7 +663,7 @@ describe("Search System", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should get another page of product", function (done) {
+  it("(searching) should get another page of product", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -681,7 +691,7 @@ describe("Search System", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should get all products if show_all is set", function (done) {
+  it("(searching) should get all products if show_all is set", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -709,7 +719,7 @@ describe("Search System", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should get search on type", function (done) {
+  it("(searching) should get search on type", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -739,7 +749,7 @@ describe("Search System", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should get all data when page size is bigger than results number", function (done) {
+  it("(searching) should get all data when page size is bigger than results number", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -762,6 +772,94 @@ describe("Search System", () => {
         expect(res.body.product.length).toBe(11);
         expect(res.body.product.map(el => el.name.toLowerCase())).toContain('product 6');
         expect(res.body.product.map(el => el.name.toLowerCase())).toContain('product 16');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  //Suggesting
+  it('(suggestion) should get all expertise match phrase except expertise that specific user has', function (done) {
+    this.done = done;
+    sql.test.person_expertise.add({
+      pid: pId,
+      expertise_id: 1,
+    })
+      .then(res => {
+        return sql.test.person_expertise.add({
+          pid: pId,
+          expertise_id: 5,
+        })
+      })
+      .then(res => {
+        return rp({
+          method: 'post',
+          body: {
+            table: 'expertise',
+            phrase: 'نو',
+            fieldName: 'name_fa',
+            idColumn: 'expertise_id',
+            currentIds: [1, 5]
+          },
+          json: true,
+          uri: lib.helpers.apiTestURL('suggest'),
+          resolveWithFullResponse: true
+        });
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.length).toBe(1);
+        expect(res.body[0].name_fa).toBe('نوازنده');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("(suggestion) should get error when idColumn not defined in object", function (done) {
+    rp({
+      method: 'post',
+      body: {
+        table: 'expertise',
+        phrase: 'web',
+        fieldName: 'name_en',
+      },
+      json: true,
+      uri: lib.helpers.apiTestURL('suggest'),
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        this.fail('Accept body without pid');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.noIdColumn.status);
+        expect(err.error).toBe(error.noIdColumn.message);
+        done();
+      });
+  });
+
+  it("(suggestion) should get all result when no phrase defined", function (done) {
+    this.done = done;
+    sql.test.person_expertise.add({
+      pid: pId,
+      expertise_id: 1,
+    })
+      .then(() => rp({
+        method: 'post',
+        body: {
+          table: 'expertise',
+          pid: pId,
+          fieldName: 'name_en',
+          idColumn: 'expertise_id',
+          currentIds: [1],
+        },
+        json: true,
+        uri: lib.helpers.apiTestURL('suggest'),
+        resolveWithFullResponse: true
+      }))
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.length).toBe(4);
+        expect(res.body.map(el => el.name_en)).not.toContain('Javascript programmer');
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));

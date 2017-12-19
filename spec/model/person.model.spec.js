@@ -13,7 +13,7 @@ describe("Person model",()=>{
   const pwd = 'testPwd';
 
   beforeAll(done=>{
-    // sql.test.person.drop().then(()=>{}).catch(()=>{});
+    // sql.test.js.person.drop().then(()=>{}).catch(()=>{});
     lib.dbHelpers.create()
       .then(() => sql.test.person.add({username: username.toLowerCase(), secret: pwd}))
       .then(res=>{

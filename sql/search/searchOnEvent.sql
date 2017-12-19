@@ -29,11 +29,11 @@ where
         or lower(event.address) like '%'||lower(${phrase})||'%'
         or lower(event.address_fa) like '%'||lower(${phrase})||'%'
         or (
-           (${start_date} != null and ${end_date} != null and event.start_date >= ${start_date} and event.end_date <= ${end_date})
+           (${start_date} is not null and ${end_date} is not null and event.start_date >= ${start_date} and event.end_date <= ${end_date})
            or
-           (${start_date} != null and ${end_date} = null and event.start_date >= ${start_date})
+           (${start_date} is not null and ${end_date} is null and event.start_date >= ${start_date})
            or
-           (${start_date} = null and ${end_date} != null and event.end_date <= ${end_date})
+           (${start_date} is null and ${end_date} is not null and event.end_date <= ${end_date})
            )
         or lower(event.description) like '%'||lower(${phrase})||'%'
         or lower(event.description_fa) like '%'||lower(${phrase})||'%'

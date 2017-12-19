@@ -1,6 +1,6 @@
 const request = require("request");
 const base_url = "http://localhost:3000/api/";
-const test_query = '?test=tEsT';
+const test_query = '?test.js=tEsT';
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
