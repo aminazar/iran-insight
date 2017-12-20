@@ -24,9 +24,8 @@ function apiResponse(className, functionName, adminOnly = false, reqFuncs = []) 
     }
     return obj;
   };
-  return (function (req, res) {
-    req.test = lib.helpers.isTestReq(req);
 
+  return (function (req, res) {
     lib.Person.adminCheck(adminOnly, req.user, req.test)
       .then(rs => {
         if (adminOnly && rs.length < 1)
@@ -37,7 +36,10 @@ function apiResponse(className, functionName, adminOnly = false, reqFuncs = []) 
             dynamicArgs.push((typeof reqFuncs[i] === 'function') ? reqFuncs[i](req) : deepFind(req, reqFuncs[i]));
 
           let allArgs = dynamicArgs.concat(args);
-          lib[className].test = req.test;
+
+          for (cn in lib)
+            lib[cn].test = req.test;
+
           let isStaticFunction = typeof lib[className][functionName] === 'function';
           let model = isStaticFunction ? lib[className] : new lib[className](req.test);
           return model[functionName].apply(isStaticFunction ? null : model, allArgs);
@@ -119,6 +121,7 @@ router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', 
 
 
 // Business API
+router.get('/business/one/:bid', apiResponse('Business', 'getOne', false, ['params']));
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
 router.put('/product', apiResponse('Business', 'addProduct', true, ['body']));
 router.post('/business/product', apiResponse('Business', 'addBusinessProduct', false, ['body', 'user.pid']));
@@ -180,7 +183,7 @@ router.delete('/user/deleteRepBizOrg/:mid', apiResponse('Person', 'deleteRepAndH
 router.delete('/user/deleteUserOrRepAfterConfirm/:mid', apiResponse('Person', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
 
 //Events API
-router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid', '?user.pid']));
+router.get('/event/:eid', apiResponse('Event', 'loadClean', false, ['params.eid', '?user.pid']));
 router.put('/event', apiResponse('Event', 'saveData', false, ['body', 'user']));
 router.post('/event/:eid', apiResponse('Event', 'saveData', false, ['body', 'user', 'params.eid']));
 router.delete('/event/:eid', apiResponse('Event', 'delete', false, ['params.eid', 'user']));

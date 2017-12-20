@@ -24,6 +24,11 @@ describe("GET Business API", () => {
     }
   ];
 
+  let biz = {
+    name: 'BIZ',
+    name_fa: 'کسب و کار',
+  };
+
   let addProduct = (product, businessId, marketShare = null) => {
     return new Promise((resolve, reject) => {
       let productId = null;
@@ -61,13 +66,40 @@ describe("GET Business API", () => {
       });
   });
 
+  it("get one business by id", function(done) {
+    this.done = done;
+    let bid;
+    sql.test.business.add(biz)
+      .then(res => {
+        bid = res.bid;
+        return rp({
+          uri: lib.helpers.apiTestURL('business/one/' + bid),
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let body = JSON.parse(res.body);
+        expect(body).toBeTruthy();
+        if (body) {
+          expect(body.name).toBe(biz.name);
+          expect(body.name_fa).toBe(biz.name_fa);
+          expect(body.ceo_pid).toBeNull();
+          expect(body.address).toBeNull();
+          expect(body.tel).toBeNull();
+          expect(body.url).toBeNull();
+          expect(body.general_stats).toBeNull();
+          expect(body.financial_stats).toBeNull();
+        }
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
   it("any logged in user should be able to list all products of specific business", function (done) {
     this.done = done;
 
-    sql.test.business.add({
-      name: 'BIZ',
-      name_fa: 'کسب و کار',
-    })
+    sql.test.business.add(biz)
       .then(res => {
         let promiseList = [];
         productDetails.forEach(el => {
@@ -96,10 +128,7 @@ describe("GET Business API", () => {
   xit("not logged in user cannot access to list of products of business", function (done) {
     this.done = done;
 
-    sql.test.business.add({
-      name: 'BIZ',
-      name_fa: 'کسب و کار',
-    })
+    sql.test.business.add(biz)
       .then(res => {
         let promiseList = [];
         productDetails.forEach(el => {
@@ -129,10 +158,7 @@ describe("GET Business API", () => {
   it("get specific product", function (done) {
     this.done = done;
 
-    sql.test.business.add({
-      name: 'BIZ',
-      name_fa: 'کسب و کار',
-    })
+    sql.test.business.add(biz)
       .then(res => {
         let promiseList = [];
         productDetails.forEach(el => {
@@ -162,10 +188,7 @@ describe("GET Business API", () => {
     this.done = done;
     let business_id = null;
 
-    sql.test.business.add({
-      name: 'BIZ',
-      name_fa: 'کسب و کار',
-    })
+    sql.test.business.add(biz)
       .then(res => {
         business_id = res.bid;
         let promiseList = [];

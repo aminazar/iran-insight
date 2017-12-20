@@ -100,6 +100,7 @@ let modExp = {
     drop: sql('business/drop.sql'),
     get: sql('business/get.sql'),
     getBusinessProducts: sql('business/getBusinessProducts.sql'),
+    getOne: sql('business/getOne.sql'),
   },
   business_lce: {
     create: sql('lce/create.sql'),
@@ -146,7 +147,7 @@ let modExp = {
     create: sql('product/create.sql'),
     drop: sql('product/drop.sql'),
     getById: sql('product/getById.sql'),
-    getAll: sql('product/getLCEList.sql'),
+    getAll: sql('product/getAll.sql'),
   },
   business_product: {
     create: sql('business_product/create.sql'),
