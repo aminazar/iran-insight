@@ -92,7 +92,7 @@ describe("GET Business API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  //Below test when specific condition (all or registered people can access) is used in apiResponse function can be used
+  //Below test.js when specific condition (all or registered people can access) is used in apiResponse function can be used
   xit("not logged in user cannot access to list of products of business", function (done) {
     this.done = done;
 

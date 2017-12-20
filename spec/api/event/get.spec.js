@@ -3,11 +3,11 @@ const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 
 describe('GET Event API', () => {
-  let eid = 0, pid = 0, eventData = {title: 'test event', title_fa: 'همایش تست', start_date: '20171010'}, aminJar, aid;
+  let eid = 0, pid = 0, eventData = {title: 'test.js event', title_fa: 'همایش تست', start_date: '20171010'}, aminJar, aid;
 
   beforeEach(function (done) {
     lib.dbHelpers.create()
-      .then(() => lib.dbHelpers.addAndLoginPerson('amin'))
+      .then(() => lib.dbHelpers.addAndLoginPerson('amin', '123', {display_name_en: 'Amin', display_name_fa: 'امین'}))
       .then(res => {
         pid = res.pid;
         eventData.organizer_pid = pid;
@@ -46,6 +46,8 @@ describe('GET Event API', () => {
         expect(body.title_fa).toBe(eventData.title_fa);
         expect(body.start_date).toBe(eventData.start_date);
         expect(body.attendance).toBeUndefined();
+        expect(body.organizer_name).toBe('Amin');
+        expect(body.organizer_name_fa).toBe('امین');
         done();
       })
       .catch(err => {

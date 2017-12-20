@@ -32,7 +32,7 @@ let modExp = {
   db: {
     create: sql('db/create.sql'),
     drop: sql('db/drop.sql'),
-    test: sql('db/test.sql'),
+    test: sql('db/test.js.sql'),
   },
   person: {
     create: sql('person/create.sql'),
@@ -66,6 +66,7 @@ let modExp = {
   expertise: {
     create: sql('expertise/create.sql'),
     drop: sql('expertise/drop.sql'),
+    get: sql('expertise/get.sql'),
   },
   person_expertise: {
     create: sql('person_expertise/create.sql'),
@@ -82,7 +83,7 @@ let modExp = {
   organization_lce: {
     create: sql('organization_lce/create.sql'),
     drop: sql('organization_lce/drop.sql'),
-    getAll: sql('organization_lce/getAll.sql'),
+    getAll: sql('organization_lce/getLCEList.sql'),
     getRequested: sql('organization_lce/getRequested.sql'),
     getConfirmed: sql('organization_lce/getConfirmed.sql'),
     getOrganizationLCEData: sql('organization_lce/getOrganizationLCEData.sql'),
@@ -101,13 +102,13 @@ let modExp = {
     getBusinessProducts: sql('business/getBusinessProducts.sql'),
   },
   business_lce: {
-    create: sql('business_lce/create.sql'),
-    drop: sql('business_lce/drop.sql'),
-    getAll: sql('business_lce/getAll.sql'),
-    getRequested: sql('business_lce/getRequested.sql'),
-    getConfirmed: sql('business_lce/getConfirmed.sql'),
-    get: sql('business_lce/get.sql'),
-    getBusinessLCEData: sql('business_lce/getBusinessLCEData.sql'),
+    create: sql('lce/create.sql'),
+    drop: sql('lce/drop.sql'),
+    getAll: sql('lce/getLCEList.sql'),
+    getRequested: sql('lce/getRequested.sql'),
+    getConfirmed: sql('lce/getConfirmed.sql'),
+    get: sql('lce/get.sql'),
+    getBusinessLCEData: sql('lce/getLCEData.sql'),
   },
   association: {
     create: sql('association/create.sql'),
@@ -132,6 +133,7 @@ let modExp = {
   event: {
     create: sql('event/create.sql'),
     drop: sql('event/drop.sql'),
+    getById: sql('event/getById.sql'),
   },
   attendance: {
     create: sql('attendance/create.sql'),
@@ -144,7 +146,7 @@ let modExp = {
     create: sql('product/create.sql'),
     drop: sql('product/drop.sql'),
     getById: sql('product/getById.sql'),
-    getAll: sql('product/getAll.sql'),
+    getAll: sql('product/getLCEList.sql'),
   },
   business_product: {
     create: sql('business_product/create.sql'),
@@ -172,6 +174,10 @@ let modExp = {
     removeTagFromTarget: sql('tag/removeTagFromTarget.sql'),
     getActiveTags: sql('tag/getActiveTags.sql'),
   },
+  tag_connection: {
+    create: sql('tag_connection/create.sql'),
+    drop: sql('tag_connection/drop.sql'),
+  },
   search: {
     searchOnPerson: sql('search/searchOnPerson.sql'),
     searchOnBusiness: sql('search/searchOnBusiness.sql'),
@@ -184,6 +190,9 @@ let modExp = {
     searchOnConsultancy: sql('search/searchOnConsultancy.sql'),
     searchOnType: sql('search/searchOnType.sql'),
   },
+  suggest: {
+    suggestion: sql('suggest/suggestion.sql'),
+  }
 };
 
 // Template-generated tables
@@ -209,6 +218,22 @@ types.forEach(t => {
     getInfo: sql('type/getInfo.sql', {tableName: t}),
   }
 });
+
+['business', 'organization'].forEach(t => {
+
+  let tableName = `${t}_lce`;
+  let joinerName = t;
+  let joinerIdName = t === 'business' ? 'bid' : 'oid';
+
+  modExp[tableName] = {
+    create: sql('lce/create.sql', {tableName}),
+    drop: sql('lce/drop.sql', {tableName}),
+    get: sql('lce/get.sql', {tableName}),
+    getLCEList: sql('lce/getLCEList.sql', {tableName, joinerName, joinerIdName}),
+    getLCEData: sql('lce/getLCEData.sql', {tableName, joinerName, joinerIdName})
+  }
+});
+
 
 // biz input tables
 [

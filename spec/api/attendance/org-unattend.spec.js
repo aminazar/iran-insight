@@ -4,7 +4,7 @@ const sql = require('../../../sql/index');
 
 
 describe('DELETE Organization attendance API', () => {
-  let eid = 0, pid = 0, eventData = {title: 'test event', title_fa: 'همایش تست', start_date: '20171010'}, aminJar;
+  let eid = 0, pid = 0, eventData = {title: 'test.js event', title_fa: 'همایش تست', start_date: '20171010'}, aminJar;
 
   beforeEach(function (done) {
     lib.dbHelpers.create()

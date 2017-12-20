@@ -357,7 +357,7 @@ describe("Notification System", () => {
     done();
   });
 
-  //Below test is not unit test completely. It tests the sent mail is look natural
+  //Below test.js is not unit test.js completely. It tests the sent mail is look natural
   // it("should send mail with data", function (done) {
   //   let data = [
   //     {

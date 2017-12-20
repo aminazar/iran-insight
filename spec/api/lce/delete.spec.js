@@ -5,7 +5,7 @@ const error = require('../../../lib/errors.list');
 const moment = require('moment-timezone');
 const helpers = require('../../../lib/helpers');
 
-describe("Post Organization LCE API", () => {
+describe("Delete Biz LCE API", () => {
   let adminObj = {
     pid: null,
     jar: null,
@@ -22,11 +22,11 @@ describe("Post Organization LCE API", () => {
     pid: null,
     jar: null,
   };
-  let org1, org2;
+  let biz1, biz2;
   let lce_type_id1, lce_type_id2;
 
   let addLCE = (newLCE) => {
-    return sql.test.organization_lce.add(newLCE)
+    return sql.test.business_lce.add(newLCE)
   };
 
   beforeEach(done => {
@@ -38,11 +38,12 @@ describe("Post Organization LCE API", () => {
         return lib.dbHelpers.addAdmin(adminObj.pid);
       })
       .then(res => {
-        normalUser.pid = res.pid;
-        normalUser.jar = res.rpJar;
         return lib.dbHelpers.addAndLoginPerson('ehsan');
       })
       .then(res => {
+
+        normalUser.pid = res.pid;
+        normalUser.jar = res.rpJar;
         return lib.dbHelpers.addAndLoginPerson('rep1');
       })
       .then(res => {
@@ -53,14 +54,14 @@ describe("Post Organization LCE API", () => {
       .then(res => {
         rep2.pid = res.pid;
         rep2.jar = res.rpJar;
-        return lib.dbHelpers.addOrganizationWithRep(rep1.pid, 'MTN')
+        return lib.dbHelpers.addBusinessWithRep(rep1.pid, 'MTN')
       })
       .then(res => {
-        org1 = res;
-        return lib.dbHelpers.addOrganizationWithRep(rep2.pid, 'IT Ministry')
+        biz1 = res;
+        return lib.dbHelpers.addBusinessWithRep(rep2.pid, 'IT Ministry')
       })
       .then(res => {
-        org2 = res;
+        biz2 = res;
         return sql.test.lce_type.add({
           name: 'management change',
           name_fa: 'تغییر میدیرت',
@@ -86,174 +87,114 @@ describe("Post Organization LCE API", () => {
         done();
       });
   });
-  it("rep should confirm org lce request", function (done) {
+  it("rep1 should delete lce", function (done) {
     this.done = done;
     let inserted_lce_id;
     addLCE({
-      oid1: org1.oid,
-      oid2: org2.oid,
+      id1: biz1.bid,
+      id2: biz2.bid,
       start_date: moment.utc('2017-09-08 10:00:00').format(),
       lce_type_id: lce_type_id1
     }).then(res => {
 
       inserted_lce_id = res.id;
       rp({
-        method: 'post',
-        uri: lib.helpers.apiTestURL(`organization-lce/confirm`),
-        body: {
-          id: inserted_lce_id,
-          oid: org2.oid,
-          is_confirmed: true
-        },
-        json: true,
-        jar: rep2.jar,
-        resolveWithFullResponse: true
-      })
-        .then(res => {
-
-          expect(res.statusCode).toBe(200);
-          return sql.test.organization_lce.get({id: inserted_lce_id});
-        }).then(res => {
-        expect(res.length).toBe(1);
-        expect(res[0].is_confirmed).toBe(true);
-        done();
-      })
-        .catch(lib.helpers.errorHandler.bind(this));
-    });
-
-  });
-  it("rep should reject org lce request", function (done) {
-    this.done = done;
-    let inserted_lce_id;
-    addLCE({
-      oid1: org1.oid,
-      oid2: org2.oid,
-      start_date: moment.utc('2017-09-08 10:00:00').format(),
-      lce_type_id: lce_type_id1
-    }).then(res => {
-
-      inserted_lce_id = res.id;
-      rp({
-        method: 'post',
-        uri: lib.helpers.apiTestURL(`organization-lce/confirm`),
-        body: {
-          id: inserted_lce_id,
-          oid: org2.oid,
-          is_confirmed: false
-        },
-        json: true,
-        jar: rep2.jar,
-        resolveWithFullResponse: true
-      })
-        .then(res => {
-          expect(res.statusCode).toBe(200);
-          return sql.test.organization_lce.get({id: inserted_lce_id});
-        }).then(res => {
-        expect(res.length).toBe(0);
-        done();
-      })
-        .catch(lib.helpers.errorHandler.bind(this));
-    });
-
-  });
-  it("admin should confirm org lce request", function (done) {
-    this.done = done;
-    let inserted_lce_id;
-    addLCE({
-      oid1: org1.oid,
-      oid2: org2.oid,
-      start_date: moment.utc('2017-09-08 10:00:00').format(),
-      lce_type_id: lce_type_id1
-    }).then(res => {
-
-      inserted_lce_id = res.id;
-      rp({
-        method: 'post',
-        uri: lib.helpers.apiTestURL(`organization-lce/confirm`),
-        body: {
-          id: inserted_lce_id,
-          oid: org2.oid,
-          is_confirmed: false
-        },
-        json: true,
-        jar: adminObj.jar,
-        resolveWithFullResponse: true
-      })
-        .then(res => {
-          expect(res.statusCode).toBe(200);
-          return sql.test.organization_lce.get({id: inserted_lce_id});
-        }).then(res => {
-        expect(res.length).toBe(0);
-        done();
-      })
-        .catch(lib.helpers.errorHandler.bind(this));
-    });
-
-  });
-  it("admin should reject org lce request", function (done) {
-    this.done = done;
-    let inserted_lce_id;
-    addLCE({
-      oid1: org1.oid,
-      oid2: org2.oid,
-      start_date: moment.utc('2017-09-08 10:00:00').format(),
-      lce_type_id: lce_type_id1
-    }).then(res => {
-
-      inserted_lce_id = res.id;
-      rp({
-        method: 'post',
-        uri: lib.helpers.apiTestURL(`organization-lce/confirm`),
-        body: {
-          id: inserted_lce_id,
-          oid: org2.oid,
-          is_confirmed: false
-        },
-        json: true,
-        jar: adminObj.jar,
-        resolveWithFullResponse: true
-      })
-        .then(res => {
-          expect(res.statusCode).toBe(200);
-          return sql.test.organization_lce.get({id: inserted_lce_id});
-        }).then(res => {
-        expect(res.length).toBe(0);
-        done();
-      })
-        .catch(lib.helpers.errorHandler.bind(this));
-    });
-
-  });
-  it("Expect error when other users or reps want to confirm org lce request", function (done) {
-    this.done = done;
-    let inserted_lce_id;
-    addLCE({
-      oid1: org1.oid,
-      oid2: org2.oid,
-      start_date: moment.utc('2017-09-08 10:00:00').format(),
-      lce_type_id: lce_type_id1
-    }).then(res => {
-
-      inserted_lce_id = res.id;
-      rp({
-        method: 'post',
-        uri: lib.helpers.apiTestURL(`organization-lce/confirm`),
-        body: {
-          id: inserted_lce_id,
-          oid: org2.oid,
-          is_confirmed: false
-        },
-        json: true,
+        method: 'delete',
+        uri: lib.helpers.apiTestURL(`/lce/business/${inserted_lce_id}`),
         jar: rep1.jar,
         resolveWithFullResponse: true
       })
         .then(res => {
-          this.fail('did not failed when other users want to confirm lce for organization');
+          expect(res.statusCode).toBe(200);
+          return sql.test.business_lce.get({id: inserted_lce_id});
+        }).then(res => {
+        expect(res.length).toBe(0);
+        done();
+      })
+        .catch(lib.helpers.errorHandler.bind(this));
+    });
+
+  });
+  it("rep2 should delete lce", function (done) {
+    this.done = done;
+    let inserted_lce_id;
+    addLCE({
+      id1: biz1.bid,
+      id2: biz2.bid,
+      start_date: moment.utc('2017-09-08 10:00:00').format(),
+      lce_type_id: lce_type_id1
+    }).then(res => {
+
+      inserted_lce_id = res.id;
+      rp({
+        method: 'delete',
+        uri: lib.helpers.apiTestURL(`/lce/business/${inserted_lce_id}`),
+        jar: rep1.jar,
+        resolveWithFullResponse: true
+      })
+        .then(res => {
+          expect(res.statusCode).toBe(200);
+          return sql.test.business_lce.get({id: inserted_lce_id});
+        }).then(res => {
+        expect(res.length).toBe(0);
+        done();
+      })
+        .catch(lib.helpers.errorHandler.bind(this));
+    });
+
+  });
+  it("admin should delete lce", function (done) {
+    this.done = done;
+    let inserted_lce_id;
+    addLCE({
+      id1: biz1.bid,
+      id2: biz2.bid,
+      start_date: moment.utc('2017-09-08 10:00:00').format(),
+      lce_type_id: lce_type_id1
+    }).then(res => {
+
+      inserted_lce_id = res.id;
+      rp({
+        method: 'delete',
+        uri: lib.helpers.apiTestURL(`/lce/business/${inserted_lce_id}`),
+        jar: adminObj.jar,
+        resolveWithFullResponse: true
+      })
+        .then(res => {
+          expect(res.statusCode).toBe(200);
+          return sql.test.business_lce.get({id: inserted_lce_id});
+        }).then(res => {
+        expect(res.length).toBe(0);
+        done();
+      })
+        .catch(lib.helpers.errorHandler.bind(this));
+    });
+
+  });
+  it("Expect error when other users want to delete lce", function (done) {
+    this.done = done;
+    let inserted_lce_id;
+    addLCE({
+      id1: biz1.bid,
+      id2: biz2.bid,
+      start_date: moment.utc('2017-09-08 10:00:00').format(),
+      lce_type_id: lce_type_id1
+    }).then(res => {
+
+      inserted_lce_id = res.id;
+      rp({
+        method: 'delete',
+        uri: lib.helpers.apiTestURL(`/lce/business/${inserted_lce_id}`),
+        jar: normalUser.jar,
+        resolveWithFullResponse: true
+      })
+        .then(res => {
+          this.fail('did not failed when other users want to delete lce');
           done();
         })
         .catch(err => {
           expect(err.statusCode).toBe(error.notAllowed.status);
-          expect(err.error).toBe(error.notAllowed.message);
+          expect(err.message).toContain(error.notAllowed.message);
           done();
         });
     });
