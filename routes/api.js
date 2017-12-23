@@ -170,7 +170,7 @@ router.delete('/user/deleteRepBizOrg/:mid', apiResponse('Person', 'deleteRepAndH
 router.delete('/user/deleteUserOrRepAfterConfirm/:mid', apiResponse('Person', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
 
 //Events API
-router.get('/event/:eid', apiResponse('Event', 'loadClean', false, ['params.eid', '?user.pid']));
+router.get('/event/:eid', apiResponse('Event', 'load' , false, ['params.eid', '?user.pid']));
 router.put('/event', apiResponse('Event', 'saveData', false, ['body', 'user']));
 router.post('/event/:eid', apiResponse('Event', 'saveData', false, ['body', 'user', 'params.eid']));
 router.delete('/event/:eid', apiResponse('Event', 'delete', false, ['params.eid', 'user']));
