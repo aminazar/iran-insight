@@ -8,6 +8,8 @@
     address varchar(100),
     address_fa varchar(100),
  --   geo_location geography,
+    latitude real,
+    longitude real,
     start_date date not null,
     end_date date,
     description text,
