@@ -182,6 +182,11 @@ router.put('/bizAttends/:eid/:bid', apiResponse('Attendance', 'bizAttends', fals
 router.delete('/bizAttends/:eid/:bid', apiResponse('Attendance', 'bizUnattends', false, ['params.eid', 'params.bid', 'user.pid']));
 router.put('/orgAttends/:eid/:oid', apiResponse('Attendance', 'orgAttends', false, ['params.eid', 'body', 'params.oid', 'user.pid']));
 router.delete('/orgAttends/:eid/:oid', apiResponse('Attendance', 'orgUnattends', false, ['params.eid', 'params.oid', 'user.pid']));
+router.get('/attendee/:eid', apiResponse('Attendance', 'getAttendees', false, ['params.eid']));
+router.delete('/attendance/:id', apiResponse('Attendance', 'deleteAttendance', true, ['params.id']));
+router.put('/attends/:eid', apiResponse('Attendance', 'attends', true, ['params.eid', 'body', 'user']));
+router.post('/attendee/:id', apiResponse('Attendance', 'updateAttendee', false, ['params.id', 'body']));
+router.get('/attendance/types', apiResponse('Attendance', 'getTypes', false, []));
 
 // Joiners API
 router.get('/joiners/org/:oid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
