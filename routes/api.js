@@ -130,6 +130,19 @@ router.get('/business/product/all/:bid', apiResponse('Business', 'getAllBusiness
 router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
 router.delete('/business/product', apiResponse('Business', 'removeBizOfProduct', false, ['body', 'user.pid']));
 
+// Product API
+router.post('/update-product/:product_id', apiResponse('Business', 'updateProduct', true, ['params.product_id','body']));
+router.delete('/delete-product/:product_id', apiResponse('Business', 'deleteProduct', true, ['params.product_id']));
+
+
+// Business LCE API
+router.put('/business-lce', apiResponse('Business', 'setLCE', false, ['body', 'user.pid']));
+router.post('/business-lce/confirm', apiResponse('Business', 'confirmLCE', false, ['user.pid', 'body']));
+router.get('/business-lce/:bid', apiResponse('Business', 'getLCE', false, ['user.pid', 'params.bid']));
+router.get('/business-lce/requested/:bid', apiResponse('Business', 'getRequestedLCE', false, ['user.pid', 'params.bid']));
+router.delete('/business-lce', apiResponse('Business', 'deleteLCE', false, ['user', 'body']));
+
+
 // Organization API
 router.get('/organization', apiResponse('Organization', 'getAll', false));
 router.get('/organization/:oid', apiResponse('Organization', 'getById', false, ['params.oid']));
@@ -170,7 +183,7 @@ router.delete('/user/deleteRepBizOrg/:mid', apiResponse('Person', 'deleteRepAndH
 router.delete('/user/deleteUserOrRepAfterConfirm/:mid', apiResponse('Person', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
 
 //Events API
-router.get('/event/:eid', apiResponse('Event', 'loadClean', false, ['params.eid', '?user.pid']));
+router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid', '?user.pid']));
 router.put('/event', apiResponse('Event', 'saveData', false, ['body', 'user']));
 router.post('/event/:eid', apiResponse('Event', 'saveData', false, ['body', 'user', 'params.eid']));
 router.delete('/event/:eid', apiResponse('Event', 'delete', false, ['params.eid', 'user']));
@@ -221,5 +234,6 @@ router.delete('/consultancy/:id', apiResponse('Consultancy', 'delete', false, ['
 //Search API
 router.post('/search/:offset/:limit', apiResponse('SearchSystem', 'search', false, ['body', 'params.offset', 'params.limit']));
 router.post('/suggest', apiResponse('SearchSystem', 'suggest', false, ['body']));
+router.post('/searchOnProduct/:offset/:limit', apiResponse('SearchSystem', 'searchOnProduct', false, ['product','body', 'params.offset', 'params.limit']));
 
 module.exports = router;
