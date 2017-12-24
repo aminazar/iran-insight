@@ -52,13 +52,13 @@ for (let table in rawSql) {
       rawSql[table][query] = q;
     }
 
-    wrappedSQL[table][query] = (table === 'db') ? (data) => {
-      return (env.initDb[usingFunction(query)])(rawSql[table][query], dataTransform(data));
-    } : (data) => {
-      return (env.db[usingFunction(query)])(rawSql[table][query], dataTransform(data));
+    wrappedSQL[table][query] = (table === 'db') ? (data, task) => {
+      return ((task ? task : env.initDb)[usingFunction(query)])(rawSql[table][query], dataTransform(data));
+    } : (data, task) => {
+      return ((task ? task : env.db)[usingFunction(query)])(rawSql[table][query], dataTransform(data, task));
     };
-    wrappedSQL.test[table][query] = (data) => {
-      return (env.testDb[usingFunction(query)])(rawSql[table][query], dataTransform(data));
+    wrappedSQL.test[table][query] = (data, task) => {
+      return ((task ? task : env.testDb)[usingFunction(query)])(rawSql[table][query], dataTransform(data));
     };
   }
 }
