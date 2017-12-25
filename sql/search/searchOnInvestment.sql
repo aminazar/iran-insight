@@ -23,7 +23,7 @@ left outer join person on association.pid = person.pid
 where
     (${show_all} = true)
     or(
-            lower(investment.currency) like '%'||lower(${phrase})||'%'
+        ((${phrase} is not null and lower(investment.currency) like '%'||lower(${phrase})||'%') or ${phrase} is null)
         or ((${amount_lt} = true and investment.amount::numeric < ${amount})
             or
             (${amount_gt} = true and investment.amount::numeric > ${amount})

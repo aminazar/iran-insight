@@ -116,7 +116,7 @@ describe('Search System', () => {
   }];
 
   let businessLCEList = [{
-    bid1: 1,
+    id1: 1,
     aid: 6,
     start_date: '2016-10-10',
     end_date: '2016-10-11',
@@ -124,8 +124,8 @@ describe('Search System', () => {
     lce_type_id: 1,
     is_confirmed: true,
   }, {
-    bid1: 2,
-    bid2: 3,
+    id1: 2,
+    id2: 3,
     start_date: '2017-08-10',
     description_fa: 'همایش خصوصی سلامت و خلاقیت',
     lce_type_id: 2,
@@ -420,451 +420,452 @@ describe('Search System', () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  // it("(searching) should search on consultancy", function (done) {
-  //   this.done = done;
-  //   rp({
-  //     method: 'post',
-  //     body: {
-  //       phrase: 'ش',
-  //       options: {
-  //         target: {
-  //           consultancy: true,
-  //         },
-  //         is_mentor: false,
-  //       }
-  //     },
-  //     uri: lib.helpers.apiTestURL('search/0/10'),
-  //     jar: pJar,
-  //     json: true,
-  //     resolveWithFullResponse: true
-  //   })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       expect(res.body.consultancy).toBeTruthy();
-  //       expect(res.body.consultancy.length).toBe(1);
-  //       expect(res.body.consultancy.map(el => el.subject && el.subject.toLowerCase())).toContain('increasing marketing');
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
+  it("(searching) should search on consultancy", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: 'ش',
+        options: {
+          target: {
+            consultancy: true,
+          },
+          is_mentor: false,
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.consultancy).toBeTruthy();
+        expect(res.body.consultancy.length).toBe(1);
+        expect(res.body.consultancy.map(el => el.subject && el.subject.toLowerCase())).toContain('increasing marketing');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
 
-  // it("(searching) should search on investment (without comparison type)", function (done) {
-  //   this.done = done;
-  //   rp({
-  //     method: 'post',
-  //     body: {
-  //       phrase: ' GBP ',
-  //       options: {
-  //         target: {
-  //           investment: true,
-  //         },
-  //         amount: 200,
-  //         is_lead: true,
-  //       }
-  //     },
-  //     uri: lib.helpers.apiTestURL('search/0/10'),
-  //     jar: pJar,
-  //     json: true,
-  //     resolveWithFullResponse: true
-  //   })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       expect(res.body.investment).toBeTruthy();
-  //       expect(res.body.investment.length).toBe(1);
-  //       expect(res.body.investment[0].person_firstname_fa).toBe('علی');
-  //       expect(res.body.investment[0].person_surname_fa).toBe('علوی');
-  //       expect(res.body.investment[0].business_name_fa).toBe('تک ماکارون');
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
-  //
-  // it("(searching) should search on investment (with comparison type)", function (done) {
-  //   this.done = done;
-  //   rp({
-  //     method: 'post',
-  //     body: {
-  //       phrase: ' GBP ',
-  //       options: {
-  //         target: {
-  //           investment: true,
-  //         },
-  //         amount: 200,
-  //         is_lead: false,
-  //         comparison_type: {
-  //           lt: true,
-  //           gt: false,
-  //         }
-  //       }
-  //     },
-  //     uri: lib.helpers.apiTestURL('search/0/10'),
-  //     jar: pJar,
-  //     json: true,
-  //     resolveWithFullResponse: true
-  //   })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       expect(res.body.investment).toBeTruthy();
-  //       expect(res.body.investment.length).toBe(1);
-  //       expect(res.body.investment[0].organization_name).toBe('Managing Crisis');
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
-  //
-  // it("(searching) should search on event", function (done) {
-  //   this.done = done;
-  //   rp({
-  //     method: 'post',
-  //     body: {
-  //       phrase: 'on ',
-  //       options: {
-  //         target: {
-  //           event: true,
-  //         },
-  //         start_date: new Date(2010, 1, 1),
-  //       }
-  //     },
-  //     uri: lib.helpers.apiTestURL('search/0/10'),
-  //     jar: pJar,
-  //     json: true,
-  //     resolveWithFullResponse: true
-  //   })
-  //     .then(res => {
-  //       console.log(res.body);
-  //       expect(res.statusCode).toBe(200);
-  //       expect(res.body.event).toBeTruthy();
-  //       expect(res.body.event.length).toBe(2);
-  //       expect(res.body.event.map(el => el.title.toLowerCase())).toContain('shake well before using');
-  //       expect(res.body.event.map(el => el.title.toLowerCase())).toContain('ict in world');
-  //       expect(res.body.event.map(el => el.person_display_name_en && el.person_display_name_en.toLowerCase())).toContain('asghar taraghe');
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
-  //
-  // it("(searching) should search on expertise", function (done) {
-  //   this.done = done;
-  //   rp({
-  //     method: 'post',
-  //     body: {
-  //       phrase: null,
-  //       options: {
-  //         target: {
-  //           expertise: true,
-  //         },
-  //         is_education: true,
-  //       }
-  //     },
-  //     uri: lib.helpers.apiTestURL('search/0/10'),
-  //     jar: pJar,
-  //     json: true,
-  //     resolveWithFullResponse: true
-  //   })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       expect(res.body.expertise).toBeTruthy();
-  //       expect(res.body.expertise.map(el => parseInt(el.total))).toContain(1);
-  //       expect(res.body.expertise.length).toBe(1);
-  //       expect(res.body.expertise[0].name_en.toLowerCase()).toContain('researcher');
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
-  //
-  // it("(searching) should search on lce", function (done) {
-  //   this.done = done;
-  //   rp({
-  //     method: 'post',
-  //     body: {
-  //       phrase: '',
-  //       options: {
-  //         target: {
-  //           lce: true,
-  //         },
-  //         start_date: '2015-09-09',
-  //       }
-  //     },
-  //     uri: lib.helpers.apiTestURL('search/0/10'),
-  //     jar: pJar,
-  //     json: true,
-  //     resolveWithFullResponse: true
-  //   })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       expect(res.body.lce).toBeTruthy();
-  //       expect(res.body.lce.length).toBe(2);
-  //       expect(res.body.lce.map(el => el.description && el.description.toLowerCase())).toContain('assign ceo');
-  //       expect(res.body.lce.map(el => el.description_fa && el.description_fa.toLowerCase())).toContain('همایش خصوصی سلامت و خلاقیت');
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
-  //
-  // it("(searching) should search on multi targets", function (done) {
-  //   this.done = done;
-  //   rp({
-  //     method: 'post',
-  //     body: {
-  //       phrase: 'Choocolate',
-  //       options: {
-  //         target: {
-  //           product: true,
-  //           business: true,
-  //           person: true,
-  //           organization: true,
-  //         },
-  //       }
-  //     },
-  //     uri: lib.helpers.apiTestURL('search/0/10'),
-  //     jar: pJar,
-  //     json: true,
-  //     resolveWithFullResponse: true
-  //   })
-  //     .then(res => {
-  //       console.log(res.body);
-  //       expect(res.statusCode).toBe(200);
-  //       expect(res.body.person).not.toBeTruthy();
-  //       expect(res.body.organization).not.toBeTruthy();
-  //       expect(res.body.business).toBeTruthy();
-  //       expect(res.body.product).toBeTruthy();
-  //       expect(res.body.business.length).toBe(1);
-  //       expect(res.body.product.length).toBe(0);
-  //       expect(res.body.business[0].name.toLowerCase()).toBe('willy wonka choocolate');
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
-  //
-  // it("(searching) should search without setting target", function (done) {
-  //   this.done = done;
-  //   rp({
-  //     method: 'post',
-  //     body: {
-  //       phrase: 'Choocolate',
-  //       options: {
-  //
-  //       }
-  //     },
-  //     uri: lib.helpers.apiTestURL('search/0/10'),
-  //     jar: pJar,
-  //     json: true,
-  //     resolveWithFullResponse: true
-  //   })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       expect(res.body.business).toBeTruthy();
-  //       expect(res.body.product).toBeTruthy();
-  //       expect(res.body.business.length).toBe(1);
-  //       expect(res.body.product.length).toBe(0);
-  //       expect(res.body.business[0].name.toLowerCase()).toBe('willy wonka choocolate');
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
-  //
-  // it("(searching) should get another page of product", function (done) {
-  //   this.done = done;
-  //   rp({
-  //     method: 'post',
-  //     body: {
-  //       phrase: 'product',
-  //       options: {
-  //         target: {
-  //           product: true,
-  //         }
-  //       }
-  //     },
-  //     uri: lib.helpers.apiTestURL('search/10/10'),
-  //     jar: pJar,
-  //     json: true,
-  //     resolveWithFullResponse: true
-  //   })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       expect(res.body.product).toBeTruthy();
-  //       expect(res.body.product.map(el => parseInt(el.total))).toContain(11);
-  //       expect(res.body.product.length).toBe(1);
-  //       expect(res.body.product[0].name.toLowerCase()).toBe('product 6');
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
-  //
-  // it("(searching) should get all products if show_all is set", function (done) {
-  //   this.done = done;
-  //   rp({
-  //     method: 'post',
-  //     body: {
-  //       phrase: 'product',
-  //       options: {
-  //         target: {
-  //           product: true,
-  //         },
-  //         show_all: true,
-  //       }
-  //     },
-  //     uri: lib.helpers.apiTestURL('search/10/10'),
-  //     jar: pJar,
-  //     json: true,
-  //     resolveWithFullResponse: true
-  //   })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       expect(res.body.product).toBeTruthy();
-  //       expect(res.body.product.length).toBe(6);
-  //       expect(res.body.product.map(el => el.name.toLowerCase())).toContain('candy');
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
-  //
-  // it("(searching) should get search on type", function (done) {
-  //   this.done = done;
-  //   rp({
-  //     method: 'post',
-  //     body: {
-  //       phrase: ' e',
-  //       options: {
-  //         target: {
-  //           type: true,
-  //         },
-  //         is_active: true,
-  //       }
-  //     },
-  //     uri: lib.helpers.apiTestURL('search/0/10'),
-  //     jar: pJar,
-  //     json: true,
-  //     resolveWithFullResponse: true
-  //   })
-  //     .then(res => {
-  //       console.log(res.body);
-  //       expect(res.statusCode).toBe(200);
-  //       expect(res.body.type).toBeTruthy();
-  //       expect(res.body.type.length).toBe(2);
-  //       expect(res.body.type.map(el => el.name && el.name.toLowerCase())).toContain('lce 2');
-  //       expect(res.body.type.map(el => el.table_name.toLowerCase())).toContain('lce');
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
-  //
-  // it("(searching) should get all data when page size is bigger than results number", function (done) {
-  //   this.done = done;
-  //   rp({
-  //     method: 'post',
-  //     body: {
-  //       phrase: 'product',
-  //       options: {
-  //         target: {
-  //           product: true,
-  //         }
-  //       }
-  //     },
-  //     uri: lib.helpers.apiTestURL('search/0/20'),
-  //     jar: pJar,
-  //     json: true,
-  //     resolveWithFullResponse: true
-  //   })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       expect(res.body.product).toBeTruthy();
-  //       expect(res.body.product.length).toBe(11);
-  //       expect(res.body.product.map(el => el.name.toLowerCase())).toContain('product 6');
-  //       expect(res.body.product.map(el => el.name.toLowerCase())).toContain('product 16');
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
-  //
-  // //Suggesting
-  // it('(suggestion) should get all expertise match phrase except expertise that specific user has', function (done) {
-  //   this.done = done;
-  //   sql.test.person_expertise.add({
-  //     pid: pId,
-  //     expertise_id: 1,
-  //   })
-  //     .then(res => {
-  //       return sql.test.person_expertise.add({
-  //         pid: pId,
-  //         expertise_id: 5,
-  //       })
-  //     })
-  //     .then(res => {
-  //       return rp({
-  //         method: 'post',
-  //         body: {
-  //           table: 'expertise',
-  //           phrase: 'نو',
-  //           fieldName: 'name_en',
-  //           fieldNameFa: 'name_fa',
-  //           idColumn: 'expertise_id',
-  //           currentIds: [1, 5]
-  //         },
-  //         json: true,
-  //         uri: lib.helpers.apiTestURL('suggest'),
-  //         resolveWithFullResponse: true
-  //       });
-  //     })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       expect(res.body.length).toBe(1);
-  //       expect(res.body[0].name_fa).toBe('نوازنده');
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
-  //
-  // it("(suggestion) should get error when idColumn not defined in object", function (done) {
-  //   rp({
-  //     method: 'post',
-  //     body: {
-  //       table: 'expertise',
-  //       phrase: 'web',
-  //       fieldName: 'name_en',
-  //       fieldNameFa: 'name_fa',
-  //     },
-  //     json: true,
-  //     uri: lib.helpers.apiTestURL('suggest'),
-  //     resolveWithFullResponse: true
-  //   })
-  //     .then(res => {
-  //       this.fail('Accept body without pid');
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       expect(err.statusCode).toBe(error.noIdColumn.status);
-  //       expect(err.error).toBe(error.noIdColumn.message);
-  //       done();
-  //     });
-  // });
-  //
-  // it("(suggestion) should get all result when no phrase defined", function (done) {
-  //   this.done = done;
-  //   sql.test.person_expertise.add({
-  //     pid: pId,
-  //     expertise_id: 1,
-  //   })
-  //     .then(() => rp({
-  //       method: 'post',
-  //       body: {
-  //         table: 'expertise',
-  //         pid: pId,
-  //         fieldName: 'name_en',
-  //         fieldNameFa: 'name_fa',
-  //         idColumn: 'expertise_id',
-  //         currentIds: [1],
-  //       },
-  //       json: true,
-  //       uri: lib.helpers.apiTestURL('suggest'),
-  //       resolveWithFullResponse: true
-  //     }))
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       expect(res.body.length).toBe(4);
-  //       expect(res.body.map(el => el.name_en)).not.toContain('Javascript programmer');
-  //       done();
-  //     })
-  //     .catch(lib.helpers.errorHandler.bind(this));
-  // });
+  it("(searching) should search on investment (without comparison type)", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: ' GBP ',
+        options: {
+          target: {
+            investment: true,
+          },
+          amount: 200,
+          is_lead: true,
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.investment).toBeTruthy();
+        expect(res.body.investment.length).toBe(1);
+        expect(res.body.investment[0].person_firstname_fa).toBe('علی');
+        expect(res.body.investment[0].person_surname_fa).toBe('علوی');
+        expect(res.body.investment[0].business_name_fa).toBe('تک ماکارون');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("(searching) should search on investment (with comparison type)", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: ' GBP ',
+        options: {
+          target: {
+            investment: true,
+          },
+          amount: 200,
+          is_lead: false,
+          comparison_type: {
+            lt: true,
+            gt: false,
+          }
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.investment).toBeTruthy();
+        expect(res.body.investment.length).toBe(1);
+        expect(res.body.investment[0].organization_name).toBe('Managing Crisis');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("(searching) should search on event", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: 'on ',
+        options: {
+          target: {
+            event: true,
+          },
+          start_date: moment(new Date(2010, 10, 10)).format('YYYY-MM-DD'),
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        console.log(res.body);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.event).toBeTruthy();
+        expect(res.body.event.length).toBe(2);
+        expect(res.body.event.map(el => el.title.toLowerCase())).toContain('shake well before using');
+        expect(res.body.event.map(el => el.title.toLowerCase())).toContain('ict in world');
+        expect(res.body.event.map(el => el.person_display_name_en && el.person_display_name_en.toLowerCase())).toContain('asghar taraghe');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("(searching) should search on expertise", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: null,
+        options: {
+          target: {
+            expertise: true,
+          },
+          is_education: true,
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.expertise).toBeTruthy();
+        expect(res.body.expertise.map(el => parseInt(el.total))).toContain(1);
+        expect(res.body.expertise.length).toBe(1);
+        expect(res.body.expertise[0].name_en.toLowerCase()).toContain('researcher');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  //Below test is ignored because lce not using search system now
+  xit("(searching) should search on lce", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: '',
+        options: {
+          target: {
+            lce: true,
+          },
+          start_date: '2015-09-09',
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.lce).toBeTruthy();
+        expect(res.body.lce.length).toBe(2);
+        expect(res.body.lce.map(el => el.description && el.description.toLowerCase())).toContain('assign ceo');
+        expect(res.body.lce.map(el => el.description_fa && el.description_fa.toLowerCase())).toContain('همایش خصوصی سلامت و خلاقیت');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("(searching) should search on multi targets", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: 'Choocolate',
+        options: {
+          target: {
+            product: true,
+            business: true,
+            person: true,
+            organization: true,
+          },
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        console.log(res.body);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.person).not.toBeTruthy();
+        expect(res.body.organization).not.toBeTruthy();
+        expect(res.body.business).toBeTruthy();
+        expect(res.body.product).toBeTruthy();
+        expect(res.body.business.length).toBe(1);
+        expect(res.body.product.length).toBe(0);
+        expect(res.body.business[0].name.toLowerCase()).toBe('willy wonka choocolate');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("(searching) should search without setting target", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: 'Choocolate',
+        options: {
+
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.business).toBeTruthy();
+        expect(res.body.product).toBeTruthy();
+        expect(res.body.business.length).toBe(1);
+        expect(res.body.product.length).toBe(0);
+        expect(res.body.business[0].name.toLowerCase()).toBe('willy wonka choocolate');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("(searching) should get another page of product", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: 'product',
+        options: {
+          target: {
+            product: true,
+          }
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/10/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.product).toBeTruthy();
+        expect(res.body.product.map(el => parseInt(el.total))).toContain(11);
+        expect(res.body.product.length).toBe(1);
+        expect(res.body.product[0].name.toLowerCase()).toBe('product 6');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("(searching) should get all products if show_all is set", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: 'product',
+        options: {
+          target: {
+            product: true,
+          },
+          show_all: true,
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/10/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.product).toBeTruthy();
+        expect(res.body.product.length).toBe(6);
+        expect(res.body.product.map(el => el.name.toLowerCase())).toContain('candy');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("(searching) should get search on type", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: ' e',
+        options: {
+          target: {
+            type: true,
+          },
+          is_active: true,
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        console.log(res.body);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.type).toBeTruthy();
+        expect(res.body.type.length).toBe(2);
+        expect(res.body.type.map(el => el.name && el.name.toLowerCase())).toContain('lce 2');
+        expect(res.body.type.map(el => el.table_name.toLowerCase())).toContain('lce');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("(searching) should get all data when page size is bigger than results number", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: 'product',
+        options: {
+          target: {
+            product: true,
+          }
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/20'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.product).toBeTruthy();
+        expect(res.body.product.length).toBe(11);
+        expect(res.body.product.map(el => el.name.toLowerCase())).toContain('product 6');
+        expect(res.body.product.map(el => el.name.toLowerCase())).toContain('product 16');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  //Suggesting
+  it('(suggestion) should get all expertise match phrase except expertise that specific user has', function (done) {
+    this.done = done;
+    sql.test.person_expertise.add({
+      pid: pId,
+      expertise_id: 1,
+    })
+      .then(res => {
+        return sql.test.person_expertise.add({
+          pid: pId,
+          expertise_id: 5,
+        })
+      })
+      .then(res => {
+        return rp({
+          method: 'post',
+          body: {
+            table: 'expertise',
+            phrase: 'نو',
+            fieldName: 'name_fa',
+            otherFieldName: 'name_en',
+            idColumn: 'expertise_id',
+            currentIds: [1, 5]
+          },
+          json: true,
+          uri: lib.helpers.apiTestURL('suggest'),
+          resolveWithFullResponse: true
+        });
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.length).toBe(1);
+        expect(res.body[0].name_fa).toBe('نوازنده');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("(suggestion) should get error when idColumn not defined in object", function (done) {
+    rp({
+      method: 'post',
+      body: {
+        table: 'expertise',
+        phrase: 'web',
+        fieldName: 'name_en',
+        otherFieldName: 'name_fa',
+      },
+      json: true,
+      uri: lib.helpers.apiTestURL('suggest'),
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        this.fail('Accept body without pid');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.noIdColumn.status);
+        expect(err.error).toBe(error.noIdColumn.message);
+        done();
+      });
+  });
+
+  it("(suggestion) should get all result when no phrase defined", function (done) {
+    this.done = done;
+    sql.test.person_expertise.add({
+      pid: pId,
+      expertise_id: 1,
+    })
+      .then(() => rp({
+        method: 'post',
+        body: {
+          table: 'expertise',
+          pid: pId,
+          fieldName: 'name_en',
+          otherFieldName: 'name_fa',
+          idColumn: 'expertise_id',
+          currentIds: [1],
+        },
+        json: true,
+        uri: lib.helpers.apiTestURL('suggest'),
+        resolveWithFullResponse: true
+      }))
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.length).toBe(4);
+        expect(res.body.map(el => el.name_en)).not.toContain('Javascript programmer');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
 });
