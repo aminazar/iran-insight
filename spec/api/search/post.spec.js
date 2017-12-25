@@ -116,7 +116,7 @@ describe('Search System', () => {
   }];
 
   let businessLCEList = [{
-    bid1: 1,
+    id1: 1,
     aid: 6,
     start_date: '2016-10-10',
     end_date: '2016-10-11',
@@ -124,8 +124,8 @@ describe('Search System', () => {
     lce_type_id: 1,
     is_confirmed: true,
   }, {
-    bid1: 2,
-    bid2: 3,
+    id1: 2,
+    id2: 3,
     start_date: '2017-08-10',
     description_fa: 'همایش خصوصی سلامت و خلاقیت',
     lce_type_id: 2,
@@ -522,7 +522,7 @@ describe('Search System', () => {
           target: {
             event: true,
           },
-          start_date: new Date(2010, 1, 1),
+          start_date: moment(new Date(2010, 10, 10)).format('YYYY-MM-DD'),
         }
       },
       uri: lib.helpers.apiTestURL('search/0/10'),
@@ -572,7 +572,8 @@ describe('Search System', () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("(searching) should search on lce", function (done) {
+  //Below test is ignored because lce not using search system now
+  xit("(searching) should search on lce", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -797,6 +798,7 @@ describe('Search System', () => {
             table: 'expertise',
             phrase: 'نو',
             fieldName: 'name_fa',
+            otherFieldName: 'name_en',
             idColumn: 'expertise_id',
             currentIds: [1, 5]
           },
@@ -821,6 +823,7 @@ describe('Search System', () => {
         table: 'expertise',
         phrase: 'web',
         fieldName: 'name_en',
+        otherFieldName: 'name_fa',
       },
       json: true,
       uri: lib.helpers.apiTestURL('suggest'),
@@ -849,6 +852,7 @@ describe('Search System', () => {
           table: 'expertise',
           pid: pId,
           fieldName: 'name_en',
+          otherFieldName: 'name_fa',
           idColumn: 'expertise_id',
           currentIds: [1],
         },
