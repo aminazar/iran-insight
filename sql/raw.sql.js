@@ -222,15 +222,15 @@ types.forEach(t => {
 ['business', 'organization'].forEach(t => {
 
   let tableName = `${t}_lce`;
-  let joinerName = t;
-  let joinerIdName = t === 'business' ? 'bid' : 'oid';
+  let possessorName = t;
+  let possessorIdName = t === 'business' ? 'bid' : 'oid';
 
   modExp[tableName] = {
     create: sql('lce/create.sql', {tableName}),
     drop: sql('lce/drop.sql', {tableName}),
     get: sql('lce/get.sql', {tableName}),
-    getLCEList: sql('lce/getLCEList.sql', {tableName, joinerName, joinerIdName}),
-    getLCEData: sql('lce/getLCEData.sql', {tableName, joinerName, joinerIdName})
+    getLCEList: sql('lce/getLCEList.sql', {tableName, possessorName, possessorIdName}),
+    getLCEDetail: sql('lce/getLCEDetail.sql', {tableName, possessorName, possessorIdName})
   }
 });
 

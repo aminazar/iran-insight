@@ -119,7 +119,7 @@ describe("Get Biz LCE API", () => {
             lceId3 = res.id;
             rp({
               method: 'get',
-              uri: lib.helpers.apiTestURL(`/lce/business/${biz1.bid}`),
+              uri: lib.helpers.apiTestURL(`/lce/business/${biz1.bid}/0/100`),
               jar: adminObj.jar,
               resolveWithFullResponse: true
             })
@@ -161,7 +161,7 @@ describe("Get Biz LCE API", () => {
             lceId2 = res.id;
             rp({
               method: 'get',
-              uri: lib.helpers.apiTestURL(`/lce/business/${biz1.bid}`),
+              uri: lib.helpers.apiTestURL(`/lce/business/${biz1.bid}/0/100`),
               jar: rep1.jar,
               resolveWithFullResponse: true
             })
@@ -200,7 +200,7 @@ describe("Get Biz LCE API", () => {
             lceId2 = res.id;
             rp({
               method: 'get',
-              uri: lib.helpers.apiTestURL(`/lce/business/${biz1.bid}`),
+              uri: lib.helpers.apiTestURL(`/lce/business/${biz1.bid}/0/100`),
               jar: rep2.jar,
               resolveWithFullResponse: true
             })
@@ -241,7 +241,7 @@ describe("Get Biz LCE API", () => {
             lceId2 = res.id;
             rp({
               method: 'get',
-              uri: lib.helpers.apiTestURL(`/lce/business/requested/${biz2.bid}`),
+              uri: lib.helpers.apiTestURL(`/lce/business/requested/${biz2.bid}/0/100`),
               jar: adminObj.jar,
               resolveWithFullResponse: true
             })

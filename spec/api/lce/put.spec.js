@@ -271,6 +271,31 @@ describe("Put Biz LCE API", () => {
       })
 
   });
+  it('expect Error when create lce with same id1 and id2', function (done) {
+    rp({
+      method: 'PUT',
+      body: {
+        id1: biz1.bid,
+        id2: biz1.bid,
+        start_date: moment.utc('2017-09-08 10:00:00').format(),
+        lce_type_id: lce_type_id1
+      },
+      json: true,
+      jar: adminObj.jar,
+      uri: lib.helpers.apiTestURL(`lce/business`),
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        this.fail('did not failed when id1 and id2 are equal');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.sameLCEIds.status);
+        expect(err.message).toContain(error.sameLCEIds.message);
+        done();
+      });
+
+  });
 
   it('business rep should create LCE with other biz (bid2) => is_confirmed must be false even it is set explicitly in body', function (done) {
 
