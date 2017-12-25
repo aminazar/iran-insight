@@ -12,8 +12,10 @@ from business_type
 where
     (${show_all} = true)
     or(
-           lower(name) like '%'||lower(${phrase})||'%'
-        or lower(name_fa) like '%'||lower(${phrase})||'%'
+        (${phrase} is not null and (
+                lower(name) like '%'||lower(${phrase})||'%'
+            or lower(name_fa) like '%'||lower(${phrase})||'%'
+        ) or ${phrase} is null)
     )
     and ((${is_active} is not null and active = ${is_active}) or (${is_active} is null)))
 union
@@ -27,8 +29,10 @@ from organization_type
 where
     (${show_all} = true)
     or(
-           lower(name) like '%'||lower(${phrase})||'%'
-        or lower(name_fa) like '%'||lower(${phrase})||'%'
+        (${phrase} is not null and (
+                lower(name) like '%'||lower(${phrase})||'%'
+            or lower(name_fa) like '%'||lower(${phrase})||'%'
+        ) or ${phrase} is null)
     )
     and ((${is_active} is not null and active = ${is_active}) or (${is_active} is null)))
 union
@@ -42,8 +46,10 @@ from lce_type
 where
     (${show_all} = true)
     or(
-           lower(name) like '%'||lower(${phrase})||'%'
-        or lower(name_fa) like '%'||lower(${phrase})||'%'
+       (${phrase} is not null and (
+                lower(name) like '%'||lower(${phrase})||'%'
+            or lower(name_fa) like '%'||lower(${phrase})||'%'
+        ) or ${phrase} is null)
     )
     and ((${is_active} is not null and active = ${is_active}) or (${is_active} is null)))
 union
@@ -57,8 +63,10 @@ from attendance_type
 where
     (${show_all} = true)
     or(
-           lower(name) like '%'||lower(${phrase})||'%'
-        or lower(name_fa) like '%'||lower(${phrase})||'%'
+        (${phrase} is not null and (
+                lower(name) like '%'||lower(${phrase})||'%'
+            or lower(name_fa) like '%'||lower(${phrase})||'%'
+        ) or ${phrase} is null)
     )
     and ((${is_active} is not null and active = ${is_active}) or (${is_active} is null)))
 union
@@ -72,8 +80,10 @@ from position_type
 where
     (${show_all} = true)
     or(
-           lower(name) like '%'||lower(${phrase})||'%'
-        or lower(name_fa) like '%'||lower(${phrase})||'%'
+        (${phrase} is not null and (
+                lower(name) like '%'||lower(${phrase})||'%'
+            or lower(name_fa) like '%'||lower(${phrase})||'%'
+        ) or ${phrase} is null)
     )
     and ((${is_active} is not null and active = ${is_active}) or (${is_active} is null)))) as t
 order by id DESC limit ${limit} offset ${offset}

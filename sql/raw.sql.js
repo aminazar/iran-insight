@@ -142,6 +142,7 @@ let modExp = {
     personUnattends: sql('attendance/person-unattend.sql'),
     bizUnattends: sql('attendance/biz-unattend.sql'),
     orgUnattends: sql('attendance/org-unattend.sql'),
+    getAttendees: sql('attendance/getAttendees.sql'),
   },
   product: {
     create: sql('product/create.sql'),
@@ -205,7 +206,9 @@ let extraSQLMap = {
   consultancy: `is_mentor boolean not null default false,
     subject varchar(100),
     subject_fa varchar(100),`,
-  lce_type: `is_killer boolean default false,`
+  lce_type: `is_killer boolean default false,`,
+  attendance_type: `is_vip boolean default false,
+    is_sponsor boolean default false,`,
 };
 // type tables
 
@@ -216,6 +219,7 @@ types.forEach(t => {
     drop: sql('type/drop.sql', {tableName: t}),
     getByName: sql('type/getByName.sql', {tableName: t}),
     getInfo: sql('type/getInfo.sql', {tableName: t}),
+    getByActive: sql('type/getByActive.sql', {tableName: t}),
   }
 });
 
