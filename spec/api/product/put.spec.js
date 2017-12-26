@@ -122,17 +122,14 @@ describe('PUT product API', () => {
         return rp({
           method: 'put',
           body: {
-            business_id: res.bid,
-            product: {
               name: 'Biscuit',
               name_fa: 'بیسکویت',
               description: 'Produce with milk powder',
               description_fa: 'تولید شده از پودر شیر',
               parent_product_id: null,
-            }
           },
           json: true,
-          uri: lib.helpers.apiTestURL('business/product'),
+          uri: lib.helpers.apiTestURL(`business/product/${res.bid}`),
           jar: adminObj.jar,
           resolveWithFullResponse: true,
         })
@@ -153,65 +150,28 @@ describe('PUT product API', () => {
       });
   })
 
-  xit("should throw an error if admin/representative enter a invalid start_time", function (done) {
-    this.done = done;
-    sql.test.business.add(biz_info[0])
-      .then((res) => {
-        return rp({
-          method: 'put',
-          body: {
-            business_id: res.bid,
-            product: {
-              name: 'Biscuit',
-              name_fa: 'بیسکویت',
-              description: 'Produce with milk powder',
-              description_fa: 'تولید شده از پودر شیر',
-              parent_product_id: null,
-              start_time: moment(new Date()).add(-7, 'day'),
-            }
-          },
-          json: true,
-          uri: lib.helpers.apiTestURL('business/product'),
-          jar: adminObj.jar,
-          resolveWithFullResponse: true,
-        })
-      })
-      .then(res => {
-        this.fail('start timee can not be lower than today.');
-        done();
-      })
-      .catch(err => {
-        expect(err.statusCode).toBe(error.notValildStartTime.status);
-        expect(err.error).toBe(error.notValildStartTime.message);
-        done();
-      });
-  })
-
   it("rep of business should be able to add business to her/his bisiness", done => {
     let biz_id = null;
     sql.test.business.add(biz_info[0])
       .then((res) => {
-        biz_id = res.bid;
+      biz_id = res.bid;
         return sql.test.association.add(assoc_info[0])
       })
-      .then((res) => {
+      .then(() => {
         return sql.test.membership.add(mem_info[0])
       })
       .then((res) => {
         return rp({
           method: 'put',
           body: {
-            business_id: biz_id,
-            product: {
               name: 'Biscuit',
               name_fa: 'بیسکویت',
               description: 'Produce with milk powder',
               description_fa: 'تولید شده از پودر شیر',
               parent_product_id: null,
-            }
           },
           json: true,
-          uri: lib.helpers.apiTestURL('business/product'),
+          uri: lib.helpers.apiTestURL(`business/product/${biz_id}`),
           jar: repObj.jar,
           resolveWithFullResponse: true,
         })
@@ -242,24 +202,21 @@ describe('PUT product API', () => {
         biz_id = res.bid;
         return sql.test.association.add(assoc_info[1])
       })
-      .then((res) => {
+      .then(() => {
         return sql.test.membership.add(mem_info[1])
       })
       .then((res) => {
         return rp({
           method: 'put',
           body: {
-            business_id: biz_id,
-            product: {
               name: 'Biscuit',
               name_fa: 'بیسکویت',
               description: 'Produce with milk powder',
               description_fa: 'تولید شده از پودر شیر',
               parent_product_id: null,
-            }
           },
           json: true,
-          uri: lib.helpers.apiTestURL('business/product'),
+          uri: lib.helpers.apiTestURL(`business/product/${biz_id}`),
           jar: normalUserObj.jar,
           resolveWithFullResponse: true,
         })
@@ -295,23 +252,20 @@ describe('PUT product API', () => {
         return sql.test.membership.add(mem_info[0])
       })
       .then((res) => {
-      return sql.test.membership.add(mem_info[2])
+      return sql.test.membership.add(mem_info[2]) //make normal user as rep of business 2
     })
       .then((res) => {
         return rp({
           method: 'put',
           body: {
-            business_id: biz_id1,
-            product: {
               name: 'Biscuit',
               name_fa: 'بیسکویت',
               description: 'Produce with milk powder',
               description_fa: 'تولید شده از پودر شیر',
               parent_product_id: null,
-            }
           },
           json: true,
-          uri: lib.helpers.apiTestURL('business/product'),
+          uri: lib.helpers.apiTestURL(`business/product/${biz_id1}`),
           jar: normalUserObj.jar,
           resolveWithFullResponse: true,
         })

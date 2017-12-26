@@ -111,7 +111,7 @@ let createNewBusiness_product = (biz_product_info) => {
 };
 
 
-describe('POST product API', () => {
+describe('DELETE product API', () => {
 
   beforeEach(done => {
     lib.dbHelpers.create()
@@ -145,17 +145,17 @@ describe('POST product API', () => {
       });
   })
 
-  it('admin should be able to update a product', done => {
+  it('admin should be able to delete a product', done => {
     createNewProduct(product_info[0])
-      .then(()=>{
+      .then(() => {
+        return sql.test.product.select()
+      })
+      .then((res) => {
+        expect(res.length).toBe(1);
+        expect(res[0].end_time).toBe(null);
         return rp({
-          method: 'post',
-          body: {
-            name: 'suitt',
-            name_fa: 'کتت و ششلوار',
-          },
-          uri: lib.helpers.apiTestURL('/business/product/1/1'),
-          json: true,
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`/business/product/1/1`),
           jar: adminObj.jar,
           resolveWithFullResponse: true,
         })
@@ -166,8 +166,7 @@ describe('POST product API', () => {
       })
       .then((res) => {
         expect(res.length).toBe(1);
-        expect(res[0].name).toBe('suitt');
-        expect(res[0].name_fa).toBe('کتت و ششلوار');
+        expect(res[0].end_time).not.toBe(null);
         done();
       })
       .catch(err => {
@@ -176,32 +175,7 @@ describe('POST product API', () => {
       });
   });
 
-  it('a normal user should not be able to update a product', function (done) {
-    createNewProduct(product_info[0])
-      .then((res) => {
-        return rp({
-          method: 'post',
-          body: {
-            name: 'suitt',
-          },
-          uri: lib.helpers.apiTestURL('/business/product/1/1'),
-          json: true,
-          jar: userObj.jar,
-          resolveWithFullResponse: true,
-        });
-      })
-      .then(res => {
-        this.fail('regular user can not update product, only admin can do this.');
-        done();
-      })
-      .catch(err => {
-        expect(err.statusCode).toBe(error.notBizRep.status);
-        expect(err.error).toBe(error.notBizRep.message);
-        done();
-      });
-  });
-
-  it('representative of a business should be able to update a product from her/his business', done => {
+  it('representative of a business should be able to delete a product from her/his business', done => {
     createNewProduct(product_info[0])
       .then((res) => {
         return sql.test.association.add(assoc_info[0])
@@ -211,13 +185,8 @@ describe('POST product API', () => {
       })
       .then(() => {
         return rp({
-          method: 'post',
-          body: {
-            name: 'suitt',
-            name_fa: 'کتت وشلوار',
-          },
-          uri: lib.helpers.apiTestURL('/business/product/1/1'),
-          json: true,
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`/business/product/1/1`),
           jar: repObj.jar,
           resolveWithFullResponse: true,
         })
@@ -228,8 +197,7 @@ describe('POST product API', () => {
       })
       .then((res) => {
         expect(res.length).toBe(1);
-        expect(res[0].name).toBe('suitt');
-        expect(res[0].name_fa).toBe('کتت وشلوار');
+        expect(res[0].end_time).not.toBe(null);
         done();
       })
       .catch(err => {
@@ -237,6 +205,34 @@ describe('POST product API', () => {
         done();
       });
   });
+
+  it('normal user should not be able to delete a product', function (done) {
+    this.done = done;
+    createNewProduct(product_info[0])
+      .then((res) => {
+        return sql.test.association.add(assoc_info[1])
+      })
+      .then((res) => {
+        return sql.test.membership.add(mem_info[1])
+      })
+      .then(() => {
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`/business/product/1/1`),
+          jar: userObj.jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        this.fail('normal user can not add product to business.');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.notBizRep.status);
+        expect(err.error).toBe(error.notBizRep.message);
+        done();
+      });
+  })
 })
 
 
