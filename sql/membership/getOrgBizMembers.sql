@@ -26,7 +26,7 @@ from
     on
     first.aid = membership.assoc_id
     where
-    (first.bid = ${bid} and ${bid} is not null and ${oid} is null) or (first.oid = ${oid} and ${oid} is not null and $(bid) is null)
+    (first.bid = ${bid} and ${bid} is not null and ${oid} is null) or (first.oid = ${oid} and ${oid} is not null and ${bid} is null)
     ) as second
 left outer join
 position_type

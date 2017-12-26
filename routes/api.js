@@ -123,6 +123,7 @@ router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', 
 
 // Business API
 router.get('/business/one/:bid', apiResponse('Business', 'getOne', false, ['params']));
+router.get('/business/oneAll/:bid', apiResponse('Business', 'getOneAll', false, ['params']));
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
 router.put('/product', apiResponse('Business', 'addProduct', true, ['body']));
 router.post('/business/product', apiResponse('Business', 'addBusinessProduct', false, ['body', 'user.pid']));
@@ -130,6 +131,7 @@ router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
 router.get('/business/product/all/:bid', apiResponse('Business', 'getAllBusinessProducts', false, ['params.bid']));
 router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
 router.delete('/business/product', apiResponse('Business', 'removeBizOfProduct', false, ['body', 'user.pid']));
+router.delete('/business/one/:bid', apiResponse('Business', 'delete', true, ['params.bid']));
 
 // Organization API
 router.get('/organization', apiResponse('Organization', 'getAll', false));
@@ -141,8 +143,9 @@ router.post('/organization/profile', apiResponse('Organization', 'setProfile', f
 // LCE API
 router.put('/lce/:type', apiResponse('LCE', 'setLCE', false, ['params.type', 'user.pid', 'body']));
 router.post('/lce/:type/confirm', apiResponse('LCE', 'confirmLCE', false, ['params.type', 'user.pid', 'body']));
-router.get('/lce/:type/:id', apiResponse('LCE', 'getLCE', false, ['params.type', 'user.pid', 'params.id']));
-router.get('/lce/:type/requested/:id', apiResponse('LCE', 'getRequestedLCE', false, ['params.type', 'user.pid', 'params.id']));
+router.get('/lce/:type/:id/:lceId', apiResponse('LCE', 'getLCEDetail', false, ['params.type', 'user.pid', 'params.id', 'params.lceId']));
+router.get('/lce/:type/:id/:offset/:limit', apiResponse('LCE', 'getLCEList', false, ['params.type', 'user.pid', 'params.id', 'params.offset' , 'params.limit']));
+router.get('/lce/:type/requested/:id/:offset/:limit', apiResponse('LCE', 'getRequestedLCE', false, ['params.type', 'user.pid', 'params.id','params.offset' , 'params.limit']));
 router.delete('/lce/:type/:id', apiResponse('LCE', 'deleteLCE', false, ['params.type', 'user', 'params.id']));
 
 
