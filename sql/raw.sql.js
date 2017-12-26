@@ -46,6 +46,7 @@ let modExp = {
     getPersonExpertise: sql('person/getPersonExpertise.sql'),
     deleteExpertiseById: sql('person/deleteExpertiseById.sql'),
     getAdmins: sql('person/getAdmins.sql'),
+    updatePass: sql('person/updatePass.sql'),
 
   },
   partnership: {
