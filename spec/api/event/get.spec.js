@@ -40,8 +40,8 @@ describe('GET Event API', () => {
         let body = JSON.parse(res.body);
         expect(body.eid).toBe(eid);
         expect(body.organizer_pid).toBe(pid);
-        expect(body.organizer_bid).toBeUndefined();
-        expect(body.organizer_oid).toBeUndefined();
+        expect(body.organizer_bid).toBeNull();
+        expect(body.organizer_oid).toBeNull();
         expect(body.title).toBe(eventData.title);
         expect(body.title_fa).toBe(eventData.title_fa);
         expect(body.start_date).toBe(eventData.start_date);
@@ -66,10 +66,11 @@ describe('GET Event API', () => {
       .then(res => {
         expect(res.statusCode).toBe(200);
         let body = JSON.parse(res.body);
+        console.log(body);
         expect(body.eid).toBe(eid);
         expect(body.organizer_pid).toBe(pid);
-        expect(body.organizer_bid).toBeUndefined();
-        expect(body.organizer_oid).toBeUndefined();
+        expect(body.organizer_bid).toBeNull();
+        expect(body.organizer_oid).toBeNull();
         expect(body.title).toBe(eventData.title);
         expect(body.title_fa).toBe(eventData.title_fa);
         expect(body.start_date).toBe(eventData.start_date);
