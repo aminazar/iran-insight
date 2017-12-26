@@ -130,8 +130,8 @@ router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', fal
 
 // Product API
 router.put('/business/product', apiResponse('Business', 'addBusinessProduct', false, ['body', 'user.pid']));
-router.post('/business/product/:business_id/:product_id', apiResponse('Business', 'removeBizOfProduct', false, ['params.business_id','params.product_id', 'user.pid']));
-// router.post('/update-product/:product_id', apiResponse('Business', 'updateProduct', true, ['params.product_id','body']));
+router.post('/business/remove-product/:business_id/:product_id', apiResponse('Business', 'removeBizOfProduct', false, ['params.business_id','params.product_id', 'user.pid']));
+router.post('/update-product/:business_id/:product_id', apiResponse('Business', 'updateProduct', false, ['params.business_id','params.product_id','body', 'user.pid']));
 
 // Organization API
 router.get('/organization', apiResponse('Organization', 'getAll', false));

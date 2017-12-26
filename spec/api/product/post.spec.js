@@ -155,7 +155,7 @@ describe('POST product API', () => {
         expect(res[0].end_time).toBe(null);
         return rp({
           method: 'POST',
-          uri: lib.helpers.apiTestURL(`/business/product/1/1`),
+          uri: lib.helpers.apiTestURL(`/business/remove-product/1/1`),
           jar: adminObj.jar,
           resolveWithFullResponse: true,
         })
@@ -186,7 +186,7 @@ describe('POST product API', () => {
       .then(() => {
         return rp({
           method: 'POST',
-          uri: lib.helpers.apiTestURL(`/business/product/1/1`),
+          uri: lib.helpers.apiTestURL(`/business/remove-product/1/1`),
           jar: repObj.jar,
           resolveWithFullResponse: true,
         })
@@ -218,8 +218,8 @@ describe('POST product API', () => {
       .then(() => {
         return rp({
           method: 'POST',
-          uri: lib.helpers.apiTestURL(`/business/product/1/1`),
-          jar: repObj.jar,
+          uri: lib.helpers.apiTestURL(`/business/remove-product/1/1`),
+          jar: userObj.jar,
           resolveWithFullResponse: true,
         })
       })
@@ -234,57 +234,98 @@ describe('POST product API', () => {
       });
   })
 
-  //
-  // it('admin should be able to delete a product(from product table and from bussiness_product table too)', done => {
-  //   createNewBusiness(biz_info[0])
-  //     .then((res) => {
-  //       return createNewBusiness_product(biz_product_info[0])
-  //     })
-  //     .then((res) => {
-  //       return createNewBusiness_product(biz_product_info[1])
-  //     })
-  //     .then((res) => {
-  //       return rp({
-  //         method: 'DELETE',
-  //         uri: lib.helpers.apiTestURL(`delete-product/1`),
-  //         jar: adminObj.jar,
-  //         resolveWithFullResponse: true,
-  //       })
-  //     })
-  //     .then((res) => {
-  //       expect(res.statusCode).toBe(200);
-  //       return sql.test.product.getAll()
-  //     })
-  //     .then((res) => {
-  //       expect(res.length).toBe(1);
-  //       return sql.test.business_product.select()
-  //     })
-  //     .then((res) => {
-  //       expect(res.length).toBe(1);
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       console.log(err.message);
-  //       done();
-  //     });
-  // })
-  //
-  // it('a normal user should not be able to delete a product', function (done) {
-  //   rp({
-  //     method: 'DELETE',
-  //     uri: lib.helpers.apiTestURL(`delete-product/1`),
-  //     jar: userObj.jar,
-  //     resolveWithFullResponse: true,
-  //   })
-  //     .then(res => {
-  //       this.fail('regular user can not delete product, only admin can do this.');
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       expect(err.statusCode).toBe(error.adminOnly.status);
-  //       expect(err.error).toBe(error.adminOnly.message);
-  //       done();
-  //     });
-  // })
+  it('admin should be able to update a product', done => {
+    createNewProduct(product_info[0])
+      .then(()=>{
+        return rp({
+          method: 'post',
+          body: {
+            name: 'suitt',
+            name_fa: 'کتت و ششلوار',
+          },
+          uri: lib.helpers.apiTestURL('update-product/1/1'),
+          json: true,
+          jar: adminObj.jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then((res) => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.product.select()
+      })
+      .then((res) => {
+        expect(res.length).toBe(1);
+        expect(res[0].name).toBe('suitt');
+        expect(res[0].name_fa).toBe('کتت و ششلوار');
+        done();
+      })
+      .catch(err => {
+        console.log(err.message);
+        done();
+      });
+  });
 
+  it('a normal user should not be able to update a product', function (done) {
+    createNewProduct(product_info[0])
+      .then((res) => {
+        return rp({
+          method: 'post',
+          body: {
+            name: 'suitt',
+          },
+          uri: lib.helpers.apiTestURL('update-product/1/1'),
+          json: true,
+          jar: userObj.jar,
+          resolveWithFullResponse: true,
+        });
+      })
+      .then(res => {
+        this.fail('regular user can not update product, only admin can do this.');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.notBizRep.status);
+        expect(err.error).toBe(error.notBizRep.message);
+        done();
+      });
+  })
+
+  it('representative of a business should be able to update a product from her/his business', done => {
+    createNewProduct(product_info[0])
+      .then((res) => {
+        return sql.test.association.add(assoc_info[0])
+      })
+      .then((res) => {
+        return sql.test.membership.add(mem_info[0])
+      })
+      .then(() => {
+        return rp({
+          method: 'post',
+          body: {
+            name: 'suitt',
+            name_fa: 'کتت وشلوار',
+          },
+          uri: lib.helpers.apiTestURL('update-product/1/1'),
+          json: true,
+          jar: repObj.jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then((res) => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.product.select()
+      })
+      .then((res) => {
+        expect(res.length).toBe(1);
+        expect(res[0].name).toBe('suitt');
+        expect(res[0].name_fa).toBe('کتت وشلوار');
+        done();
+      })
+      .catch(err => {
+        console.log(err.message);
+        done();
+      });
+  })
 })
+
+
