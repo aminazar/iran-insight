@@ -73,7 +73,7 @@ describe("GET Business API", () => {
       .then(res => {
         bid = res.bid;
         return rp({
-          uri: lib.helpers.apiTestURL('business/oneAll/' + bid),
+          uri: lib.helpers.apiTestURL('business/one/' + bid),
           resolveWithFullResponse: true,
         })
       })
@@ -127,7 +127,7 @@ describe("GET Business API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("any logged in user should be able to list all products of specific business", function (done) {
+  xit("any logged in user should be able to list all products of specific business", function (done) {
     this.done = done;
 
     sql.test.business.add(biz)
@@ -186,7 +186,7 @@ describe("GET Business API", () => {
       });
   });
 
-  it("get specific product", function (done) {
+  xit("get specific product", function (done) {
     this.done = done;
 
     sql.test.business.add(biz)
@@ -215,7 +215,7 @@ describe("GET Business API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should get all products for specific business", function (done) {
+  xit("should get all products for specific business", function (done) {
     this.done = done;
     let business_id = null;
 

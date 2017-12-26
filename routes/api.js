@@ -50,7 +50,7 @@ function apiResponse(className, functionName, adminOnly = false, reqFuncs = []) 
           .json(data);
       })
       .catch(err => {
-        console.log(`${className}/${functionName}: `, err.message);
+        console.log(`${className}/${functionName}: `, req.app.get('env') === 'development' ? err : err.message);
         res.status(err.status || 500)
           .send(err.message || err);
       });
