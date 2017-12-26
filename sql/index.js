@@ -14,6 +14,7 @@ let usingFunction = query => {
   let res = {
     get: 'any',
     uniqueGet: 'one',
+    getOne: 'one',
     checkNone: 'none',
     test: 'one',
     add: 'one',
