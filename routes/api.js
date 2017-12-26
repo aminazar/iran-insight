@@ -123,16 +123,15 @@ router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', 
 // Business API
 router.get('/business/one/:bid', apiResponse('Business', 'getOne', false, ['params']));
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
-router.put('/product', apiResponse('Business', 'addProduct', true, ['body']));
-router.post('/business/product', apiResponse('Business', 'addBusinessProduct', false, ['body', 'user.pid']));
 router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
 router.get('/business/product/all/:bid', apiResponse('Business', 'getAllBusinessProducts', false, ['params.bid']));
 router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
-router.delete('/business/product', apiResponse('Business', 'removeBizOfProduct', false, ['body', 'user.pid']));
+
 
 // Product API
-router.post('/update-product/:product_id', apiResponse('Business', 'updateProduct', true, ['params.product_id','body']));
-router.delete('/delete-product/:product_id', apiResponse('Business', 'deleteProduct', true, ['params.product_id']));
+router.put('/business/product', apiResponse('Business', 'addBusinessProduct', false, ['body', 'user.pid']));
+router.post('/business/product/:business_id/:product_id', apiResponse('Business', 'removeBizOfProduct', false, ['params.business_id','params.product_id', 'user.pid']));
+// router.post('/update-product/:product_id', apiResponse('Business', 'updateProduct', true, ['params.product_id','body']));
 
 // Organization API
 router.get('/organization', apiResponse('Organization', 'getAll', false));
