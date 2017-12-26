@@ -778,4 +778,58 @@ describe("POST user API", () => {
         done();
       });
   });
+
+  it("Any user should be able to change password", function (done) {
+    this.done = done;
+    sql.test.person_activation_link.add({
+      pid: normalUserObj.pid,
+      link: 'dsfAS234@$$ASDFGaqsd789asASRe',
+    })
+      .then(res => {
+        return rp({
+          method: 'post',
+          body: {
+            username: 'ali@mail.com',
+            password: 'na987ma',
+          },
+          uri: lib.helpers.apiTestURL('user/auth/change/password/dsfAS234@$$ASDFGaqsd789asASRe'),
+          json: true,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("user cannot change password if link and username are not compatible", function (done) {
+    this.done = done;
+    sql.test.person_activation_link.add({
+      pid: normalUserObj.pid,
+      link: 'dsfAS234@$$ASDFGaqsd789asASRe',
+    })
+      .then(res => {
+        return rp({
+          method: 'post',
+          body: {
+            username: 'ali@mail.com',
+            password: 'na987ma',
+          },
+          uri: lib.helpers.apiTestURL('user/auth/change/password/dsfAS234@$$ASDFGaqsd789ae'),
+          json: true,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        this.fail('User can change password when link not valid');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.expiredLink.status);
+        expect(err.error).toBe(error.expiredLink.message);
+        done();
+      });
+  });
 });
