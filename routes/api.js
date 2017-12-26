@@ -81,6 +81,7 @@ router.get('/login/linkedin/callback', passport.authenticate('linkedin', {}), ap
 router.put('/user/register', apiResponse('Person', 'registration', false, ['body']));
 router.get('/user/activate/link/:link', apiResponse('Person', 'checkActiveLink', false, ['params.link']));
 router.post('/user/auth/local/:link', apiResponse('Person', 'completeAuth', false, ['params.link', 'body']));
+router.post('/user/auth/change/password/:link', apiResponse('Person', 'changePassword', false, ['params.link', 'body']));
 router.post('/user/auth/link', apiResponse('Person', 'sendActivationMail', false, ['body.email', 'body.is_forgot_mail']));
 router.post('/membership/introducing/rep', apiResponse('Person', 'introduceAsRep', false, ['body', 'user']));
 
@@ -142,8 +143,9 @@ router.post('/organization/profile', apiResponse('Organization', 'setProfile', f
 // LCE API
 router.put('/lce/:type', apiResponse('LCE', 'setLCE', false, ['params.type', 'user.pid', 'body']));
 router.post('/lce/:type/confirm', apiResponse('LCE', 'confirmLCE', false, ['params.type', 'user.pid', 'body']));
-router.get('/lce/:type/:id', apiResponse('LCE', 'getLCE', false, ['params.type', 'user.pid', 'params.id']));
-router.get('/lce/:type/requested/:id', apiResponse('LCE', 'getRequestedLCE', false, ['params.type', 'user.pid', 'params.id']));
+router.get('/lce/:type/:id/:lceId', apiResponse('LCE', 'getLCEDetail', false, ['params.type', 'user.pid', 'params.id', 'params.lceId']));
+router.get('/lce/:type/:id/:offset/:limit', apiResponse('LCE', 'getLCEList', false, ['params.type', 'user.pid', 'params.id', 'params.offset' , 'params.limit']));
+router.get('/lce/:type/requested/:id/:offset/:limit', apiResponse('LCE', 'getRequestedLCE', false, ['params.type', 'user.pid', 'params.id','params.offset' , 'params.limit']));
 router.delete('/lce/:type/:id', apiResponse('LCE', 'deleteLCE', false, ['params.type', 'user', 'params.id']));
 
 
@@ -184,6 +186,11 @@ router.put('/bizAttends/:eid/:bid', apiResponse('Attendance', 'bizAttends', fals
 router.delete('/bizAttends/:eid/:bid', apiResponse('Attendance', 'bizUnattends', false, ['params.eid', 'params.bid', 'user.pid']));
 router.put('/orgAttends/:eid/:oid', apiResponse('Attendance', 'orgAttends', false, ['params.eid', 'body', 'params.oid', 'user.pid']));
 router.delete('/orgAttends/:eid/:oid', apiResponse('Attendance', 'orgUnattends', false, ['params.eid', 'params.oid', 'user.pid']));
+router.get('/attendee/:eid', apiResponse('Attendance', 'getAttendees', false, ['params.eid']));
+router.delete('/attendance/:id', apiResponse('Attendance', 'deleteAttendance', true, ['params.id']));
+router.put('/attends/:eid', apiResponse('Attendance', 'attends', true, ['params.eid', 'body', 'user']));
+router.post('/attendee/:id', apiResponse('Attendance', 'updateAttendee', false, ['params.id', 'body']));
+router.get('/attendance/types', apiResponse('Attendance', 'getTypes', false, []));
 
 // Joiners API
 router.get('/joiners/org/:oid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
