@@ -142,6 +142,7 @@ let modExp = {
     personUnattends: sql('attendance/person-unattend.sql'),
     bizUnattends: sql('attendance/biz-unattend.sql'),
     orgUnattends: sql('attendance/org-unattend.sql'),
+    getAttendees: sql('attendance/getAttendees.sql'),
   },
   product: {
     create: sql('product/create.sql'),
@@ -207,7 +208,9 @@ let extraSQLMap = {
   consultancy: `is_mentor boolean not null default false,
     subject varchar(100),
     subject_fa varchar(100),`,
-  lce_type: `is_killer boolean default false,`
+  lce_type: `is_killer boolean default false,`,
+  attendance_type: `is_vip boolean default false,
+    is_sponsor boolean default false,`,
 };
 // type tables
 
@@ -218,21 +221,22 @@ types.forEach(t => {
     drop: sql('type/drop.sql', {tableName: t}),
     getByName: sql('type/getByName.sql', {tableName: t}),
     getInfo: sql('type/getInfo.sql', {tableName: t}),
+    getByActive: sql('type/getByActive.sql', {tableName: t}),
   }
 });
 
 ['business', 'organization'].forEach(t => {
 
   let tableName = `${t}_lce`;
-  let joinerName = t;
-  let joinerIdName = t === 'business' ? 'bid' : 'oid';
+  let possessorName = t;
+  let possessorIdName = t === 'business' ? 'bid' : 'oid';
 
   modExp[tableName] = {
     create: sql('lce/create.sql', {tableName}),
     drop: sql('lce/drop.sql', {tableName}),
     get: sql('lce/get.sql', {tableName}),
-    getLCEList: sql('lce/getLCEList.sql', {tableName, joinerName, joinerIdName}),
-    getLCEData: sql('lce/getLCEData.sql', {tableName, joinerName, joinerIdName})
+    getLCEList: sql('lce/getLCEList.sql', {tableName, possessorName, possessorIdName}),
+    getLCEDetail: sql('lce/getLCEDetail.sql', {tableName, possessorName, possessorIdName})
   }
 });
 
