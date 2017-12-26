@@ -8,28 +8,29 @@ let userIO;
 let _io;
 
 let setup = (io, socketSessionParser) => {
-  _io = io;
-  redis.redisClientInit();
-  //Initialize defined namespaces
-  userIO = _io.of('/user');
-  let userConnection = userIO.on('connection', socket => {
-
-    //Listen on specific event
-    socket.on('bmsg', data => {
-      socket.broadcast.emit('brcv', data);
-    });
-  });
-  userConnection.use(socketSessionParser);
-
-  getAllNamespace()
-    .then(res => {
-      for(let ns of res) {
-        _io.of(ns).on('connection', socket => {
-          //Write any code must execute after any clients connected to specific namespace
-        });
-      }
-    })
-    .catch(err => console.log('Error: when fetch all namespaces. ', err));
+  // TODO: enable this with correct socket IO
+  //_io = io;
+  // redis.redisClientInit();
+  // //Initialize defined namespaces
+  // userIO = _io.of('/user');
+  // let userConnection = userIO.on('connection', socket => {
+  //
+  //   //Listen on specific event
+  //   socket.on('bmsg', data => {
+  //     socket.broadcast.emit('brcv', data);
+  //   });
+  // });
+  // userConnection.use(socketSessionParser);
+  //
+  // getAllNamespace()
+  //   .then(res => {
+  //     for(let ns of res) {
+  //       _io.of(ns).on('connection', socket => {
+  //         //Write any code must execute after any clients connected to specific namespace
+  //       });
+  //     }
+  //   })
+  //   .catch(err => console.log('Error: when fetch all namespaces. ', err));
 
   //Define other routes (namespace for socket)
 };
@@ -76,8 +77,10 @@ let getUserIO = () => {
 
 module.exports = {
   setup,
-  getUserIO,
-  saveNamespace,
-  isNamespaceExist,
-  deleteNamespace,
+
+  // TODO: enable these with socket
+  // getUserIO,
+  // saveNamespace,
+  // isNamespaceExist,
+  // deleteNamespace,
 };
