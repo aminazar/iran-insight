@@ -123,6 +123,7 @@ router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', 
 
 // Business API
 router.get('/business/one/:bid', apiResponse('Business', 'getOne', false, ['params']));
+router.get('/business/oneAll/:bid', apiResponse('Business', 'getOneAll', false, ['params']));
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
 router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
 router.get('/business/product/all/:bid', apiResponse('Business', 'getAllBusinessProducts', false, ['params.bid']));
@@ -133,6 +134,7 @@ router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', fal
 router.put('/business/product/:business_id', apiResponse('Business', 'addBusinessProduct', false, ['params.business_id','body', 'user.pid']));
 router.delete('/business/product/:business_id/:product_id', apiResponse('Business', 'removeBizOfProduct', false, ['params.business_id','params.product_id', 'user.pid']));
 router.post('/business/product/:business_id/:product_id', apiResponse('Business', 'updateProduct', false, ['params.business_id','params.product_id','body', 'user.pid']));
+
 
 // Organization API
 router.get('/organization', apiResponse('Organization', 'getAll', false));
