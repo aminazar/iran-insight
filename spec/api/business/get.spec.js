@@ -73,12 +73,13 @@ describe("GET Business API", () => {
       .then(res => {
         bid = res.bid;
         return rp({
-          uri: lib.helpers.apiTestURL('business/oneAll/' + bid),
+          uri: lib.helpers.apiTestURL('business/one/' + bid),
           resolveWithFullResponse: true,
         })
       })
       .then(res => {
         expect(res.statusCode).toBe(200);
+        console.log('here',res.body);
         let body = JSON.parse(res.body);
         expect(body).toBeTruthy();
         if (body) {
