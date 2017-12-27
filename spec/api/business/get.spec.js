@@ -79,6 +79,7 @@ describe("GET Business API", () => {
       })
       .then(res => {
         expect(res.statusCode).toBe(200);
+        console.log('here',res.body);
         let body = JSON.parse(res.body);
         expect(body).toBeTruthy();
         if (body) {
@@ -127,7 +128,7 @@ describe("GET Business API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  xit("any logged in user should be able to list all products of specific business", function (done) {
+  it("any logged in user should be able to list all products of specific business", function (done) {
     this.done = done;
 
     sql.test.business.add(biz)
@@ -186,7 +187,7 @@ describe("GET Business API", () => {
       });
   });
 
-  xit("get specific product", function (done) {
+  it("get specific product", function (done) {
     this.done = done;
 
     sql.test.business.add(biz)
@@ -215,7 +216,7 @@ describe("GET Business API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  xit("should get all products for specific business", function (done) {
+  it("should get all products for specific business", function (done) {
     this.done = done;
     let business_id = null;
 

@@ -151,6 +151,8 @@ let modExp = {
     getById: sql('product/getById.sql'),
     getAll: sql('product/getAll.sql'),
     getByProductId: sql('product/getByProductId.sql'),
+    getByBiz: sql('product/getByBiz.sql'),
+    getOne: sql('product/getOne.sql'),
   },
   business_product: {
     create: sql('business_product/create.sql'),
