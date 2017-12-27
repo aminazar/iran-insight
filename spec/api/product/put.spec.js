@@ -114,7 +114,7 @@ describe('PUT product API', () => {
         console.log(err);
         done();
       });
-  })
+  });
 
   it("admin shold be able to add a product to a business", done => {
     sql.test.business.add(biz_info[0])
