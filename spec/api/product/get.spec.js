@@ -2,166 +2,110 @@ const rp = require('request-promise');
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
+const env = require('../../../env');
 
-describe("PUT Business API", () => {
-  let adminObj = {
-    pid: null,
-    jar: null,
-  };
+describe("GET Business API", () => {
   let normalUserObj = {
     pid: null,
     jar: null,
   };
 
+  let productDetails = [
+    {
+      name: 'Mobile app developing framework',
+      name_fa: 'چارچوب ساخت برنامه موبایل',
+    },
+    {
+      name: 'Choocolate Maker',
+      name_fa: 'شکلات ساز',
+    },
+    {
+      name: 'Online food ordering',
+      name_fa: 'سفارش آنلاین غذا',
+    }
+  ];
+
+  let biz = {
+    name: 'BIZ',
+    name_fa: 'کسب و کار',
+  };
+  let bid;
   beforeEach(done => {
     lib.dbHelpers.create()
-      .then(() => lib.dbHelpers.addAndLoginPerson('admin'))
-      .then(res => {
-        adminObj.pid = res.pid;
-        adminObj.jar = res.rpJar;
-        return lib.dbHelpers.addAdmin(adminObj.pid);
-      })
-      .then(res => {
-        return lib.dbHelpers.addAndLoginPerson('ali');
-      })
+      .then(() => lib.dbHelpers.addAndLoginPerson('ali'))
       .then(res => {
         normalUserObj.pid = res.pid;
         normalUserObj.jar = res.rpJar;
-        done();
+
+        return sql.test.business.add(biz);
       })
+      .then(res => {
+        bid = res.bid;
+
+        let promiseList = [];
+        env.testDb.task(t => {
+          productDetails.forEach(el => {
+            el.business_id = bid;
+            promiseList.push(sql.test.product.add(el,t));
+          });
+          return Promise.all(promiseList);
+        })
+      })
+      .then(done)
       .catch(err => {
         console.log(err);
         done();
       });
   });
 
-  it("admin should add product", function (done) {
+  it("get specific product", function (done) {
     this.done = done;
-    rp({
-      method: 'put',
-      body: {
-        name: 'Biscuit',
-        name_fa: 'بیسکویت',
-        description: 'Produce with milk powder',
-        description_fa: 'تولید شده از پودر شیر',
-        parent_product_id: null,
-      },
-      json: true,
-      uri: lib.helpers.apiTestURL('product'),
-      jar: adminObj.jar,
-      resolveWithFullResponse: true,
-    })
-      .then(res => {
-        expect(res.statusCode).toBe(200);
-        return sql.test.product.getById({product_id: res.body.product_id});
-      })
-      .then(res => {
-        expect(res.length).toBe(1);
-        expect(res[0].name).toBe('Biscuit');
-        expect(res[0].parent_product_id).toBe(null);
-        done();
-      })
-      .catch(lib.helpers.errorHandler.bind(this));
-  });
 
-  it("admin should add two products", function (done) {
-    this.done = done;
-    let productIds = [];
-    sql.test.product.add({
-      name: 'Milk powder',
-      name_fa: 'پودر شیر',
-    })
-      .then(res => {
-        productIds.push(res.product_id);
-        return rp({
-          method: 'put',
-          body: [{
-            name: 'Biscuit',
-            name_fa: 'بیسکویت',
-            description: 'Produce with milk powder',
-            description_fa: 'تولید شده از پودر شیر',
-            parent_product_id: res.product_id
-          }, {
-            name: 'gumdrop',
-            name_fa: 'پاستیل'
-          }],
-          uri: lib.helpers.apiTestURL('product'),
-          jar: adminObj.jar,
-          json: true,
-          resolveWithFullResponse: true,
-        });
-      })
-      .then(res => {
-        expect(res.statusCode).toBe(200);
-        res.body.forEach(el => productIds.push(el.product_id));
-        return sql.test.product.getById({product_id: productIds[1]});
-      })
-      .then(res => {
-        expect(res.length).toBe(1);
-        expect(res[0].name).toBe('Biscuit');
-        expect(res[0].parent_product_id).toBe(productIds[0]);
-        return sql.test.product.getById({product_id: productIds[2]});
-      })
-      .then(res => {
-        expect(res.length).toBe(1);
-        expect(res[0].name).toBe('gumdrop');
-        expect(res[0].description).toBe(null);
-        expect(res[0].parent_product_id).toBe(null);
-        done();
-      })
-      .catch(lib.helpers.errorHandler.bind(this));
-  });
-
-  it("other users (not admins) cannot add product", function (done) {
-    this.done = done;
     rp({
-      method: 'put',
-      body: {
-        name: 'Biscuit',
-        name_fa: 'بیسکویت',
-        description: 'Produce with milk powder',
-        description_fa: 'تولید شده از پودر شیر',
-        parent_product_id: null,
-      },
-      json: true,
-      uri: lib.helpers.apiTestURL('product'),
+      method: 'get',
+      uri: lib.helpers.apiTestURL(`business/product/one/${bid}`),
       jar: normalUserObj.jar,
       resolveWithFullResponse: true,
     })
       .then(res => {
-        this.fail('Other users (not admins) add a product');
-        done();
-      })
-      .catch(err => {
-        expect(err.statusCode).toBe(error.adminOnly.status);
-        expect(err.error).toBe(error.adminOnly.message);
-        done();
-      });
-  });
-
-  it("user should follow specific business", function (done) {
-    this.done = done;
-    let businessId = null;
-    lib.dbHelpers.addPerson('rep')
-      .then(res => lib.dbHelpers.addBusinessWithRep(res))
-      .then(res => {
-        businessId = res.bid;
-        return rp({
-          method: 'put',
-          uri: lib.helpers.apiTestURL('follow/business/' + res.bid),
-          jar: normalUserObj.jar,
-          resolveWithFullResponse: true,
-        })
-      })
-      .then(res => {
+        let data = JSON.parse(res.body);
+        console.log(data);
         expect(res.statusCode).toBe(200);
-        return sql.test.subscription.getBizSubscribers({bid: businessId});
-      })
-      .then(res => {
-        expect(res.length).toBe(1);
-        expect(res[0].pid).toBe(normalUserObj.pid);
+        expect(data.name).toBe('Mobile app developing framework');
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
   });
-});
+
+ xit("should get all products for specific business", function (done) {
+    this.done = done;
+    let business_id = null;
+
+    sql.test.business.add(biz)
+      .then(res => {
+        business_id = res.bid;
+        let promiseList = [];
+        productDetails.forEach(el => {
+          promiseList.push(addProduct(el, res.bid));
+        });
+
+        return Promise.all(promiseList);
+      })
+      .then(res => {
+        return rp({
+          method: 'get',
+          uri: lib.helpers.apiTestURL(`business/product/all/${business_id}`),
+          jar: normalUserObj.jar,
+          resolveWithFullResponse: true,
+        });
+      })
+      .then(res => {
+        let data = JSON.parse(res.body);
+        expect(res.statusCode).toBe(200);
+        expect(data.length).toBe(3);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+})
+;

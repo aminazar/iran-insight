@@ -134,8 +134,8 @@ router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', fal
 router.put('/business/product/:business_id', apiResponse('Business', 'addBusinessProduct', false, ['params.business_id','body', 'user.pid']));
 router.delete('/business/product/:business_id/:product_id', apiResponse('Business', 'removeBizOfProduct', false, ['params.business_id','params.product_id', 'user.pid']));
 router.post('/business/product/:business_id/:product_id', apiResponse('Business', 'updateProduct', false, ['params.business_id','params.product_id','body', 'user.pid']));
-router.get('business/product/all/:business_id', apiResponse('Business', 'allProducts', ['params']));
-router.get('business/product/one/:business_id', apiResponse('Business', 'oneProduct', ['params']));
+router.get('/business/product/all/:business_id', apiResponse('Business', 'allProducts', false, ['params']));
+router.get('/business/product/one/:business_id', apiResponse('Business', 'oneProduct', false, ['params']));
 
 
 // Organization API

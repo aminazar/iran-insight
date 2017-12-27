@@ -70,15 +70,15 @@ chooseDb = (tableName, isTest) => tableName === 'db' ? env.initDb : (isTest ? en
 
 genericInsert = (tableName, idColumn, isTest) => {
   let db = chooseDb(tableName, isTest);
-  return (data) => {
-    return db.one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn);
+  return (data, task) => {
+    return (task ? task : db).one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn);
   }
 };
 
 genericUpdate = (tableName, idColumn, isTest) => {
   let db = chooseDb(tableName, isTest);
-  return (data, id) => {
-    return db.query(env.pgp.helpers.update(data, null, tableName) + ` where ${idColumn}=` + id + ' returning ' + idColumn);
+  return (data, id, task) => {
+    return (task ? task : db).query(env.pgp.helpers.update(data, null, tableName) + ` where ${idColumn}=` + id + ' returning ' + idColumn);
   };
 };
 
@@ -86,21 +86,21 @@ genericUpdate = (tableName, idColumn, isTest) => {
 genericTemporalUpdate = (tableName, idColumn, isTest) => {
   let db = chooseDb(tableName, isTest);
 
-  return (data) => {
+  return (data, task) => {
     return new Promise((resolve, reject) => {
 
       let id = data[idColumn];
 
       if (!id && !data.previous_end_date) { // insert a new record
-        db.one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn).then(res => {
+        (task ? task : db).one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn).then(res => {
           resolve(res[idColumn]);
         }).catch(err => reject(err));
 
       } else if (id && data.previous_end_date) { // update by insert new row and add end_time for previous start date
-        db.query(env.pgp.helpers.update({current_end_date: data.previous_end_date}, ['current_end_date'], tableName) + ` where ${idColumn}=` + id + ' returning ' + idColumn).then(updatedId => {
+        (task ? task : db).query(env.pgp.helpers.update({current_end_date: data.previous_end_date}, ['current_end_date'], tableName) + ` where ${idColumn}=` + id + ' returning ' + idColumn).then(updatedId => {
 
           delete data.id;
-          db.one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn).then(res => {
+          (task ? task : db).one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn).then(res => {
             resolve(res[idColumn]);
           }).catch(err => reject(err));
 
@@ -115,8 +115,8 @@ genericTemporalUpdate = (tableName, idColumn, isTest) => {
 
 genericSelect = (tableName, isTest) => {
   let db = chooseDb(tableName, isTest);
-  return () => {
-    return db.query(`select * from ${tableName}`);
+  return (task) => {
+    return (task ? task : db).query(`select * from ${tableName}`);
   };
 };
 
@@ -124,27 +124,27 @@ genericConditionalSelect = (tableName, isTest, whereColumns = [], nullColumns = 
   let db = chooseDb(tableName, isTest);
   let whereClause = whereColumns ? whereColumns.concat(nullColumns).concat(notNullColumns).map(col => col + (nullColumns.includes(col) ? ' is null' : notNullColumns.includes(col) ? ' is not null' : '=${' + col + '}')).join(' and ') : '';
   let query = `select * from ${tableName}${whereClause ? ' where ' + whereClause : ''}`;
-  return (constraints) => {
-    return db.any(query, constraints);
+  return (constraints, task) => {
+    return (task ? task : db).any(query, constraints);
   };
 };
 
 genericGet = (tableName, isTest) => {
-  return (constraints) => {
+  return (constraints, task) => {
     return genericConditionalSelect(
       tableName,
       isTest,
       Object.keys(constraints).filter(r => constraints[r] !== null && constraints[r] !== 'NOT NULL'),
       Object.keys(constraints).filter(r => constraints[r] === null),
       Object.keys(constraints).filter(r => constraints[r] === 'NOT NULL')
-    )(constraints);
+    )(constraints, task);
   }
 };
 
 genericSafeInsert = (tableName, idColumn, isTest) => {
   let db = chooseDb(tableName, isTest);
 
-  return (data , constraints) => {
+  return (data , constraints, task) => {
     // 'constraints' can part of 'data' => if whole of data is not going to be duplicated. but constraint is important about some keys in 'data'
     let arg =constraints ? constraints : data;
   return genericGet(tableName, isTest)(arg)
@@ -152,15 +152,15 @@ genericSafeInsert = (tableName, idColumn, isTest) => {
         if (res.length)
           return Promise.resolve(res[0]);
         else
-          return db.one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn);
+          return (task ? task : db).one(env.pgp.helpers.insert(data, null, tableName) + ' returning ' + idColumn);
       });
   }
 };
 
 genericDelete = (tableName, idColumn, isTest) => {
   let db = chooseDb(tableName, isTest);
-  return (id) => {
-    return db.query(`delete from ${tableName} where ${idColumn}=` + id +' returning ' + idColumn)
+  return (id, task) => {
+    return (task ? task : db).query(`delete from ${tableName} where ${idColumn}=` + id +' returning ' + idColumn)
   }
 };
 
