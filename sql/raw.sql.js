@@ -95,6 +95,8 @@ let modExp = {
     deleteByLink: sql('person_activation_link/deleteByLink.sql'),
     get: sql('person_activation_link/get.sql'),
     getByLink: sql('person_activation_link/getByLink.sql'),
+    deleteByPID: sql('person_activation_link/deleteByPID.sql'),
+    getByLinkUsername: sql('person_activation_link/getByLinkUsername.sql'),
   },
   business: {
     create: sql('business/create.sql'),
