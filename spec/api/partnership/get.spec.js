@@ -61,7 +61,7 @@ describe("Get partnership API", () => {
       .then(() => {
         rp({
           method: 'get',
-          uri: lib.helpers.apiTestURL(`person/partnership/${user1Obj.pid}`),
+          uri: lib.helpers.apiTestURL(`person/partnership/${user1Obj.pid}/0/100`),
           jar: adminObj.jar,
           resolveWithFullResponse: true
         })

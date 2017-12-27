@@ -114,11 +114,12 @@ router.delete('/expertise/:pid/:expertise_id', apiResponse('Person', 'deleteExpe
 router.post('/user/notify', apiResponse('Person', 'changeNotifyType', false, ['user.pid', 'body']));
 
 // Partnership
-router.get('/person/partnership/:pid', apiResponse('Person', 'getPartnership', false, ['user.pid', 'params.pid']));
+router.get('/person/partnership/:pid/:offset/:limit', apiResponse('Person', 'getPartnershipList', false, ['user.pid', 'params.pid','params.offset' , 'params.limit']));
+router.get('/person/partnership/:id', apiResponse('Person', 'getPartnershipDetail', false, ['user.pid', 'params.id']));
 router.get('/person/requested/partnership', apiResponse('Person', 'getRequestedPartnership', false, ['user.pid']));
 router.put('/person/partnership', apiResponse('Person', 'setPartnership', false, ['user', 'body']));
 router.post('/person/confirm/partnership', apiResponse('Person', 'confirmPartnership', false, ['user', 'body']));
-router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', false, ['user', 'body']));
+router.delete('/person/partnership/:pid', apiResponse('Person', 'deletePartnership', false, ['user', 'params.pid']));
 
 
 // Business API

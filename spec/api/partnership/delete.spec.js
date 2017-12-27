@@ -62,11 +62,7 @@ describe("Delete partnership API", () => {
 
       rp({
         method: 'delete',
-        uri: lib.helpers.apiTestURL(`person/partnership`),
-        body:{
-          id: res.id,
-        },
-        json: true,
+        uri: lib.helpers.apiTestURL(`person/partnership/${res.id}`),
         jar: user1Obj.jar,
         resolveWithFullResponse: true
       })

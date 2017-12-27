@@ -36,6 +36,6 @@
 		inner join lce_type
 		on second.lce_type_id = lce_type.id
 
-		order by id desc limit ${limit} offset ${offset}
+		order by is_confirmed limit ${limit} offset ${offset}
 
 
