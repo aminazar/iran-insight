@@ -792,7 +792,7 @@ describe("POST user API", () => {
             username: 'ali@mail.com',
             password: 'na987ma',
           },
-          uri: lib.helpers.apiTestURL('user/auth/change/password/dsfAS234@$$ASDFGaqsd789asASRe'),
+          uri: lib.helpers.apiTestURL('/user/auth/local/dsfAS234@$$ASDFGaqsd789asASRe'),
           json: true,
           resolveWithFullResponse: true,
         })
@@ -817,7 +817,7 @@ describe("POST user API", () => {
             username: 'ali@mail.com',
             password: 'na987ma',
           },
-          uri: lib.helpers.apiTestURL('user/auth/change/password/dsfAS234@$$ASDFGaqsd789ae'),
+          uri: lib.helpers.apiTestURL('/user/auth/local/dsfAS234@$$ASDFGaqsd789ae'),
           json: true,
           resolveWithFullResponse: true,
         })
@@ -829,6 +829,67 @@ describe("POST user API", () => {
       .catch(err => {
         expect(err.statusCode).toBe(error.expiredLink.status);
         expect(err.error).toBe(error.expiredLink.message);
+        done();
+      });
+  });
+
+  it("should return true when email is exists", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        username: 'ali@mail.com',
+      },
+      json: true,
+      uri: lib.helpers.apiTestURL('user/email/isExist'),
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        const body = JSON.parse(res.body);
+        expect(body).toBe(true);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should return false when email doest not exist", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        username: 'ali_a@mail.com',
+      },
+      json: true,
+      uri: lib.helpers.apiTestURL('user/email/isExist'),
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        const body = JSON.parse(res.body);
+        expect(body).toBe(false);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get error when username is not declared", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+      },
+      json: true,
+      uri: lib.helpers.apiTestURL('user/email/isExist'),
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        this.fail('Check email is exist without having username');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.emptyUsername.status);
+        expect(err.error).toBe(error.emptyUsername.message);
         done();
       });
   });
