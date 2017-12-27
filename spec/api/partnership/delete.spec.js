@@ -52,24 +52,26 @@ describe("Delete partnership API", () => {
 
   it("user should can delete his/her partnership", function (done) {
     this.done = done;
+    let partnership;
+
     addPartnership({
       pid1: user1Obj.pid,
       pid2: user2Obj.pid,
       start_date: new Date(2017, 8, 9),
       description: 'friendship',
       description_fa: 'دوستی'
-    }).then(res => {
-
+    }).then(data => {
+      partnership = data;
       rp({
         method: 'delete',
-        uri: lib.helpers.apiTestURL(`person/partnership/${res.id}`),
+        uri: lib.helpers.apiTestURL(`person/partnership/${data.id}`),
         jar: user1Obj.jar,
         resolveWithFullResponse: true
       })
         .then(res => {
 
           expect(res.statusCode).toBe(200);
-          return sql.test.partnership.getById({pid: user1Obj.pid});
+          return sql.test.partnership.getPartnershipDetail({id: partnership.id});
         }).then(res => {
         expect(res.length).toBe(0);
         done();
