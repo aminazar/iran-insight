@@ -29,7 +29,7 @@ describe("GET Business API", () => {
     name: 'BIZ',
     name_fa: 'کسب و کار',
   };
-  let bid;
+  let bid, pids;
   beforeEach(done => {
     lib.dbHelpers.create()
       .then(() => lib.dbHelpers.addAndLoginPerson('ali'))
@@ -43,15 +43,18 @@ describe("GET Business API", () => {
         bid = res.bid;
 
         let promiseList = [];
-        env.testDb.task(t => {
+        return env.testDb.task('adding mock products', t => {
           productDetails.forEach(el => {
             el.business_id = bid;
-            promiseList.push(sql.test.product.add(el,t));
+            promiseList.push(sql.test.product.add(el, t));
           });
           return Promise.all(promiseList);
         })
       })
-      .then(done)
+      .then(res => {
+        pids = res.map(r => r.product_id);
+        done();
+      })
       .catch(err => {
         console.log(err);
         done();
@@ -77,35 +80,31 @@ describe("GET Business API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
- xit("should get all products for specific business", function (done) {
+  it("should get all products for specific business", function (done) {
     this.done = done;
-    let business_id = null;
 
-    sql.test.business.add(biz)
-      .then(res => {
-        business_id = res.bid;
-        let promiseList = [];
-        productDetails.forEach(el => {
-          promiseList.push(addProduct(el, res.bid));
-        });
-
-        return Promise.all(promiseList);
-      })
-      .then(res => {
-        return rp({
-          method: 'get',
-          uri: lib.helpers.apiTestURL(`business/product/all/${business_id}`),
-          jar: normalUserObj.jar,
-          resolveWithFullResponse: true,
-        });
-      })
+    rp({
+      method: 'get',
+      uri: lib.helpers.apiTestURL(`business/product/all/${bid}`),
+      resolveWithFullResponse: true,
+    })
       .then(res => {
         let data = JSON.parse(res.body);
         expect(res.statusCode).toBe(200);
-        expect(data.length).toBe(3);
+        let find0 = data.find(r => r.product_id === pids[0]),
+          find2 = data.find(r => r.product_id === pids[2]);
+        expect(find0).toBeTruthy();
+        expect(find2).toBeTruthy();
+
+        if (find0) {
+          expect(find0.name).toBe(productDetails[0].name);
+        }
+
+        if (find2) {
+          expect(find2.name_fa).toBe(productDetails[2].name_fa);
+        }
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
   });
-})
-;
+});

@@ -9,6 +9,8 @@ create table if not exists business (
     address varchar(255),
     address_fa varchar(255),
 --    geo_location geography,
+    latitude real,
+    longitude real,
     tel varchar(12),
     url varchar(30),
     tags text[],

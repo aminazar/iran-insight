@@ -54,6 +54,7 @@ for (let table in rawSql) {
     }
 
     wrappedSQL[table][query] = (table === 'db') ? (data, task) => {
+      console.log(table, query, usingFunction(query),task)
       return ((task ? task : env.initDb)[usingFunction(query)])(rawSql[table][query], dataTransform(data));
     } : (data, task) => {
       return ((task ? task : env.db)[usingFunction(query)])(rawSql[table][query], dataTransform(data, task));
