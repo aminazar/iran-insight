@@ -50,7 +50,7 @@ function apiResponse(className, functionName, adminOnly = false, reqFuncs = []) 
           .json(data);
       })
       .catch(err => {
-        console.log(`${className}/${functionName}: `, err.message);
+        console.log(`${className}/${functionName}: `, req.app.get('env') === 'development' ? err : err.message);
         res.status(err.status || 500)
           .send(err.message || err);
       });
@@ -123,6 +123,7 @@ router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', 
 
 // Business API
 router.get('/business/one/:bid', apiResponse('Business', 'getOne', false, ['params']));
+router.get('/business/oneAll/:bid', apiResponse('Business', 'getOneAll', false, ['params']));
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
 router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
 router.get('/business/product/all/:bid', apiResponse('Business', 'getAllBusinessProducts', false, ['params.bid']));
@@ -134,6 +135,9 @@ router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', fal
 router.put('/business/product/:business_id', apiResponse('Business', 'addBusinessProduct', false, ['params.business_id','body', 'user.pid']));
 router.delete('/business/product/:business_id/:product_id', apiResponse('Business', 'removeBizOfProduct', false, ['params.business_id','params.product_id', 'user.pid']));
 router.post('/business/product/:business_id/:product_id', apiResponse('Business', 'updateProduct', false, ['params.business_id','params.product_id','body', 'user.pid']));
+router.get('business/product/all/:business_id', apiResponse('Business', 'allProducts', ['params']));
+router.get('business/product/one/:business_id', apiResponse('Business', 'oneProduct', ['params']));
+
 
 // Organization API
 router.get('/organization', apiResponse('Organization', 'getAll', false));
@@ -149,8 +153,6 @@ router.get('/lce/:type/:id/:lceId', apiResponse('LCE', 'getLCEDetail', false, ['
 router.get('/lce/:type/:id/:offset/:limit', apiResponse('LCE', 'getLCEList', false, ['params.type', 'user.pid', 'params.id', 'params.offset' , 'params.limit']));
 router.get('/lce/:type/requested/:id/:offset/:limit', apiResponse('LCE', 'getRequestedLCE', false, ['params.type', 'user.pid', 'params.id','params.offset' , 'params.limit']));
 router.delete('/lce/:type/:id', apiResponse('LCE', 'deleteLCE', false, ['params.type', 'user', 'params.id']));
-
-
 
 // types
 router.post('/type/:name', apiResponse('Type', 'suggest', false, ['user.pid', 'params.name', 'body']));
