@@ -205,7 +205,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
   beforeEach(done => {
     lib.dbHelpers.create()
       .then(() => {
-        return lib.dbHelpers.addAndLoginPerson('admin', 'admin')
+        return lib.dbHelpers.addAndLoginPerson('admin', 'admin');
       })
       .then((res) => {
         adminPid = res.pid;
@@ -213,38 +213,33 @@ describe('Upsert/Delete membership, DELETE API', () => {
         return lib.dbHelpers.addAdmin(adminPid);
       })
       .then(() => {
-        return lib.dbHelpers.addAndLoginPerson('RepUser', '123456', extraData = {
-          firstname_en: 'Mr Rep',
-          firstname_fa: 'آقای نماینده',
-          surname_en: 'Namayande Poor ',
-          surname_fa: 'نماینده پور'
-        })
+        return lib.dbHelpers.addAndLoginPerson('RepUser', '123456',
+          {
+          firstname_en: 'MrRep',
+          surname_en: 'NamayandePoor ',
+        });
       })
       .then((res) => {
         repPid = res.pid;
         repJar = res.rpJar;
-        return lib.dbHelpers.addAndLoginPerson('RegularUser1', '123456', extraData = {
-          firstname_en: 'Mr User1',
-          firstname_fa: 'آقای کاربر1',
-          surname_en: 'Karbar Poor1',
-          surname_fa: 'کاربر پور1'
+        return lib.dbHelpers.addAndLoginPerson('RegularUser1', '123456',
+          {
+          firstname_en: 'MrUser1',
+          surname_en: 'KarbarPoor1'
         })
       })
       .then((res) => {
         userPid1 = res.pid;
         userJar1 = res.rpJar;
-        return lib.dbHelpers.addAndLoginPerson('RegularUser2', '123456', extraData = {
-          firstname_en: 'Mr User2',
-          firstname_fa: 'آقای کاربر2',
-          surname_en: 'Karbar Poor2',
-          surname_fa: 'کاربر پور2'
+        return lib.dbHelpers.addAndLoginPerson('RegularUser2', '123456',
+          {
+          firstname_en: 'MrUser2',
+          surname_en: 'KarbarPoor2'
         })
       })
       .then((res) => {
         userPid2 = res.pid;
         userJar2 = res.rpJar;
-      })
-      .then(() => {
         return Promise.all(orgs_type_info.map(el => createNewOrgType(el)))
       })
       .then(() => {
@@ -272,12 +267,12 @@ describe('Upsert/Delete membership, DELETE API', () => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
   it("admin should be able to finish reresentative's membership ONLY,(other regular users are related to their reps, not admin)", done => {
-    sql.test.membership.update({end_time: moment(new Date()).add(7,'day')}, 1)
-      .then(()=>{
-        rp({
+    sql.test.membership.update({end_time: moment(new Date()).add(7, 'day')}, 1)
+      .then(() => {
+        return rp({
           method: 'DELETE',
           uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/1`),
           jar: adminJar,
@@ -287,10 +282,10 @@ describe('Upsert/Delete membership, DELETE API', () => {
       .then(res => {
         expect(res.statusCode).toBe(200);
         return sql.test.membership.get({mid: 1})
-          .then(res => {
-            expect(res[0].end_time).not.toBe(null); // this membership is finished now.
-            done();
-          })
+      })
+      .then(res => {
+        expect(res[0].end_time).not.toBe(null); // this membership is finished now.
+        done();
       })
       .catch(err => {
         console.log(err.message);
@@ -298,7 +293,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
       });
   });
 
-  it('should threw an error when admin is going to finish regular users', function(done) {
+  it('should threw an error when admin is going to finish regular users', function (done) {
     rp({
       method: 'DELETE',
       uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/5`),
@@ -314,12 +309,12 @@ describe('Upsert/Delete membership, DELETE API', () => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
-  it('admin should NOT be able to finish a finished membership of a rep', function(done) {
-    sql.test.membership.update({start_time: moment(new Date()).add(-7,'day')}, 1)
+  it('admin should NOT be able to finish a finished membership of a rep', function (done) {
+    sql.test.membership.update({start_time: moment(new Date()).add(-7, 'day')}, 1)
       .then((res) => {
-        return sql.test.membership.update({end_time: moment(new Date()).add(-3,'day')}, 1)
+        return sql.test.membership.update({end_time: moment(new Date()).add(-3, 'day')}, 1)
       })
       .then(res => {
         expect(res[0].end_time).not.toBe(null);
@@ -339,7 +334,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
   it('rep should be able to finish her/his membership', done => {
     rp({
@@ -351,16 +346,16 @@ describe('Upsert/Delete membership, DELETE API', () => {
       .then(res => {
         expect(res.statusCode).toBe(200);
         return sql.test.membership.get({mid: 3})
-          .then(res => {
-            expect(res[0].end_time).not.toBe(null); // this membership is finished now.
-            done();
-          })
+      })
+      .then(res => {
+        expect(res[0].end_time).not.toBe(null); // this membership is finished now.
+        done();
       })
       .catch(err => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
   it('rep should be able to finish her/his-joiners membership ONLY', done => {
     rp({
@@ -372,19 +367,19 @@ describe('Upsert/Delete membership, DELETE API', () => {
       .then(res => {
         expect(res.statusCode).toBe(200);
         return sql.test.membership.get({mid: 5})
-          .then(res => {
-            expect(res[0].end_time).not.toBe(null); // this membership is finished now.
-            done();
-          })
+      })
+      .then(res => {
+        expect(res[0].end_time).not.toBe(null); // this membership is finished now.
+        done();
       })
       .catch(err => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
-  it('should threw an error when a rep-user is going to finish another rep membership',function(done){
-    sql.test.association.update({pid : 3},3)
+  it('should threw an error when a rep-user is going to finish another rep membership', function (done) {
+    sql.test.association.update({pid: 3}, 3)
       .then(res => {
         return rp({
           method: 'DELETE',
@@ -402,16 +397,17 @@ describe('Upsert/Delete membership, DELETE API', () => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
-  it('should threw an error when a rep-user is going to finish other rep joiners membership', function(done) {
-    sql.test.association.update({pid : 3},2)   // make user1 to be rep of biz2 and user2 is joiner of user1...//rep user is rep of biz1,user1 is also joiner of repuser
+  it('should threw an error when a rep-user is going to finish other rep joiners membership', function (done) {
+    sql.test.association.update({pid: 3}, 2)   // make user1 to be rep of biz2 and user2 is joiner of user1...//rep user is rep of biz1,user1 is also joiner of repuser
       .then(res => {
         return rp({
           method: 'DELETE',
           uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/5`),
           jar: repJar,
           resolveWithFullResponse: true,
+
         })
       })
       .then(() => {
@@ -423,7 +419,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
   it('regular user should be able to finish his/her membership ONLY', done => {
     rp({
@@ -435,18 +431,18 @@ describe('Upsert/Delete membership, DELETE API', () => {
       .then(res => {
         expect(res.statusCode).toBe(200);
         return sql.test.membership.get({mid: 4})
-          .then(res => {
-            expect(res[0].end_time).not.toBe(null);
-            done();
-          })
+      })
+      .then(res => {
+        expect(res[0].end_time).not.toBe(null);
+        done();
       })
       .catch(err => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
-  it('should threw an error when a regular user is going to finish another user except her/himself', function(done) {
+  it('should threw an error when a regular user is going to finish another user except her/himself', function (done) {
     rp({
       method: 'DELETE',
       uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/5`),
@@ -462,7 +458,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
 });
 
