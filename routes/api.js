@@ -79,9 +79,9 @@ router.get('/login/linkedin/callback', passport.authenticate('linkedin', {}), ap
 
 // Person API
 router.put('/user/register', apiResponse('Person', 'registration', false, ['body']));
+router.post('/user/email/isExist', apiResponse('Person', 'emailIsExist', false, ['body']));
 router.get('/user/activate/link/:link', apiResponse('Person', 'checkActiveLink', false, ['params.link']));
 router.post('/user/auth/local/:link', apiResponse('Person', 'completeAuth', false, ['params.link', 'body']));
-router.post('/user/auth/change/password/:link', apiResponse('Person', 'changePassword', false, ['params.link', 'body']));
 router.post('/user/auth/link', apiResponse('Person', 'sendActivationMail', false, ['body.email', 'body.is_forgot_mail']));
 router.post('/membership/introducing/rep', apiResponse('Person', 'introduceAsRep', false, ['body', 'user']));
 
@@ -114,11 +114,12 @@ router.delete('/expertise/:pid/:expertise_id', apiResponse('Person', 'deleteExpe
 router.post('/user/notify', apiResponse('Person', 'changeNotifyType', false, ['user.pid', 'body']));
 
 // Partnership
-router.get('/person/partnership/:pid', apiResponse('Person', 'getPartnership', false, ['user.pid', 'params.pid']));
+router.get('/person/partnership/:pid/:offset/:limit', apiResponse('Person', 'getPartnershipList', false, ['user.pid', 'params.pid','params.offset' , 'params.limit']));
+router.get('/person/partnership/:id', apiResponse('Person', 'getPartnershipDetail', false, ['user.pid', 'params.id']));
 router.get('/person/requested/partnership', apiResponse('Person', 'getRequestedPartnership', false, ['user.pid']));
 router.put('/person/partnership', apiResponse('Person', 'setPartnership', false, ['user', 'body']));
 router.post('/person/confirm/partnership', apiResponse('Person', 'confirmPartnership', false, ['user', 'body']));
-router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', false, ['user', 'body']));
+router.delete('/person/partnership/:pid', apiResponse('Person', 'deletePartnership', false, ['user', 'params.pid']));
 
 
 // Business API
