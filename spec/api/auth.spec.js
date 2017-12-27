@@ -87,7 +87,7 @@ describe("Test auth APIs", () => {
 
   it("should semi register user locally (no email)", function(done) {
     request.put({
-      url: base_url + '/user/register' + test_query,
+      url: lib.helpers.apiTestURL('user/register'),
       form: {email: '', display_name: 'ali'}
     }, (err, res) => {
       if(err)
@@ -100,7 +100,7 @@ describe("Test auth APIs", () => {
 
   it("should semi register user locally (no display_name)", function(done) {
     request.put({
-      url: base_url + '/user/register' + test_query,
+      url: lib.helpers.apiTestURL('user/register'),
       form: {email: 'alireza@bentoak.systems'}
     }, (err, res) => {
       if(err)
@@ -113,7 +113,7 @@ describe("Test auth APIs", () => {
 
   it("should get error for incorrect email address pattern", function(done) {
     request.put({
-      url: base_url + '/user/register' + test_query,
+      url: lib.helpers.apiTestURL('user/register'),
       form: {email: '123', display_name: 'ali'}
     }, (err, res) => {
       if(err)
@@ -129,7 +129,7 @@ describe("Test auth APIs", () => {
     let outerContext = this;
     username = 'alireza@bentoak.systems';
     request.put({
-      url: base_url + '/user/register' + test_query,
+      url: lib.helpers.apiTestURL('user/register'),
       form: {email: username, display_name: 'ali'}
     }, (err, res) => {
       if(err){
@@ -160,12 +160,12 @@ describe("Test auth APIs", () => {
     let outerContext = this;
     sql.test.person_activation_link.get({username: username})
       .then(res => {
-        request.get(base_url + 'user/activate/link/' + res[0].link + test_query, (err, res) => {
+        request.get(lib.helpers.apiTestURL('user/activate/link/' + res[0].link), (err, res) => {
           if(err)
             outerContext.fail(err);
           else{
             expect(res.statusCode).toBe(200);
-            pid = JSON.parse(res.body);
+            pid = res.body.pid;
           }
 
           done();
@@ -178,7 +178,7 @@ describe("Test auth APIs", () => {
   });
 
   it("should show suitable message when activation link not found", function(done) {
-    request.get(base_url + 'user/activate/link/123' + test_query, (err, res) => {
+    request.get(lib.helpers.apiTestURL('user/activate/link/123'), (err, res) => {
       if(err)
         this.fail(err);
       else{
@@ -195,9 +195,10 @@ describe("Test auth APIs", () => {
     sql.test.person_activation_link.get({username: username})
       .then(res => {
         req.post({
-          url: base_url + 'user/auth/local/' + res[0].link + test_query,
+          url: lib.helpers.apiTestURL('user/auth/local/' + res[0].link),
           form: {
-            password: '123abc'
+            password: '123abc',
+            username: username,
           }
         }, (err, res) => {
           if(err){
@@ -229,7 +230,7 @@ describe("Test auth APIs", () => {
   it("should login with username and password (Local Authentication)", function(done) {
     username = 'alireza@bentoak.systems';
     request.post({
-      url: base_url + 'login' + test_query,
+      url: lib.helpers.apiTestURL('login'),
       form: {
         username: username,
         password: '123abc'
@@ -262,7 +263,7 @@ describe("Test auth APIs", () => {
     })
       .then(res => {
         request.put({
-          url: base_url + '/user/register' + test_query,
+          url: lib.helpers.apiTestURL('user/register'),
           form: {email: username, display_name: 'ali'}
         }, (err, res) => {
           if(err){
@@ -285,7 +286,7 @@ describe("Test auth APIs", () => {
   it("should authenticated user by open-auth get activation link as forgot password/activation", function (done) {
     username = 'ali.71hariri@gmail.com';
     request.post({
-      url: base_url + '/user/auth/link' + test_query,
+      url: lib.helpers.apiTestURL('user/auth/link'),
       form: {email: username}
     }, (err, res) => {
       if(err){
@@ -306,7 +307,7 @@ describe("Test auth APIs", () => {
     sql.test.person_activation_link.get({username: username})
       .then(res => {
         req.post({
-          url: base_url + 'user/auth/local/' + res[0].link + test_query,
+          url: lib.helpers.apiTestURL('user/auth/local/' + res[0].link),
           form: {
             username: username,
             password: '123456789'

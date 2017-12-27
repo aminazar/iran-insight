@@ -79,9 +79,9 @@ router.get('/login/linkedin/callback', passport.authenticate('linkedin', {}), ap
 
 // Person API
 router.put('/user/register', apiResponse('Person', 'registration', false, ['body']));
+router.post('/user/email/isExist', apiResponse('Person', 'emailIsExist', false, ['body']));
 router.get('/user/activate/link/:link', apiResponse('Person', 'checkActiveLink', false, ['params.link']));
 router.post('/user/auth/local/:link', apiResponse('Person', 'completeAuth', false, ['params.link', 'body']));
-router.post('/user/auth/change/password/:link', apiResponse('Person', 'changePassword', false, ['params.link', 'body']));
 router.post('/user/auth/link', apiResponse('Person', 'sendActivationMail', false, ['body.email', 'body.is_forgot_mail']));
 router.post('/membership/introducing/rep', apiResponse('Person', 'introduceAsRep', false, ['body', 'user']));
 
