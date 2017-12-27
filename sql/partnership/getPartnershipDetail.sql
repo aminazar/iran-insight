@@ -10,7 +10,9 @@ select
     p1.display_name_en as possessor_display_name,
     p1.display_name_fa as possessor_display_name_fa,
     p2.display_name_en as joiner_display_name,
-    p2.display_name_fa as joiner_display_name_fa
+    p2.display_name_fa as joiner_display_name_fa,
+    p1.username as possessor_username,
+    p2.username as joiner_username
 from partnership
 join person as p1 on partnership.pid1 = p1.pid
 join person as p2 on partnership.pid2 = p2.pid
