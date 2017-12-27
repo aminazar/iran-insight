@@ -61,27 +61,36 @@ router.get('/', function (req, res) {
   res.send('respond with a resource');
 });
 // Login API
-router.post('/login', passport.authenticate('local', {}), apiResponse('Person', 'afterLogin', false, ['user.username']));
+router.post('/login', passport.authenticate('local', {}), apiResponse('Person', 'afterLogin', false, ['user']));
 router.post('/loginCheck', apiResponse('Person', 'loginCheck', false, ['body.username', 'body.password']));
 router.get('/logout', (req, res) => {
   req.logout();
   res.status(200).json('')
 });
-router.get('/validUser', apiResponse('Person', 'afterLogin', false, ['user.username']));
+router.get('/validUser', apiResponse('Person', 'afterLogin', false, ['user']));
 
 // Open Authentication API
 router.get('/login/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login', 'profile', 'email']}));
-router.get('/login/google/callback', passport.authenticate('google', {}), apiResponse('Person', 'afterLogin', false, ['user.username']));
+router.get('/login/google/callback', passport.authenticate('google', {
+  successRedirect : '/login/oauth',
+  failureRedirect : '/login'
+}));
 router.get('/login/facebook', passport.authenticate('facebook'));
-router.get('/login/facebook/callback', passport.authenticate('facebook'), apiResponse('Person', 'afterLogin', false, ['user.username']));
+router.get('/login/client/facebook/callback', passport.authenticate('facebook', {
+  successRedirect : '/login/oauth',
+  failureRedirect : '/login'
+}));
 router.get('/login/linkedin', passport.authenticate('linkedin', {scope: ['r_basicprofile', 'r_emailaddress']}));
-router.get('/login/linkedin/callback', passport.authenticate('linkedin', {}), apiResponse('Person', 'afterLogin', false, ['user.username']));
+router.get('/login/client/linkedin/callback', passport.authenticate('linkedin', {
+  successRedirect : '/login/oauth',
+  failureRedirect : '/login'
+}));
 
 // Person API
 router.put('/user/register', apiResponse('Person', 'registration', false, ['body']));
+router.post('/user/email/isExist', apiResponse('Person', 'emailIsExist', false, ['body']));
 router.get('/user/activate/link/:link', apiResponse('Person', 'checkActiveLink', false, ['params.link']));
 router.post('/user/auth/local/:link', apiResponse('Person', 'completeAuth', false, ['params.link', 'body']));
-router.post('/user/auth/change/password/:link', apiResponse('Person', 'changePassword', false, ['params.link', 'body']));
 router.post('/user/auth/link', apiResponse('Person', 'sendActivationMail', false, ['body.email', 'body.is_forgot_mail']));
 router.post('/membership/introducing/rep', apiResponse('Person', 'introduceAsRep', false, ['body', 'user']));
 
@@ -114,11 +123,12 @@ router.delete('/expertise/:pid/:expertise_id', apiResponse('Person', 'deleteExpe
 router.post('/user/notify', apiResponse('Person', 'changeNotifyType', false, ['user.pid', 'body']));
 
 // Partnership
-router.get('/person/partnership/:pid', apiResponse('Person', 'getPartnership', false, ['user.pid', 'params.pid']));
+router.get('/person/partnership/:pid/:offset/:limit', apiResponse('Person', 'getPartnershipList', false, ['user.pid', 'params.pid','params.offset' , 'params.limit']));
+router.get('/person/partnership/:id', apiResponse('Person', 'getPartnershipDetail', false, ['user.pid', 'params.id']));
 router.get('/person/requested/partnership', apiResponse('Person', 'getRequestedPartnership', false, ['user.pid']));
 router.put('/person/partnership', apiResponse('Person', 'setPartnership', false, ['user', 'body']));
 router.post('/person/confirm/partnership', apiResponse('Person', 'confirmPartnership', false, ['user', 'body']));
-router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', false, ['user', 'body']));
+router.delete('/person/partnership/:pid', apiResponse('Person', 'deletePartnership', false, ['user', 'params.pid']));
 
 
 // Business API
@@ -126,10 +136,12 @@ router.get('/business/one/:bid', apiResponse('Business', 'getOne', false, ['para
 router.get('/business/oneAll/:bid', apiResponse('Business', 'getOneAll', false, ['params']));
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
 router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
+router.get('/business/product/all/:bid', apiResponse('Business', 'getAllBusinessProducts', false, ['params.bid']));
 router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
 
 
 // Product API
+router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
 router.put('/business/product/:business_id', apiResponse('Business', 'addBusinessProduct', false, ['params.business_id','body', 'user.pid']));
 router.delete('/business/product/:business_id/:product_id', apiResponse('Business', 'removeBizOfProduct', false, ['params.business_id','params.product_id', 'user.pid']));
 router.post('/business/product/:business_id/:product_id', apiResponse('Business', 'updateProduct', false, ['params.business_id','params.product_id','body', 'user.pid']));

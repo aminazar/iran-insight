@@ -52,11 +52,11 @@ let modExp = {
   partnership: {
     create: sql('partnership/create.sql'),
     drop: sql('partnership/drop.sql'),
-    getById: sql('partnership/getById.sql'),
     getFromById: sql('partnership/getFromById.sql'),
     getConfirmedById: sql('partnership/getConfirmedById.sql'),
     getRequestedById: sql('partnership/getRequestedById.sql'),
-    getFullData: sql('partnership/getFullData.sql'),
+    getPartnershipList: sql('partnership/getPartnershipList.sql'),
+    getPartnershipDetail: sql('partnership/getPartnershipDetail.sql'),
   },
 
   administrators: {
@@ -95,6 +95,8 @@ let modExp = {
     deleteByLink: sql('person_activation_link/deleteByLink.sql'),
     get: sql('person_activation_link/get.sql'),
     getByLink: sql('person_activation_link/getByLink.sql'),
+    deleteByPID: sql('person_activation_link/deleteByPID.sql'),
+    getByLinkUsername: sql('person_activation_link/getByLinkUsername.sql'),
   },
   business: {
     create: sql('business/create.sql'),

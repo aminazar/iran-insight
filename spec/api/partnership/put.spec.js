@@ -69,7 +69,7 @@ describe("Put partnership API", () => {
 
         expect(res.statusCode).toBe(200);
 
-        return sql.test.partnership.getById({pid: user1Obj.pid});
+        return sql.test.partnership.get({pid1: user1Obj.pid});
       }).then(res => {
       expect(res.length).toBe(1);
       expect(res[0].is_confirmed).toBe(true);
@@ -113,7 +113,7 @@ describe("Put partnership API", () => {
           .then(res => {
             expect(res.statusCode).toBe(200);
 
-            return sql.test.partnership.getById({pid: user1Obj.pid});
+            return sql.test.partnership.get({pid1: user1Obj.pid});
           }).then(res => {
 
           expect(res.length).toBe(1);
@@ -145,7 +145,7 @@ describe("Put partnership API", () => {
           .then(res => {
             expect(res.statusCode).toBe(200);
 
-            return sql.test.partnership.getById({pid: user1Obj.pid});
+            return sql.test.partnership.get({pid1: user1Obj.pid});
           }).then(res => {
 
           expect(res.length).toBe(1);
@@ -186,7 +186,7 @@ describe("Put partnership API", () => {
 
             expect(res.statusCode).toBe(200);
 
-            return sql.test.partnership.getById({pid: user1Obj.pid});
+            return sql.test.partnership.get({pid1: user1Obj.pid});
           }).then(res => {
 
           expect(res.length).toBe(1);
@@ -230,7 +230,7 @@ describe("Put partnership API", () => {
           .then(res => {
             expect(res.statusCode).toBe(200);
 
-            return sql.test.partnership.getById({pid: user1Obj.pid});
+            return sql.test.partnership.get({pid1: user1Obj.pid});
           }).then(res => {
 
           expect(res.length).toBe(1);
