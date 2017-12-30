@@ -1,8 +1,6 @@
 const rp = require('request-promise');
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
-const error = require('../../../lib/errors.list');
-const types = require('../../../sql/types');
 
 describe("Get tag", () => {
   let adminObj = {
@@ -55,12 +53,7 @@ describe("Get tag", () => {
       })
       .then(res => {
         biz = res;
-        return sql.test.product.add({name: 'android app'})
-
-      })
-      .then(res => {
-        product_id = res.product_id;
-        return sql.test.business_product.add({bid: biz.bid, product_id: res.product_id})
+        return sql.test.product.add({name: 'android app', business_id: biz.bid})
       })
       .then(res => {
         return sql.test.tag.add({name: 'اینترنت', proposer: {business: [biz.bid], organization: [], product: []}})
@@ -101,7 +94,9 @@ describe("Get tag", () => {
           done();
         })
         .catch(lib.helpers.errorHandler.bind(this)))
+
   });
+
 
 
 });

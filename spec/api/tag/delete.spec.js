@@ -55,14 +55,14 @@ describe("Delete tag", () => {
       })
       .then(res => {
         biz = res;
-        return sql.test.product.add({name: 'android app'})
+        return sql.test.product.add({name: 'android app', business_id: biz.bid})
 
       })
       .then(res => {
         product_id = res.product_id;
-        return sql.test.business_product.add({bid: biz.bid, product_id: res.product_id})
+        return sql.test.tag.add({name: 'اینترنت', proposer: {business: [biz.bid], organization: [], product: []}})
       })
-      .then(() => {
+      .then(res => {
         done();
       })
 
@@ -86,18 +86,18 @@ describe("Delete tag", () => {
           json: true,
           jar: bizRep.jar,
           resolveWithFullResponse: true
-        })).then(res => {
+        }))
+      .then(res => {
 
-      expect(res.statusCode).toBe(200);
+        expect(res.statusCode).toBe(200);
 
-      return sql.test.business.get({bid: biz.bid});
-    }).then(res => {
+        return sql.test.business.get({bid: biz.bid});
+      }).then(res => {
       expect(res[0].tags.length).toBe(0);
       done();
     })
       .catch(lib.helpers.errorHandler.bind(this));
   });
-
   it("Rep should be able to remove a tag from product", function (done) {
     this.done = done;
     sql.test.tag.appendTag({tableName: 'product', tag: 'اینترنت', condition: `product_id = ${product_id}`})
@@ -123,8 +123,6 @@ describe("Delete tag", () => {
     })
       .catch(lib.helpers.errorHandler.bind(this));
   });
-
-
   it("Expect error when other users want to delete product tag", function (done) {
 
     this.done = done;
