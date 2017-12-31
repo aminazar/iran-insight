@@ -137,7 +137,7 @@ router.get('/business/oneAll/:bid', apiResponse('Business', 'getOneAll', false, 
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
 router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
 router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
-
+router.delete('/person/partnership/:pid', apiResponse('Person', 'deletePartnership', false, ['user', 'params.pid']));
 
 // Product API
 router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
