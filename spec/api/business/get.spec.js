@@ -79,6 +79,7 @@ describe("GET Business API", () => {
       })
       .then(res => {
         expect(res.statusCode).toBe(200);
+        console.log('here',res.body);
         let body = JSON.parse(res.body);
         expect(body).toBeTruthy();
         if (body) {
@@ -90,6 +91,37 @@ describe("GET Business API", () => {
           expect(body.url).toBeNull();
           expect(body.general_stats).toBeNull();
           expect(body.financial_stats).toBeNull();
+        }
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("get all data about one business by id", function(done) {
+    this.done = done;
+    let bid;
+    sql.test.business.add(biz)
+      .then(res => {
+        bid = res.bid;
+        return rp({
+          uri: lib.helpers.apiTestURL('business/oneAll/' + bid),
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let body = JSON.parse(res.body);
+        expect(body).toBeTruthy();
+        if (body) {
+          expect(body.name).toBe(biz.name);
+          expect(body.name_fa).toBe(biz.name_fa);
+          expect(body.ceo_pid).toBeNull();
+          expect(body.address).toBeNull();
+          expect(body.tel).toBeNull();
+          expect(body.url).toBeNull();
+          expect(body.general_stats).toBeNull();
+          expect(body.financial_stats).toBeNull();
+          expect(body.members.constructor.name).toBe('Array');
         }
         done();
       })

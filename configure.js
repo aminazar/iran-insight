@@ -7,7 +7,7 @@ const lib = require('./lib');
 
 function dbTestCreate() {
   return new Promise((resolve, reject) => {
-    sql.db.create({dbName: env.test_db_name}, true)
+    sql.db.create({dbName: env.test_db_name})
       .then(() => {
         resolve();
       })
@@ -27,7 +27,7 @@ function prodTablesCreate() {
 
 function setupMainDatabase() {
   prodTablesCreate()
-    .then(() => lib.dbHelpers.addPerson('admin@iraninsight.com', 'admin123', {}, false, true))
+    .then(() => lib.dbHelpers.addPerson(`admin@${env.config.appName}`, 'admin123', {}, false, true))
     .then(adminId => lib.dbHelpers.addAdmin(adminId, false))
     .then(() => {
       if (env.isDev)

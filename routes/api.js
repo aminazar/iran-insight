@@ -26,9 +26,6 @@ function apiResponse(className, functionName, adminOnly = false, reqFuncs = []) 
   };
 
   return (function (req, res) {
-
-    req.test = lib.helpers.isTestReq(req);
-
     lib.Person.adminCheck(adminOnly, req.user, req.test)
       .then(rs => {
         if (adminOnly && rs.length < 1)
@@ -53,7 +50,7 @@ function apiResponse(className, functionName, adminOnly = false, reqFuncs = []) 
           .json(data);
       })
       .catch(err => {
-        console.log(`${className}/${functionName}: `,  err);
+        console.log(`${className}/${functionName}: `, req.app.get('env') === 'development' ? err : err.message);
         res.status(err.status || 500)
           .send(err.message || err);
       });
@@ -64,24 +61,34 @@ router.get('/', function (req, res) {
   res.send('respond with a resource');
 });
 // Login API
-router.post('/login', passport.authenticate('local', {}), apiResponse('Person', 'afterLogin', false, ['user.username']));
+router.post('/login', passport.authenticate('local', {}), apiResponse('Person', 'afterLogin', false, ['user']));
 router.post('/loginCheck', apiResponse('Person', 'loginCheck', false, ['body.username', 'body.password']));
 router.get('/logout', (req, res) => {
   req.logout();
   res.status(200).json('')
 });
-router.get('/validUser', apiResponse('Person', 'afterLogin', false, ['user.username']));
+router.get('/validUser', apiResponse('Person', 'afterLogin', false, ['user']));
 
 // Open Authentication API
 router.get('/login/google', passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login', 'profile', 'email']}));
-router.get('/login/google/callback', passport.authenticate('google', {}), apiResponse('Person', 'afterLogin', false, ['user.username']));
+router.get('/login/google/callback', passport.authenticate('google', {
+  successRedirect : '/login/oauth',
+  failureRedirect : '/login'
+}));
 router.get('/login/facebook', passport.authenticate('facebook'));
-router.get('/login/facebook/callback', passport.authenticate('facebook'), apiResponse('Person', 'afterLogin', false, ['user.username']));
+router.get('/login/client/facebook/callback', passport.authenticate('facebook', {
+  successRedirect : '/login/oauth',
+  failureRedirect : '/login'
+}));
 router.get('/login/linkedin', passport.authenticate('linkedin', {scope: ['r_basicprofile', 'r_emailaddress']}));
-router.get('/login/linkedin/callback', passport.authenticate('linkedin', {}), apiResponse('Person', 'afterLogin', false, ['user.username']));
+router.get('/login/client/linkedin/callback', passport.authenticate('linkedin', {
+  successRedirect : '/login/oauth',
+  failureRedirect : '/login'
+}));
 
 // Person API
 router.put('/user/register', apiResponse('Person', 'registration', false, ['body']));
+router.post('/user/email/isExist', apiResponse('Person', 'emailIsExist', false, ['body']));
 router.get('/user/activate/link/:link', apiResponse('Person', 'checkActiveLink', false, ['params.link']));
 router.post('/user/auth/local/:link', apiResponse('Person', 'completeAuth', false, ['params.link', 'body']));
 router.post('/user/auth/link', apiResponse('Person', 'sendActivationMail', false, ['body.email', 'body.is_forgot_mail']));
@@ -116,34 +123,29 @@ router.delete('/expertise/:pid/:expertise_id', apiResponse('Person', 'deleteExpe
 router.post('/user/notify', apiResponse('Person', 'changeNotifyType', false, ['user.pid', 'body']));
 
 // Partnership
-router.get('/person/partnership/:pid', apiResponse('Person', 'getPartnership', false, ['user.pid', 'params.pid']));
+router.get('/person/partnership/:pid/:offset/:limit', apiResponse('Person', 'getPartnershipList', false, ['user.pid', 'params.pid','params.offset' , 'params.limit']));
+router.get('/person/partnership/:id', apiResponse('Person', 'getPartnershipDetail', false, ['user.pid', 'params.id']));
 router.get('/person/requested/partnership', apiResponse('Person', 'getRequestedPartnership', false, ['user.pid']));
 router.put('/person/partnership', apiResponse('Person', 'setPartnership', false, ['user', 'body']));
 router.post('/person/confirm/partnership', apiResponse('Person', 'confirmPartnership', false, ['user', 'body']));
-router.delete('/person/partnership', apiResponse('Person', 'deletePartnership', false, ['user', 'body']));
+router.delete('/person/partnership/:pid', apiResponse('Person', 'deletePartnership', false, ['user', 'params.pid']));
 
 
 // Business API
 router.get('/business/one/:bid', apiResponse('Business', 'getOne', false, ['params']));
+router.get('/business/oneAll/:bid', apiResponse('Business', 'getOneAll', false, ['params']));
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
-router.put('/product', apiResponse('Business', 'addProduct', true, ['body']));
-router.post('/business/product', apiResponse('Business', 'addBusinessProduct', false, ['body', 'user.pid']));
 router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
-router.get('/business/product/all/:bid', apiResponse('Business', 'getAllBusinessProducts', false, ['params.bid']));
 router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
-router.delete('/business/product', apiResponse('Business', 'removeBizOfProduct', false, ['body', 'user.pid']));
+
 
 // Product API
-router.post('/update-product/:product_id', apiResponse('Business', 'updateProduct', true, ['params.product_id','body']));
-router.delete('/delete-product/:product_id', apiResponse('Business', 'deleteProduct', true, ['params.product_id']));
-
-
-// Business LCE API
-router.put('/business-lce', apiResponse('Business', 'setLCE', false, ['body', 'user.pid']));
-router.post('/business-lce/confirm', apiResponse('Business', 'confirmLCE', false, ['user.pid', 'body']));
-router.get('/business-lce/:bid', apiResponse('Business', 'getLCE', false, ['user.pid', 'params.bid']));
-router.get('/business-lce/requested/:bid', apiResponse('Business', 'getRequestedLCE', false, ['user.pid', 'params.bid']));
-router.delete('/business-lce', apiResponse('Business', 'deleteLCE', false, ['user', 'body']));
+router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
+router.put('/business/product/:business_id', apiResponse('Business', 'addBusinessProduct', false, ['params.business_id','body', 'user.pid']));
+router.delete('/business/product/:business_id/:product_id', apiResponse('Business', 'removeBizOfProduct', false, ['params.business_id','params.product_id', 'user.pid']));
+router.post('/business/product/:business_id/:product_id', apiResponse('Business', 'updateProduct', false, ['params.business_id','params.product_id','body', 'user.pid']));
+router.get('/business/product/all/:business_id', apiResponse('Business', 'allProducts', false, ['params']));
+router.get('/business/product/one/:business_id', apiResponse('Business', 'oneProduct', false, ['params']));
 
 
 // Organization API
@@ -156,11 +158,10 @@ router.post('/organization/profile', apiResponse('Organization', 'setProfile', f
 // LCE API
 router.put('/lce/:type', apiResponse('LCE', 'setLCE', false, ['params.type', 'user.pid', 'body']));
 router.post('/lce/:type/confirm', apiResponse('LCE', 'confirmLCE', false, ['params.type', 'user.pid', 'body']));
-router.get('/lce/:type/:id', apiResponse('LCE', 'getLCE', false, ['params.type', 'user.pid', 'params.id']));
-router.get('/lce/:type/requested/:id', apiResponse('LCE', 'getRequestedLCE', false, ['params.type', 'user.pid', 'params.id']));
+router.get('/lce/:type/:id/:lceId', apiResponse('LCE', 'getLCEDetail', false, ['params.type', 'user.pid', 'params.id', 'params.lceId']));
+router.get('/lce/:type/:id/:offset/:limit', apiResponse('LCE', 'getLCEList', false, ['params.type', 'user.pid', 'params.id', 'params.offset' , 'params.limit']));
+router.get('/lce/:type/requested/:id/:offset/:limit', apiResponse('LCE', 'getRequestedLCE', false, ['params.type', 'user.pid', 'params.id','params.offset' , 'params.limit']));
 router.delete('/lce/:type/:id', apiResponse('LCE', 'deleteLCE', false, ['params.type', 'user', 'params.id']));
-
-
 
 // types
 router.post('/type/:name', apiResponse('Type', 'suggest', false, ['user.pid', 'params.name', 'body']));
@@ -183,11 +184,10 @@ router.delete('/user/deleteRep/:mid', apiResponse('Person', 'deleteRepRequest', 
 router.delete('/user/deleteRepBizOrg/:mid', apiResponse('Person', 'deleteRepAndHisCompany', true, ['params.mid']));
 
 //upsert/delete an authoritative user(rep/regular)
-router.post('/user/updateMembershipForUser/:mid',apiResponse('Person','updateMembershipForUser',false,['params.mid','body','user.pid']));
-router.delete('/user/deleteUserOrRepAfterConfirm/:mid',apiResponse('Person','deleteUserOrRepAfterConfirm',false,['params.mid','user.pid']));
+router.delete('/user/deleteUserOrRepAfterConfirm/:mid', apiResponse('Person', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
 
 //Events API
-router.get('/event/:eid', apiResponse('Event', 'load', false, ['params.eid', '?user.pid']));
+router.get('/event/:eid', apiResponse('Event', 'load' , false, ['params.eid', '?user.pid']));
 router.put('/event', apiResponse('Event', 'saveData', false, ['body', 'user']));
 router.post('/event/:eid', apiResponse('Event', 'saveData', false, ['body', 'user', 'params.eid']));
 router.delete('/event/:eid', apiResponse('Event', 'delete', false, ['params.eid', 'user']));
@@ -199,6 +199,11 @@ router.put('/bizAttends/:eid/:bid', apiResponse('Attendance', 'bizAttends', fals
 router.delete('/bizAttends/:eid/:bid', apiResponse('Attendance', 'bizUnattends', false, ['params.eid', 'params.bid', 'user.pid']));
 router.put('/orgAttends/:eid/:oid', apiResponse('Attendance', 'orgAttends', false, ['params.eid', 'body', 'params.oid', 'user.pid']));
 router.delete('/orgAttends/:eid/:oid', apiResponse('Attendance', 'orgUnattends', false, ['params.eid', 'params.oid', 'user.pid']));
+router.get('/attendee/:eid', apiResponse('Attendance', 'getAttendees', false, ['params.eid']));
+router.delete('/attendance/:id', apiResponse('Attendance', 'deleteAttendance', true, ['params.id']));
+router.put('/attends/:eid', apiResponse('Attendance', 'attends', true, ['params.eid', 'body', 'user']));
+router.post('/attendee/:id', apiResponse('Attendance', 'updateAttendee', false, ['params.id', 'body']));
+router.get('/attendance/types', apiResponse('Attendance', 'getTypes', false, []));
 
 // Joiners API
 router.get('/joiners/org/:oid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));

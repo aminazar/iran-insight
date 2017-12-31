@@ -46,16 +46,17 @@ let modExp = {
     getPersonExpertise: sql('person/getPersonExpertise.sql'),
     deleteExpertiseById: sql('person/deleteExpertiseById.sql'),
     getAdmins: sql('person/getAdmins.sql'),
+    updatePass: sql('person/updatePass.sql'),
 
   },
   partnership: {
     create: sql('partnership/create.sql'),
     drop: sql('partnership/drop.sql'),
-    getById: sql('partnership/getById.sql'),
     getFromById: sql('partnership/getFromById.sql'),
     getConfirmedById: sql('partnership/getConfirmedById.sql'),
     getRequestedById: sql('partnership/getRequestedById.sql'),
-    getFullData: sql('partnership/getFullData.sql'),
+    getPartnershipList: sql('partnership/getPartnershipList.sql'),
+    getPartnershipDetail: sql('partnership/getPartnershipDetail.sql'),
   },
 
   administrators: {
@@ -94,6 +95,8 @@ let modExp = {
     deleteByLink: sql('person_activation_link/deleteByLink.sql'),
     get: sql('person_activation_link/get.sql'),
     getByLink: sql('person_activation_link/getByLink.sql'),
+    deleteByPID: sql('person_activation_link/deleteByPID.sql'),
+    getByLinkUsername: sql('person_activation_link/getByLinkUsername.sql'),
   },
   business: {
     create: sql('business/create.sql'),
@@ -142,12 +145,16 @@ let modExp = {
     personUnattends: sql('attendance/person-unattend.sql'),
     bizUnattends: sql('attendance/biz-unattend.sql'),
     orgUnattends: sql('attendance/org-unattend.sql'),
+    getAttendees: sql('attendance/getAttendees.sql'),
   },
   product: {
     create: sql('product/create.sql'),
     drop: sql('product/drop.sql'),
     getById: sql('product/getById.sql'),
     getAll: sql('product/getAll.sql'),
+    getByProductId: sql('product/getByProductId.sql'),
+    getByBiz: sql('product/getByBiz.sql'),
+    getOne: sql('product/getOne.sql'),
   },
   business_product: {
     create: sql('business_product/create.sql'),
@@ -206,7 +213,9 @@ let extraSQLMap = {
   consultancy: `is_mentor boolean not null default false,
     subject varchar(100),
     subject_fa varchar(100),`,
-  lce_type: `is_killer boolean default false,`
+  lce_type: `is_killer boolean default false,`,
+  attendance_type: `is_vip boolean default false,
+    is_sponsor boolean default false,`,
 };
 // type tables
 
@@ -217,21 +226,22 @@ types.forEach(t => {
     drop: sql('type/drop.sql', {tableName: t}),
     getByName: sql('type/getByName.sql', {tableName: t}),
     getInfo: sql('type/getInfo.sql', {tableName: t}),
+    getByActive: sql('type/getByActive.sql', {tableName: t}),
   }
 });
 
 ['business', 'organization'].forEach(t => {
 
   let tableName = `${t}_lce`;
-  let joinerName = t;
-  let joinerIdName = t === 'business' ? 'bid' : 'oid';
+  let possessorName = t;
+  let possessorIdName = t === 'business' ? 'bid' : 'oid';
 
   modExp[tableName] = {
     create: sql('lce/create.sql', {tableName}),
     drop: sql('lce/drop.sql', {tableName}),
     get: sql('lce/get.sql', {tableName}),
-    getLCEList: sql('lce/getLCEList.sql', {tableName, joinerName, joinerIdName}),
-    getLCEData: sql('lce/getLCEData.sql', {tableName, joinerName, joinerIdName})
+    getLCEList: sql('lce/getLCEList.sql', {tableName, possessorName, possessorIdName}),
+    getLCEDetail: sql('lce/getLCEDetail.sql', {tableName, possessorName, possessorIdName})
   }
 });
 

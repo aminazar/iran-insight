@@ -267,7 +267,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
   it("admin should be able to finish reresentative's membership ONLY,(other regular users are related to their reps, not admin)", done => {
     sql.test.membership.update({end_time: moment(new Date()).add(7, 'day')}, 1)
@@ -309,7 +309,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
   it('admin should NOT be able to finish a finished membership of a rep', function (done) {
     sql.test.membership.update({start_time: moment(new Date()).add(-7, 'day')}, 1)
@@ -334,7 +334,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
   it('rep should be able to finish her/his membership', done => {
     rp({
@@ -355,7 +355,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
   it('rep should be able to finish her/his-joiners membership ONLY', done => {
     rp({
@@ -376,7 +376,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
   it('should threw an error when a rep-user is going to finish another rep membership', function (done) {
     sql.test.association.update({pid: 3}, 3)
@@ -397,7 +397,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
   it('should threw an error when a rep-user is going to finish other rep joiners membership', function (done) {
     sql.test.association.update({pid: 3}, 2)   // make user1 to be rep of biz2 and user2 is joiner of user1...//rep user is rep of biz1,user1 is also joiner of repuser
@@ -419,7 +419,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
   it('regular user should be able to finish his/her membership ONLY', done => {
     rp({
@@ -440,7 +440,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
   it('should threw an error when a regular user is going to finish another user except her/himself', function (done) {
     rp({
@@ -458,7 +458,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
         console.log(err.message);
         done();
       });
-  });
+  }, 10000);
 
 });
 
