@@ -108,7 +108,6 @@ describe("Post partnership API", () => {
         resolveWithFullResponse: true
       })
         .then(res => {
-
           expect(res.statusCode).toBe(200);
           return sql.test.partnership.getFromById({pid: user2Obj.pid});
         }).then(res => {

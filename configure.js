@@ -7,7 +7,7 @@ const lib = require('./lib');
 
 function dbTestCreate() {
   return new Promise((resolve, reject) => {
-    sql.db.create({dbName: env.test_db_name}, true)
+    sql.db.create({dbName: env.test_db_name})
       .then(() => {
         resolve();
       })
