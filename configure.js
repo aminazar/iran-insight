@@ -27,7 +27,7 @@ function prodTablesCreate() {
 
 function setupMainDatabase() {
   prodTablesCreate()
-    .then(() => lib.dbHelpers.addPerson(`admin@${env.config.appName}`, 'admin123', {}, false, true))
+    .then(() => lib.dbHelpers.addPerson(`admin@${env.config.appName}`, 'admin123', {display_name_en: 'SysAdmin'}, false, true))
     .then(adminId => lib.dbHelpers.addAdmin(adminId, false))
     .then(() => {
       if (env.isDev)

@@ -4,6 +4,18 @@ const router = express.Router();
 const passport = require('passport');
 const sql = require('../sql');
 const error = require('../lib/errors.list');
+const env = require('../env');
+const path = require('path');
+const app = require('../app');
+const multer = require('multer');
+
+var storage = multer.diskStorage({
+  destination: env.uploadPath + path.sep,
+  filename: (req, file, cb) => {
+    cb(null, [req.params.username || req.user.username, file.mimetype.substr(file.mimetype.lastIndexOf('/') + 1)].join('.'));
+  }
+});
+var upload = multer({storage: storage});
 
 function apiResponse(className, functionName, adminOnly = false, reqFuncs = []) {
   let args = Array.prototype.slice.call(arguments, 4);
@@ -93,6 +105,10 @@ router.get('/user/activate/link/:link', apiResponse('Person', 'checkActiveLink',
 router.post('/user/auth/local/:link', apiResponse('Person', 'completeAuth', false, ['params.link', 'body']));
 router.post('/user/auth/link', apiResponse('Person', 'sendActivationMail', false, ['body.email', 'body.is_forgot_mail']));
 router.post('/membership/introducing/rep', apiResponse('Person', 'introduceAsRep', false, ['body', 'user']));
+router.post('/profile/image/:pid', upload.single('image'), apiResponse('Person', 'setProfileImage', false, ['user.pid', 'params.pid', 'file']));
+router.post('/profile/image/:username/:pid', upload.single('image'), apiResponse('Person', 'setProfileImage', true, ['user.pid', 'params.pid', 'file']));
+router.get('/profile/image/:pid', apiResponse('Person', 'getProfileImage', false, ['params.pid']));
+router.delete('/profile/image/:pid', apiResponse('Person', 'deleteProfileImage', false, ['user.pid', 'params.pid']));
 
 router.put('/user', apiResponse('Person', 'insert', true, ['body']));
 router.get('/user', apiResponse('Person', 'select', true));
