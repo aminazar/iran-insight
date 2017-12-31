@@ -2,9 +2,8 @@ const rp = require('request-promise');
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
-const types = require('../../../sql/types');
 
-describe("Put bunch of tags by admin", () => {
+xdescribe("Put bunch of tags by admin", () => {
   let adminObj = {
     pid: null,
     jar: null,
@@ -162,17 +161,13 @@ describe("Put tag for biz, org and products", () => {
       })
       .then(res => {
         biz = res;
-        return sql.test.product.add({name: 'android app'})
+        return sql.test.product.add({name: 'android app', business_id: biz.bid})
 
       })
       .then(res => {
         product_id = res.product_id;
-        return sql.test.business_product.add({bid: biz.bid, product_id: res.product_id})
-      })
-      .then(() => {
         done();
       })
-
       .catch(err => {
         console.log(err);
         done();
@@ -203,8 +198,7 @@ describe("Put tag for biz, org and products", () => {
     })
       .catch(lib.helpers.errorHandler.bind(this));
   });
-
-  it("rep should be able to add proposer id to an existing tag for biz", function (done) {
+  xit("rep should be able to add proposer id to an existing tag for biz", function (done) {
     this.done = done;
 
     sql.test.tag.add({name: 'اینترنت'})
@@ -230,8 +224,7 @@ describe("Put tag for biz, org and products", () => {
     })
       .catch(lib.helpers.errorHandler.bind(this));
   });
-
-  it("Rep should be able to add non-existing tag for org", function (done) {
+  xit("Rep should be able to add non-existing tag for org", function (done) {
     this.done = done;
     rp({
       method: 'put',
@@ -255,8 +248,7 @@ describe("Put tag for biz, org and products", () => {
     })
       .catch(lib.helpers.errorHandler.bind(this));
   });
-
-  it("admin should be able to add non-existing tag for product", function (done) {
+  xit("admin should be able to add non-existing tag for product", function (done) {
     this.done = done;
 
     rp({
@@ -280,7 +272,39 @@ describe("Put tag for biz, org and products", () => {
     })
       .catch(lib.helpers.errorHandler.bind(this));
   });
-  it("Expect error when other users want to add tag for product", function (done) {
+  xit("admin should be able to add non-existing tag and add affinity with other tags ", function (done) {
+    this.done = done;
+
+    sql.test.tag.add({name: 'حمل و نقل'})
+      .then(res => sql.test.tag.add({name: 'آنلاین'}))
+      .then(res => sql.test.tag.add({name: 'شهری'}))
+      .then(res => sql.test.tag.add({name: 'عمومی'}))
+      .then(res =>{
+        rp({
+          method: 'put',
+          uri: lib.helpers.apiTestURL(`tag/add`),
+          body: {
+            product_id: product_id,
+            name: 'اینترنت',
+            related_names : ['حمل و نقل', 'شهری' , 'عمومی', 'آنلاین']
+          },
+          json: true,
+          jar: adminObj.jar,
+          resolveWithFullResponse: true
+        }).then(res => {
+
+          expect(res.statusCode).toBe(200);
+
+          return sql.test.tag_connection.select();
+        }).then(res => {
+          expect(res.length).toBe(4);
+          done();
+        })
+          .catch(lib.helpers.errorHandler.bind(this));
+      })
+
+  });
+  xit("Expect error when other users want to add tag for product", function (done) {
 
     rp({
       method: 'put',
