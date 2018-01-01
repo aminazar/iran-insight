@@ -119,7 +119,7 @@ describe('POST product API', () => {
         console.log(err.message);
         done();
       });
-  })
+  });
 
   it('admin should be able to add a new membership with exist aid', done => {
     sql.test.business.add(biz_info[0])
@@ -159,7 +159,7 @@ describe('POST product API', () => {
         console.log(err.message);
         done();
       });
-  })
+  });
 
   it('admin should be able to update a exist membership', done => {
     sql.test.business.add(biz_info[0])
@@ -200,6 +200,6 @@ describe('POST product API', () => {
         console.log(err.message);
         done();
       });
-  })
-
+  });
+  
 })
