@@ -118,6 +118,7 @@ let modExp = {
     create: sql('association/create.sql'),
     drop: sql('association/drop.sql'),
     get: sql('association/get.sql'),
+    getSpecialAssoc: sql('association/getSpecialAssoc.sql'),
   },
   membership: {
     create: sql('membership/create.sql'),
