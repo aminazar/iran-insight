@@ -16,6 +16,6 @@ create table if not exists person(
     is_user boolean default true,
     display_name_en varchar(30),
     display_name_fa varchar(30),
-    CONSTRAINTS one_display_name
+    CONSTRAINT one_display_name
     CHECK (display_name_en is not null or display_name_fa is not null)
 );
