@@ -205,7 +205,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
   beforeEach(done => {
     lib.dbHelpers.create()
       .then(() => {
-        return lib.dbHelpers.addAndLoginPerson('admin', 'admin');
+        return lib.dbHelpers.addAndLoginPerson('admin', 'admin', {display_name_en: 'DNE'});
       })
       .then((res) => {
         adminPid = res.pid;
@@ -217,6 +217,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
           {
           firstname_en: 'MrRep',
           surname_en: 'NamayandePoor ',
+            display_name_en: 'DNE',
         });
       })
       .then((res) => {
@@ -225,7 +226,8 @@ describe('Upsert/Delete membership, DELETE API', () => {
         return lib.dbHelpers.addAndLoginPerson('RegularUser1', '123456',
           {
           firstname_en: 'MrUser1',
-          surname_en: 'KarbarPoor1'
+          surname_en: 'KarbarPoor1',
+            display_name_en: 'DNE',
         })
       })
       .then((res) => {
@@ -234,7 +236,8 @@ describe('Upsert/Delete membership, DELETE API', () => {
         return lib.dbHelpers.addAndLoginPerson('RegularUser2', '123456',
           {
           firstname_en: 'MrUser2',
-          surname_en: 'KarbarPoor2'
+          surname_en: 'KarbarPoor2',
+            display_name_en: 'DNE',
         })
       })
       .then((res) => {
@@ -274,7 +277,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
       .then(() => {
         return rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/1`),
+          uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/1`),
           jar: adminJar,
           resolveWithFullResponse: true,
         })
@@ -296,7 +299,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
   it('should threw an error when admin is going to finish regular users', function (done) {
     rp({
       method: 'DELETE',
-      uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/5`),
+      uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/5`),
       jar: adminJar,
       resolveWithFullResponse: true,
     })
@@ -320,7 +323,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
         expect(res[0].end_time).not.toBe(null);
         return rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/1`),
+          uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/1`),
           jar: adminJar,
           resolveWithFullResponse: true,
         })
@@ -339,7 +342,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
   it('rep should be able to finish her/his membership', done => {
     rp({
       method: 'DELETE',
-      uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/3`),
+      uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/3`),
       jar: repJar,
       resolveWithFullResponse: true,
     })
@@ -360,7 +363,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
   it('rep should be able to finish her/his-joiners membership ONLY', done => {
     rp({
       method: 'DELETE',
-      uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/5`),
+      uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/5`),
       jar: repJar,
       resolveWithFullResponse: true,
     })
@@ -383,7 +386,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
       .then(res => {
         return rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/3`),
+          uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/3`),
           jar: repJar,
           resolveWithFullResponse: true,
         })
@@ -404,7 +407,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
       .then(res => {
         return rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/5`),
+          uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/5`),
           jar: repJar,
           resolveWithFullResponse: true,
 
@@ -424,7 +427,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
   it('regular user should be able to finish his/her membership ONLY', done => {
     rp({
       method: 'DELETE',
-      uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/4`),
+      uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/4`),
       jar: userJar1,
       resolveWithFullResponse: true,
     })
@@ -445,7 +448,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
   it('should threw an error when a regular user is going to finish another user except her/himself', function (done) {
     rp({
       method: 'DELETE',
-      uri: lib.helpers.apiTestURL(`user/deleteUserOrRepAfterConfirm/5`),
+      uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/5`),
       jar: userJar1,
       resolveWithFullResponse: true,
     })
