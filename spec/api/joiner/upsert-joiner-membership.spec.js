@@ -148,7 +148,6 @@ describe('POST product API', () => {
         return sql.test.membership.add(mem_info[0])
       })
       .then((res) => {
-        console.log('***');
         return rp({
           method: 'post',
           body: {
