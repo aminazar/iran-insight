@@ -32,18 +32,6 @@ describe('POST product API', () => {
     url: null,
     general_stats: null,
     financial_stats: null
-  }, {
-    bid: 2,
-    name: 'tabriz leather',
-    name_fa: 'چرم تبریز',
-    ceo_pid: null,
-    biz_type_id: null,
-    address: 'Iran-Tehran',
-    address_fa: 'ایران - تبریز',
-    tel: '02188668866',
-    url: null,
-    general_stats: null,
-    financial_stats: null
   }];
   let position_type_info = [{
     id: 300,
@@ -64,7 +52,7 @@ describe('POST product API', () => {
   }];
   let mem_info = [{
     assoc_id: 1,
-    is_active: true,
+    is_active: false,
     is_representative: false,
     position_id:300,
   }];
