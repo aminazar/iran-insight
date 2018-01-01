@@ -184,6 +184,7 @@ describe('POST product API', () => {
             bid:1,
             is_active: true,
             is_representative: true,
+            position_id:301,
           },
           json: true,
           uri: lib.helpers.apiTestURL('joiner/upsert/membership'),
