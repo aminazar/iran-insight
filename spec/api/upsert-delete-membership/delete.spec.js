@@ -272,7 +272,7 @@ describe('Upsert/Delete membership, DELETE API', () => {
       });
   });
 
-  xit("admin should be able to finish reresentative's membership ONLY,(other regular users are related to their reps, not admin)", done => {
+  it("admin should be able to finish reresentative's membership ONLY,(other regular users are related to their reps, not admin)", done => {
     sql.test.membership.update({end_time: moment(new Date()).add(7, 'day')}, 1)
       .then(() => {
         return rp({
@@ -314,154 +314,154 @@ describe('Upsert/Delete membership, DELETE API', () => {
       });
   });
 
-  // it('admin should NOT be able to finish a finished membership of a rep', function (done) {
-  //   sql.test.membership.update({start_time: moment(new Date()).add(-7, 'day')}, 1)
-  //     .then((res) => {
-  //       return sql.test.membership.update({end_time: moment(new Date()).add(-3, 'day')}, 1)
-  //     })
-  //     .then(res => {
-  //       expect(res[0].end_time).not.toBe(null);
-  //       return rp({
-  //         method: 'DELETE',
-  //         uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/1`),
-  //         jar: adminJar,
-  //         resolveWithFullResponse: true,
-  //       })
-  //     })
-  //     .then(() => {
-  //       this.fail('Thiss membership has finished before.');
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       expect(err.statusCode).toBe(500);
-  //       console.log(err.message);
-  //       done();
-  //     });
-  // });
-  //
-  // it('rep should be able to finish her/his membership', done => {
-  //   rp({
-  //     method: 'DELETE',
-  //     uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/3`),
-  //     jar: repJar,
-  //     resolveWithFullResponse: true,
-  //   })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       return sql.test.membership.get({mid: 3})
-  //     })
-  //     .then(res => {
-  //       expect(res[0].end_time).not.toBe(null); // this membership is finished now.
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       console.log(err.message);
-  //       done();
-  //     });
-  // });
-  //
-  // it('rep should be able to finish her/his-joiners membership ONLY', done => {
-  //   rp({
-  //     method: 'DELETE',
-  //     uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/5`),
-  //     jar: repJar,
-  //     resolveWithFullResponse: true,
-  //   })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       return sql.test.membership.get({mid: 5})
-  //     })
-  //     .then(res => {
-  //       expect(res[0].end_time).not.toBe(null); // this membership is finished now.
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       console.log(err.message);
-  //       done();
-  //     });
-  // });
-  //
-  // it('should threw an error when a rep-user is going to finish another rep membership', function (done) {
-  //   sql.test.association.update({pid: 3}, 3)
-  //     .then(res => {
-  //       return rp({
-  //         method: 'DELETE',
-  //         uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/3`),
-  //         jar: repJar,
-  //         resolveWithFullResponse: true,
-  //       })
-  //     })
-  //     .then(() => {
-  //       this.fail('you are not allowed to finish other rep membership.');
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       expect(err.statusCode).toBe(403);
-  //       console.log(err.message);
-  //       done();
-  //     });
-  // });
-  //
-  // it('should threw an error when a rep-user is going to finish other rep joiners membership', function (done) {
-  //   sql.test.association.update({pid: 3}, 2)   // make user1 to be rep of biz2 and user2 is joiner of user1...//rep user is rep of biz1,user1 is also joiner of repuser
-  //     .then(res => {
-  //       return rp({
-  //         method: 'DELETE',
-  //         uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/5`),
-  //         jar: repJar,
-  //         resolveWithFullResponse: true,
-  //
-  //       })
-  //     })
-  //     .then(() => {
-  //       this.fail('you are not allowed to finish other rep membership.');
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       expect(err.statusCode).toBe(403);
-  //       console.log(err.message);
-  //       done();
-  //     });
-  // });
-  //
-  // it('regular user should be able to finish his/her membership ONLY', done => {
-  //   rp({
-  //     method: 'DELETE',
-  //     uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/4`),
-  //     jar: userJar1,
-  //     resolveWithFullResponse: true,
-  //   })
-  //     .then(res => {
-  //       expect(res.statusCode).toBe(200);
-  //       return sql.test.membership.get({mid: 4})
-  //     })
-  //     .then(res => {
-  //       expect(res[0].end_time).not.toBe(null);
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       console.log(err.message);
-  //       done();
-  //     });
-  // });
-  //
-  // it('should threw an error when a regular user is going to finish another user except her/himself', function (done) {
-  //   rp({
-  //     method: 'DELETE',
-  //     uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/5`),
-  //     jar: userJar1,
-  //     resolveWithFullResponse: true,
-  //   })
-  //     .then(() => {
-  //       this.fail('you are not allowed to finish this membership.');
-  //       done();
-  //     })
-  //     .catch(err => {
-  //       expect(err.statusCode).toBe(403);
-  //       console.log(err.message);
-  //       done();
-  //     });
-  // });
+  it('admin should NOT be able to finish a finished membership of a rep', function (done) {
+    sql.test.membership.update({start_time: moment(new Date()).add(-7, 'day')}, 1)
+      .then((res) => {
+        return sql.test.membership.update({end_time: moment(new Date()).add(-3, 'day')}, 1)
+      })
+      .then(res => {
+        expect(res[0].end_time).not.toBe(null);
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/1`),
+          jar: adminJar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(() => {
+        this.fail('Thiss membership has finished before.');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(500);
+        console.log(err.message);
+        done();
+      });
+  });
+
+  it('rep should be able to finish her/his membership', done => {
+    rp({
+      method: 'DELETE',
+      uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/3`),
+      jar: repJar,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid: 3})
+      })
+      .then(res => {
+        expect(res[0].end_time).not.toBe(null); // this membership is finished now.
+        done();
+      })
+      .catch(err => {
+        console.log(err.message);
+        done();
+      });
+  });
+
+  it('rep should be able to finish her/his-joiners membership ONLY', done => {
+    rp({
+      method: 'DELETE',
+      uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/5`),
+      jar: repJar,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid: 5})
+      })
+      .then(res => {
+        expect(res[0].end_time).not.toBe(null); // this membership is finished now.
+        done();
+      })
+      .catch(err => {
+        console.log(err.message);
+        done();
+      });
+  });
+
+  it('should threw an error when a rep-user is going to finish another rep membership', function (done) {
+    sql.test.association.update({pid: 3}, 3)
+      .then(res => {
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/3`),
+          jar: repJar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(() => {
+        this.fail('you are not allowed to finish other rep membership.');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(403);
+        console.log(err.message);
+        done();
+      });
+  });
+
+  it('should threw an error when a rep-user is going to finish other rep joiners membership', function (done) {
+    sql.test.association.update({pid: 3}, 2)   // make user1 to be rep of biz2 and user2 is joiner of user1...//rep user is rep of biz1,user1 is also joiner of repuser
+      .then(res => {
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/5`),
+          jar: repJar,
+          resolveWithFullResponse: true,
+
+        })
+      })
+      .then(() => {
+        this.fail('you are not allowed to finish other rep membership.');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(403);
+        console.log(err.message);
+        done();
+      });
+  });
+
+  it('regular user should be able to finish his/her membership ONLY', done => {
+    rp({
+      method: 'DELETE',
+      uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/4`),
+      jar: userJar1,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.membership.get({mid: 4})
+      })
+      .then(res => {
+        expect(res[0].end_time).not.toBe(null);
+        done();
+      })
+      .catch(err => {
+        console.log(err.message);
+        done();
+      });
+  });
+
+  it('should threw an error when a regular user is going to finish another user except her/himself', function (done) {
+    rp({
+      method: 'DELETE',
+      uri: lib.helpers.apiTestURL(`joiner/deleteUserOrRepAfterConfirm/5`),
+      jar: userJar1,
+      resolveWithFullResponse: true,
+    })
+      .then(() => {
+        this.fail('you are not allowed to finish this membership.');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(403);
+        console.log(err.message);
+        done();
+      });
+  });
 
 });
 
