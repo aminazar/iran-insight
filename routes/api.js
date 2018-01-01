@@ -183,8 +183,16 @@ router.put('/user/confirmRep/:mid/:aid', apiResponse('Person', 'confirmRepByAdmi
 router.delete('/user/deleteRep/:mid', apiResponse('Person', 'deleteRepRequest', true, ['user', 'params.mid']));
 router.delete('/user/deleteRepBizOrg/:mid', apiResponse('Person', 'deleteRepAndHisCompany', true, ['params.mid']));
 
-//upsert/delete an authoritative user(rep/regular)
+// upsert/delete an authoritative user(rep/regular)
 router.delete('/user/deleteUserOrRepAfterConfirm/:mid', apiResponse('Person', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
+
+// Joiners API
+router.get('/joiners/org/:oid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
+router.get('/joiners/biz/:bid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
+router.get('/joiners', apiResponse('Joiner', 'select', false, ['user.pid']));
+router.put('/joiner/:mid', apiResponse('Joiner', 'saveData', false, ['params.mid', 'user'])); //just confirm a membership by admin or representative
+router.post('/joiner/upsert/membership', apiResponse('Joiner', 'upsertMembership', true, ['body', 'user.pid']));
+router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['params.mid', 'params.aid', 'user']));
 
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load' , false, ['params.eid', '?user.pid']));
@@ -204,13 +212,6 @@ router.delete('/attendance/:id', apiResponse('Attendance', 'deleteAttendance', t
 router.put('/attends/:eid', apiResponse('Attendance', 'attends', true, ['params.eid', 'body', 'user']));
 router.post('/attendee/:id', apiResponse('Attendance', 'updateAttendee', false, ['params.id', 'body']));
 router.get('/attendance/types', apiResponse('Attendance', 'getTypes', false, []));
-
-// Joiners API
-router.get('/joiners/org/:oid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
-router.get('/joiners/biz/:bid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
-router.get('/joiners', apiResponse('Joiner', 'select', false, ['user.pid']));
-router.put('/joiner/:mid', apiResponse('Joiner', 'saveData', false, ['params.mid', 'user']));
-router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['params.mid', 'params.aid', 'user']));
 
 // Investment API
 router.get('/investment/business/:bid', apiResponse('Investment', 'getByBiz', false, ['params.bid']));
