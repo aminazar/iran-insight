@@ -201,5 +201,4 @@ describe('POST product API', () => {
         done();
       });
   });
-  
 })
