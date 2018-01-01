@@ -178,9 +178,9 @@ router.delete('/tag/removeFrom', apiResponse('Tag', 'removeTagFromTarget', false
 router.get('/tag/:type/:id', apiResponse('Tag', 'getTags', false, ['user.pid', 'params.type', 'params.id']));
 
 // Representation-check API
-router.get('/Joiner/getRepPendingList', apiResponse('Person', 'findRepRequests', true));
-router.put('/Joiner/confirmRep/:mid/:aid', apiResponse('Person', 'confirmRepByAdmin', true, ['params.mid', 'params.aid', 'user']));
-router.delete('/Joiner/deleteRep/:mid', apiResponse('Person', 'deleteRepRequest', true, ['user', 'params.mid']));
+router.get('/joiner/getRepPendingList', apiResponse('Person', 'findRepRequests', true));
+router.put('/joiner/confirmRep/:mid/:aid', apiResponse('Person', 'confirmRepByAdmin', true, ['params.mid', 'params.aid', 'user']));
+router.delete('/joiner/deleteRep/:mid', apiResponse('Person', 'deleteRepRequest', true, ['user', 'params.mid']));
 router.delete('/Joiner/deleteRepBizOrg/:mid', apiResponse('Person', 'deleteRepAndHisCompany', true, ['params.mid']));
 
 // upsert/delete an authoritative user(rep/regular)
