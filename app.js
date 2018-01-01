@@ -4,6 +4,8 @@ let favicon = require('serve-favicon');
 let logger = require('morgan');
 let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
+const multer = require('multer');
+const env = require('./env');
 
 let index = require('./routes/index');
 let api = require('./routes/api');
@@ -27,6 +29,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(express.static(__dirname + '/documents/profile-image'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 session.setup(app)
