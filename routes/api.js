@@ -149,6 +149,7 @@ router.delete('/person/partnership/:pid', apiResponse('Person', 'deletePartnersh
 
 // Business API
 router.get('/business/one/:bid', apiResponse('Business', 'getOne', false, ['params']));
+router.delete('/business/one/:bid', apiResponse('Business', 'deleteBiz', false, ['params.bid', 'user.pid']));
 router.get('/business/oneAll/:bid', apiResponse('Business', 'getOneAll', false, ['params']));
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
 router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
