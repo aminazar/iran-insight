@@ -161,7 +161,7 @@ describe('DELETE Business API', () => {
     this.done = done;
     rp({
       method: 'delete',
-      uri: lib.helpers.apiTestURL('business/one/' + businessId),
+      uri: lib.helpers.apiTestURL('business/one/' + businessId + '/2018-03-03'),
       jar: repObj.jar,
       resolveWithFullResponse: true,
     })
@@ -176,7 +176,7 @@ describe('DELETE Business API', () => {
     this.done = done;
     rp({
       method: 'delete',
-      uri: lib.helpers.apiTestURL('business/one/' + businessId),
+      uri: lib.helpers.apiTestURL('business/one/' + businessId + '/2018-03-03'),
       jar: normalUserObj.jar,
       resolveWithFullResponse: true,
     })
@@ -200,7 +200,7 @@ describe('DELETE Business API', () => {
       .then(res => {
         return rp({
           method: 'delete',
-          uri: lib.helpers.apiTestURL('business/one/' + res.bid),
+          uri: lib.helpers.apiTestURL('business/one/' + res.bid + '/2018-03-03'),
           jar: adminObj.jar,
           resolveWithFullResponse: true,
         });
