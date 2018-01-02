@@ -104,6 +104,7 @@ let modExp = {
     get: sql('business/get.sql'),
     getBusinessProducts: sql('business/getBusinessProducts.sql'),
     getOne: sql('business/getOne.sql'),
+    delete: sql('business/delete.sql'),
   },
   business_lce: {
     create: sql('lce/create.sql'),
@@ -134,7 +135,6 @@ let modExp = {
     checkIfRepIsExist: sql('membership/checkIfRepIsExist.sql'),
     getBizOrgNameById: sql('membership/getBizOrgNamesById.sql'),
     getOrgBizMembers: sql('membership/getOrgBizMembers.sql'),
-    getAssocWithBizRep: sql('membership/getAssocWithBizRep.sql'),
   },
   event: {
     create: sql('event/create.sql'),

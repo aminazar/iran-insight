@@ -219,7 +219,7 @@ let tablesWithSqlCreatedByHelpers = [
     insert: true,
     update: true,
     select: true,
-    delete: true,
+    delete: false,
     get: true,
     idColumn: 'bid',
   },
