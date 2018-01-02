@@ -191,14 +191,15 @@ router.get('/type/:name/:type_id', apiResponse('Type', 'getInfo', true, ['params
 router.put('/tag/add_all', apiResponse('Tag', 'addAll', true, ['body']));
 router.put('/tag/add', apiResponse('Tag', 'setTag', false, ['user.pid', 'body']));
 router.post('/tag/confirm/:tid', apiResponse('Tag', 'confirm', true, ['params.tid']));
+router.post('/tag/reject/:tid', apiResponse('Tag', 'reject', true, ['params.tid']));
 router.delete('/tag/removeFrom', apiResponse('Tag', 'removeTagFromTarget', false, ['user.pid', 'body']));
 router.get('/tag/:type/:id', apiResponse('Tag', 'getTags', false, ['user.pid', 'params.type', 'params.id']));
 
 // Representation-check API
-router.get('/Joiner/getRepPendingList', apiResponse('Person', 'findRepRequests', true));
-router.put('/Joiner/confirmRep/:mid/:aid', apiResponse('Person', 'confirmRepByAdmin', true, ['params.mid', 'params.aid', 'user']));
-router.delete('/Joiner/deleteRep/:mid', apiResponse('Person', 'deleteRepRequest', true, ['user', 'params.mid']));
-router.delete('/Joiner/deleteRepBizOrg/:mid', apiResponse('Person', 'deleteRepAndHisCompany', true, ['params.mid']));
+router.get('/joiner/getRepPendingList', apiResponse('Joiner', 'findRepRequests', true));
+router.put('/joiner/confirmRep/:mid/:aid', apiResponse('Joiner', 'confirmRepByAdmin', true, ['params.mid', 'params.aid', 'user']));
+router.delete('/joiner/deleteRep/:mid', apiResponse('Joiner', 'deleteRepRequest', true, ['user', 'params.mid']));
+router.delete('/Joiner/deleteRepBizOrg/:mid', apiResponse('Joiner', 'deleteRepAndHisCompany', true, ['params.mid']));
 
 // upsert/delete an authoritative user(rep/regular)
 router.delete('/joiner/deleteUserOrRepAfterConfirm/:mid', apiResponse('Joiner', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));

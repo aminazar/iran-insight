@@ -298,7 +298,7 @@ describe('Representation-check, DELETE API', () => {
         expect(res[0].is_representative).toBe(true);
         return rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`user/deleteRep/11`),
+          uri: lib.helpers.apiTestURL(`joiner/deleteRep/11`),
           jar: adminJar,
           resolveWithFullResponse: true,
         })
@@ -325,7 +325,7 @@ describe('Representation-check, DELETE API', () => {
         expect(res[0].is_representative).toBe(false); //mid 7 is related to a biz/org with active representative
         return rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`user/deleteRep/7`),
+          uri: lib.helpers.apiTestURL(`joiner/deleteRep/7`),
           jar: adminJar,
           resolveWithFullResponse: true,
         })
@@ -349,7 +349,7 @@ describe('Representation-check, DELETE API', () => {
         expect(res[0].is_representative).toBe(true);
         return rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`user/deleteRepBizOrg/3`),
+          uri: lib.helpers.apiTestURL(`joiner/deleteRepBizOrg/3`),
           jar: adminJar,
           resolveWithFullResponse: true,
         })
@@ -385,7 +385,7 @@ describe('Representation-check, DELETE API', () => {
         expect(res[0].is_representative).toBe(true);
         return rp({
           method: 'DELETE',
-          uri: lib.helpers.apiTestURL(`user/deleteRepBizOrg/6`),
+          uri: lib.helpers.apiTestURL(`joiner/deleteRepBizOrg/6`),
           jar: adminJar,
           resolveWithFullResponse: true,
         })

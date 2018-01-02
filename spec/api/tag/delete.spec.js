@@ -21,7 +21,7 @@ describe("Delete tag", () => {
     pid: null,
     jar: null,
   };
-  let org, biz, product_id;
+  let org, biz, product_id, tid1, tid2;
 
   beforeEach(done => {
     lib.dbHelpers.create()
@@ -60,12 +60,16 @@ describe("Delete tag", () => {
       })
       .then(res => {
         product_id = res.product_id;
-        return sql.test.tag.add({name: 'اینترنت', proposer: {business: [biz.bid], organization: [], product: []}})
+        return sql.test.tag.add({name: 'اینترنت'})
       })
       .then(res => {
+        tid1 = res.tid;
+        return sql.test.tag.add({name: 'حمل و نقل'})
+      })
+      .then(res => {
+        tid2 = res.tid;
         done();
       })
-
       .catch(err => {
         console.log(err);
         done();
@@ -74,7 +78,8 @@ describe("Delete tag", () => {
 
   it("Rep should be able to remove a tag", function (done) {
     this.done = done;
-    sql.test.tag.appendTag({tableName: 'business', tag: 'اینترنت', condition: `bid = ${biz.bid}`})
+    sql.test.business.update({tags: ['اینترنت', 'حمل و نقل']}, biz.bid)
+      .then(res => sql.test.tag_connection.add({tid1, tid2}))
       .then(res =>
         rp({
           method: 'delete',
@@ -93,14 +98,18 @@ describe("Delete tag", () => {
 
         return sql.test.business.get({bid: biz.bid});
       }).then(res => {
-      expect(res[0].tags.length).toBe(0);
-      done();
+      expect(res[0].tags.length).toBe(1);
+      return sql.test.tag_connection.select()
     })
+      .then(res => {
+        expect(res[0].affinity).toBe(4);
+        done();
+      })
       .catch(lib.helpers.errorHandler.bind(this));
   });
   it("Rep should be able to remove a tag from product", function (done) {
     this.done = done;
-    sql.test.tag.appendTag({tableName: 'product', tag: 'اینترنت', condition: `product_id = ${product_id}`})
+    sql.test.tag.appendTagToTarget({tableName: 'product', tag: 'اینترنت', condition: `product_id = ${product_id}`})
       .then(res =>
         rp({
           method: 'delete',
@@ -123,10 +132,11 @@ describe("Delete tag", () => {
     })
       .catch(lib.helpers.errorHandler.bind(this));
   });
+
   it("Expect error when other users want to delete product tag", function (done) {
 
     this.done = done;
-    sql.test.tag.appendTag({tableName: 'product', tag: 'اینترنت', condition: `product_id = ${product_id}`})
+    sql.test.tag.appendTagToTarget({tableName: 'product', tag: 'اینترنت', condition: `product_id = ${product_id}`})
       .then(res =>
         rp({
           method: 'delete',
@@ -152,4 +162,5 @@ describe("Delete tag", () => {
   });
 
 
-});
+})
+;
