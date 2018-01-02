@@ -179,14 +179,14 @@ let modExp = {
   tag: {
     create: sql('tag/create.sql'),
     drop: sql('tag/drop.sql'),
-    updateProposer: sql('tag/updateProposer.sql'),
-    appendTag: sql('tag/appendTag.sql'),
+    appendTagToTarget: sql('tag/appendTagToTarget.sql'),
     removeTagFromTarget: sql('tag/removeTagFromTarget.sql'),
     getActiveTags: sql('tag/getActiveTags.sql'),
   },
   tag_connection: {
     create: sql('tag_connection/create.sql'),
     drop: sql('tag_connection/drop.sql'),
+    recalculateAffiliation: sql('tag_connection/recalculateAffiliation.sql'),
   },
   search: {
     searchOnPerson: sql('search/searchOnPerson.sql'),

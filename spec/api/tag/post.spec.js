@@ -40,7 +40,7 @@ describe("Post Tag", () => {
   it("Admin should be able to confirm a tag", function (done) {
     this.done = done;
     let tagId;
-    sql.test.tag.add({name: 'اینترنت', proposer: '{"business":[1,2,3],"organization":[1,2,3],"product":[1,2,3]}'})
+    sql.test.tag.add({name: 'اینترنت'})
       .then(res => {
         tagId = res.tid;
         return rp({
@@ -55,9 +55,7 @@ describe("Post Tag", () => {
 
       return sql.test.tag.select();
     }).then(res => {
-      expect(res[0].proposer.business.length).toBe(0);
-      expect(res[0].proposer.organization.length).toBe(0);
-      expect(res[0].proposer.product.length).toBe(0);
+      expect(res[0].active).toBe(true);
       done();
     })
       .catch(lib.helpers.errorHandler.bind(this));
@@ -66,7 +64,7 @@ describe("Post Tag", () => {
   it("Expect error when other users are calling api", function (done) {
     this.done = done;
     let tagId;
-    sql.test.tag.add({name: 'اینترنت', proposer: '{"biz":[1,2,3],"org":[1,2,3],"product":[1,2,3]}'})
+    sql.test.tag.add({name: 'اینترنت'})
       .then(res => {
         tagId = res.tid;
         return rp({

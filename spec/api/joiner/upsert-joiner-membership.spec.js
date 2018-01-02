@@ -64,7 +64,7 @@ describe('POST product API', () => {
   beforeEach(done => {
     lib.dbHelpers.create()
       .then(() => {
-        return lib.dbHelpers.addAndLoginPerson('admin', 'test')
+        return lib.dbHelpers.addAndLoginPerson('admin', 'test', {display_name_en: 'DNE'})
       })
       .then((res) => {
         adminObj.pid = res.pid;
@@ -72,12 +72,12 @@ describe('POST product API', () => {
         return lib.dbHelpers.addAdmin(adminObj.pid);
       })
       .then((res) => {
-        return lib.dbHelpers.addAndLoginPerson('repUser', '123')
+        return lib.dbHelpers.addAndLoginPerson('repUser', '123', {display_name_en: 'DNE'})
       })
       .then((res) => {
         repObj.pid = res.pid;
         repObj.jar = res.rpJar;
-        return lib.dbHelpers.addAndLoginPerson('normalUser', '123')
+        return lib.dbHelpers.addAndLoginPerson('normalUser', '123', {display_name_en: 'DNE'})
       })
       .then((res) => {
         normalUserObj.pid = res.pid;
@@ -119,7 +119,7 @@ describe('POST product API', () => {
         console.log(err.message);
         done();
       });
-  })
+  });
 
   it('admin should be able to add a new membership with exist aid', done => {
     sql.test.business.add(biz_info[0])
@@ -159,7 +159,7 @@ describe('POST product API', () => {
         console.log(err.message);
         done();
       });
-  })
+  });
 
   it('admin should be able to update a exist membership', done => {
     sql.test.business.add(biz_info[0])
@@ -200,6 +200,5 @@ describe('POST product API', () => {
         console.log(err.message);
         done();
       });
-  })
-
+  });
 })

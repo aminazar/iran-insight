@@ -428,7 +428,7 @@ describe('Representation-check, GET API', () => {
   it('a normal user() except admin should not be able to get representation requests', done => {
     rp({
       method: 'GET',
-      uri: lib.helpers.apiTestURL(`user/getRepPendingList`),
+      uri: lib.helpers.apiTestURL(`joiner/getRepPendingList`),
       jar: aminJar,
       resolveWithFullResponse: true,
     })
@@ -448,7 +448,7 @@ describe('Representation-check, GET API', () => {
         expect(res.length).toBe(16);  //all membership record numbers
         return rp({
           method: 'GET',
-          uri: lib.helpers.apiTestURL(`user/getRepPendingList`),
+          uri: lib.helpers.apiTestURL(`joiner/getRepPendingList`),
           jar: adminJar,
           resolveWithFullResponse: true,
         })
