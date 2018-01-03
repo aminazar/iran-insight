@@ -1,4 +1,4 @@
-select ${field_name~}, ${otherFieldName~}, ${id_column~}
+select ${select_clause^}
 from ${table_name~}
 where
 ((${phrase} is null) or (lower(${field_name~}) like '%'||lower(${phrase})||'%'))
