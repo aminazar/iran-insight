@@ -5,6 +5,8 @@ second.display_name_en,
 second.display_name_fa,
 second.is_active,
 second.is_representative,
+
+
 position_type.name as position_name,
 position_type.name_fa as position_name_fa,
 position_type.active as position_active
@@ -26,7 +28,8 @@ from
     on
     first.aid = membership.assoc_id
     where
-    (first.bid = ${bid} and ${bid} is not null and ${oid} is null) or (first.oid = ${oid} and ${oid} is not null and ${bid} is null)
+    ((first.bid = ${bid} and ${bid} is not null and ${oid} is null) or (first.oid = ${oid} and ${oid} is not null and ${bid} is null)) and
+     ( membership.end_time is null or membership.end_time > current_timestamp )
     ) as second
 left outer join
 position_type
