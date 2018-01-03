@@ -14,7 +14,7 @@ let usingFunction = query => {
   let res = {
     get: 'any',
     uniqueGet: 'one',
-    getOne: 'one',
+    getOne: 'oneOrNone',
     checkNone: 'none',
     test: 'one',
     add: 'one',
@@ -219,7 +219,7 @@ let tablesWithSqlCreatedByHelpers = [
     insert: true,
     update: true,
     select: true,
-    delete: true,
+    delete: false,
     get: true,
     idColumn: 'bid',
   },
