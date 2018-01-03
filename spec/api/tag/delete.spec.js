@@ -82,7 +82,7 @@ describe("Delete tag", () => {
       .then(res => sql.test.tag_connection.add({tid1, tid2}))
       .then(res =>
         rp({
-          method: 'delete',
+          method: 'post',
           uri: lib.helpers.apiTestURL(`tag/removeFrom`),
           body: {
             bid: biz.bid,
@@ -112,7 +112,7 @@ describe("Delete tag", () => {
     sql.test.tag.appendTagToTarget({tableName: 'product', tag: 'اینترنت', condition: `product_id = ${product_id}`})
       .then(res =>
         rp({
-          method: 'delete',
+          method: 'post',
           uri: lib.helpers.apiTestURL(`tag/removeFrom`),
           body: {
             product_id: product_id,
@@ -139,7 +139,7 @@ describe("Delete tag", () => {
     sql.test.tag.appendTagToTarget({tableName: 'product', tag: 'اینترنت', condition: `product_id = ${product_id}`})
       .then(res =>
         rp({
-          method: 'delete',
+          method: 'post',
           uri: lib.helpers.apiTestURL(`tag/removeFrom`),
           body: {
             product_id: product_id,
