@@ -104,6 +104,7 @@ let modExp = {
     get: sql('business/get.sql'),
     getBusinessProducts: sql('business/getBusinessProducts.sql'),
     getOne: sql('business/getOne.sql'),
+    delete: sql('business/delete.sql'),
   },
   business_lce: {
     create: sql('lce/create.sql'),
