@@ -49,7 +49,7 @@ describe('Search System', () => {
   let businessList = [{
     bid: 1,
     name: 'Snapp',
-    name_fa: 'اصنپ',
+    name_fa: 'اسنپ',
     biz_type_id: 1,
     tags: ['transportation', 'online transportation'],
   }, {
@@ -513,9 +513,7 @@ describe('Search System', () => {
     })
       .then(res => {
         expect(res.statusCode).toBe(200);
-        expect(res.body.product).toBeTruthy();
-        expect(res.body.product.length).toBe(1);
-        expect(res.body.product.map(el => el.name.toLowerCase())).toContain('candy');
+        expect(res.body.product).not.toBeTruthy();
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
