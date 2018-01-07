@@ -241,7 +241,6 @@ router.get('/investment/person/all/:pid', apiResponse('Investment', 'getByPerson
 router.get('/investment/pending/business', apiResponse('Investment', 'getBizPending', false, ['user.pid']));
 router.get('/investment/pending/organization', apiResponse('Investment', 'getOrgPending', false, ['user.pid']));
 router.get('/investment/pending/person', apiResponse('Investment', 'getPersonalPending', false, ['user.pid']));
-router.get('/investment/getAll', apiResponse('Investment', 'getAllItems', true, []));
 router.put('/personalInvestment/:bid/:pid', apiResponse('Investment', 'savePersonal', false, ['params.bid', 'params.pid', 'body', 'user']));
 router.put('/orgInvestment/:bid/:oid', apiResponse('Investment', 'saveOrganizational', false, ['params.bid', 'params.oid', 'body', 'user']));
 router.post('/personalInvestment/:id/:bid/:pid', apiResponse('Investment', 'savePersonal', false, ['params.bid', 'params.pid', 'body', 'user', 'params.id']));
@@ -252,8 +251,11 @@ router.delete('/investment/:id', apiResponse('Investment', 'delete', false, ['pa
 
 // Consultancy API
 router.get('/consultancy/business/:bid', apiResponse('Consultancy', 'getByBiz', false, ['params.bid']));
+router.get('/consultancy/business/all/:bid', apiResponse('Consultancy', 'getByBiz', false, ['params.bid', () => true]));
 router.get('/consultancy/organization/:oid', apiResponse('Consultancy', 'getByOrg', false, ['params.oid']));
+router.get('/consultancy/organization/all/:oid', apiResponse('Consultancy', 'getByOrg', false, ['params.oid', () => true]));
 router.get('/consultancy/person/:pid', apiResponse('Consultancy', 'getByPerson', false, ['params.pid']));
+router.get('/consultancy/person/all/:pid', apiResponse('Consultancy', 'getByPerson', false, ['params.pid', () => true]));
 router.get('/consultancy/pending/business', apiResponse('Consultancy', 'getBizPending', false, ['user.pid']));
 router.get('/consultancy/pending/organization', apiResponse('Consultancy', 'getOrgPending', false, ['user.pid']));
 router.get('/consultancy/pending/person', apiResponse('Consultancy', 'getPersonalPending', false, ['user.pid']));
@@ -262,6 +264,7 @@ router.put('/orgConsultancy/:bid/:oid', apiResponse('Consultancy', 'saveOrganiza
 router.post('/personalConsultancy/:id/:bid/:pid', apiResponse('Consultancy', 'savePersonal', false, ['params.bid', 'params.pid', 'body', 'user', 'params.id']));
 router.post('/orgConsultancy/:id/:bid/:oid', apiResponse('Consultancy', 'saveOrganizational', false, ['params.bid', 'params.oid', 'body', 'user', 'params.id']));
 router.put('/consultancy/:id', apiResponse('Consultancy', 'confirm', false, ['params.id', 'user']));
+router.get('/consultancy/:id', apiResponse('Consultancy', 'get', false, ['params.id']));
 router.delete('/consultancy/:id', apiResponse('Consultancy', 'delete', false, ['params.id', 'user']));
 
 //Search API

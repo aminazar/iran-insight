@@ -7,10 +7,12 @@ describe("GET Consultancy API", () => {
 
   beforeEach(done => {
     bizData = {name: 'biz', name_fa: 'کسب و کار'};
-    personData = {firstname_en: 'ali', surname_en: 'alavi'};
+    personData = {firstname_en: 'ali', surname_en: 'alavi', display_name_en: 'AA'};
     orgData = {name: 'org', name_fa: 'سازمان'};
     personConsultancy = {is_mentor: true, is_confirmed: true};
+    personConsultancy_1 = {is_mentor: false, is_confirmed: false};
     orgConsultancy = {is_mentor: false, is_confirmed: true};
+    orgConsultancy_1 = {is_mentor: false, is_confirmed: false};
 
     lib.dbHelpers.create()
       .then(() => {
@@ -37,6 +39,12 @@ describe("GET Consultancy API", () => {
       })
       .then(res => {
         personData.consultancy_id = +res.id;
+        personConsultancy_1.assoc_id = personData.aid;
+        personConsultancy_1.claimed_by = personData.pid;
+        return sql.test.consultancy.add(personConsultancy_1);
+      })
+      .then(res => {
+        personData.consultancy_id_1 = +res.id;
         return sql.test.organization.add(orgData);
       })
       .then(res => {
@@ -52,6 +60,12 @@ describe("GET Consultancy API", () => {
       })
       .then(res => {
         orgData.consultancy_id = +res.id;
+        orgConsultancy_1.assoc_id = orgData.aid;
+        orgConsultancy_1.claimed_by = personData.pid;
+        return sql.test.consultancy.add(orgConsultancy_1);
+      })
+      .then(res => {
+        orgData.consultancy_id_1 = +res.id;
         done();
       })
       .catch(err => {
@@ -146,6 +160,81 @@ describe("GET Consultancy API", () => {
           expect(data[0].biz_name).toBe(bizData.name);
           expect(data[0].biz_name_fa).toBe(bizData.name_fa);
         }
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get list of consultancies (confirmed and not confirmed) by BID", function (done) {
+    this.done = done;
+    rp({
+      method: 'GET',
+      uri: lib.helpers.apiTestURL(`consultancy/business/all/${bizData.bid}`),
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data.length).toBe(4);
+        let orgConfRes = data.find(r => r.oid);
+        let personConRes = data.find(r => r.pid);
+        expect(orgConfRes).toBeTruthy();
+        expect(personConRes).toBeTruthy();
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get list of consultancies (confirmed and not confirmed) by PID", function (done) {
+    this.done = done;
+    rp({
+      method: 'GET',
+      uri: lib.helpers.apiTestURL(`consultancy/person/all/${personData.pid}`),
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data.length).toBe(2);
+        expect(data.map(el => el.is_mentor)).toContain(false);
+        expect(data.map(el => el.is_mentor)).toContain(true);
+        expect(data.map(el => el.is_confirmed)).toContain(false);
+        expect(data.map(el => el.is_confirmed)).toContain(true);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get list of consultancies (confirmed and not confirmed) by OID", function (done) {
+    this.done = done;
+    rp({
+      method: 'GET',
+      uri: lib.helpers.apiTestURL(`consultancy/organization/all/${orgData.oid}`),
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data.length).toBe(2);
+        expect(data.map(el => el.is_confirmed)).toContain(false);
+        expect(data.map(el => el.is_confirmed)).toContain(true);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get specific consultancy", function (done) {
+    this.done = done;
+    rp({
+      method: 'GET',
+      uri: lib.helpers.apiTestURL(`consultancy/${personData.consultancy_id}`),
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data.is_mentor).toBe(true);
+        expect(data.is_confirmed).toBe(true);
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));

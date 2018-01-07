@@ -7,10 +7,12 @@ describe("GET Investment API", () => {
 
   beforeEach(done => {
     bizData = {name: 'biz', name_fa: 'کسب و کار'};
-    personData = {firstname_en: 'ali', surname_en: 'alavi'};
+    personData = {firstname_en: 'ali', surname_en: 'alavi', display_name_en: 'Ali Alavi'};
     orgData = {name: 'org', name_fa: 'سازمان'};
     personInvestment = {amount: 1000, currency: 'USD', is_lead: true, investment_cycle: 1, is_confirmed: true};
+    personInvestment_1 = {amount: 2000, currency: 'USD', is_lead: false, investment_cycle: 2, is_confirmed: false};
     orgInvestment = {amount: 10000, currency: 'EUR', investment_cycle: 1, is_confirmed: true};
+    orgInvestment_1 = {amount: 20000, currency: 'EUR', investment_cycle: 2, is_confirmed: false};
 
     lib.dbHelpers.create()
       .then(() => {
@@ -37,6 +39,12 @@ describe("GET Investment API", () => {
       })
       .then(res => {
         personData.investment_id = +res.id;
+        personInvestment_1.assoc_id = personData.aid;
+        personInvestment_1.claimed_by = personData.pid;
+        return sql.test.investment.add(personInvestment_1);
+      })
+      .then(res => {
+        personData.investment_id_1 = +res.id;
         return sql.test.organization.add(orgData);
       })
       .then(res => {
@@ -52,6 +60,12 @@ describe("GET Investment API", () => {
       })
       .then(res => {
         orgData.investment_id = +res.id;
+        orgInvestment_1.assoc_id = orgData.aid;
+        orgInvestment_1.claimed_by = personData.pid;
+        return sql.test.investment.add(orgInvestment_1);
+      })
+      .then(res => {
+        orgData.investment_id_1 = +res.id;
         done();
       })
       .catch(err => {
@@ -154,6 +168,84 @@ describe("GET Investment API", () => {
           expect(data[0].biz_name).toBe(bizData.name);
           expect(data[0].biz_name_fa).toBe(bizData.name_fa);
         }
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get list of investments (confirmed and not confirmed) by BID", function (done) {
+    this.done = done;
+    rp({
+      method: 'GET',
+      uri: lib.helpers.apiTestURL(`investment/business/all/${bizData.bid}`),
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data.length).toBe(4);
+        let orgInvRes = data.find(r => r.oid);
+        let personInvRes = data.find(r => r.pid);
+        expect(orgInvRes).toBeTruthy();
+        expect(personInvRes).toBeTruthy();
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get list of investments (confirmed and not confirmed) by PID", function (done) {
+    this.done = done;
+    rp({
+      method: 'GET',
+      uri: lib.helpers.apiTestURL(`investment/person/all/${personData.pid}`),
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data.length).toBe(2);
+        expect(data.map(el => el.amount)).toContain(2000);
+        expect(data.map(el => el.is_confirmed)).toContain(false);
+        expect(data.map(el => el.is_confirmed)).toContain(true);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get list of investments (confirmed and not confirmed) by OID", function (done) {
+    this.done = done;
+    rp({
+      method: 'GET',
+      uri: lib.helpers.apiTestURL(`investment/organization/all/${orgData.oid}`),
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data.length).toBe(2);
+        expect(data.map(el => el.amount)).toContain(20000);
+        expect(data.map(el => el.is_confirmed)).toContain(false);
+        expect(data.map(el => el.is_confirmed)).toContain(true);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get specific investment", function (done) {
+    this.done = done;
+    rp({
+      method: 'GET',
+      uri: lib.helpers.apiTestURL(`investment/${personData.investment_id}`),
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data.amount).toBe(1000);
+        expect(data.currency).toBe('USD');
+        expect(data.is_lead).toBe(true);
+        expect(data.investment_cycle).toBe(1);
+        expect(data.is_confirmed).toBe(true);
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
