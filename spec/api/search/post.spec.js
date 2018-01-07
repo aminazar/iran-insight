@@ -14,6 +14,7 @@ describe('Search System', () => {
     firstname_fa: 'علی',
     surname_fa: 'علوی',
     username: 'a@gmail.com',
+    display_name_en: 'Ali Alavi',
   }, {
     pid: 20,
     display_name_en: 'Asghar Taraghe',
@@ -32,6 +33,7 @@ describe('Search System', () => {
     mobile_no: '09999991234',
     phone_no: '+2188997766',
     username: 'mir@yahoo.com',
+    display_name_en: 'Mir Amir',
   }];
 
   let businessTypeList = [{
@@ -49,6 +51,7 @@ describe('Search System', () => {
     name: 'Snapp',
     name_fa: 'اصنپ',
     biz_type_id: 1,
+    tags: ['transportation', 'online transportation'],
   }, {
     bid: 2,
     name_fa: 'تک ماکارون',
@@ -69,14 +72,15 @@ describe('Search System', () => {
   }, {
     oid: 2,
     name: 'MTN',
+    tags: ['communication'],
   }];
 
   let associationList = [{
     aid: 1,
     pid: 10,
     bid: 2,
-    start_date: moment(new Date()),
-    end_date: moment(new Date(2020, 10, 5)),
+    start_time: moment(new Date()),
+    end_time: moment(new Date(2020, 10, 5)),
     oid: null,
   }, {
     aid: 2,
@@ -133,54 +137,71 @@ describe('Search System', () => {
   }];
 
   let productList = [{
+    business_id: 1,
     product_id: 1,
     name: 'Candy',
-    name_fa: 'آبنبات'
+    name_fa: 'آبنبات',
+    tags: ['sweet']
   }, {
+    business_id: 1,
     product_id: 2,
     name: 'Choocolate',
     name_fa: 'شکلات'
   }, {
+    business_id: 3,
     product_id: 3,
     name: 'Milky way traveling'
   }, {
+    business_id: 2,
     product_id: 4,
     name: 'Server Distributed Debugging tools'
   }, {
+    business_id: 3,
     product_id: 5,
     name: 'Barbari Bread',
     name_fa: 'نان بربری'
   }, {
+    business_id: 1,
     product_id: 6,
     name: 'product 6',
   }, {
+    business_id: 3,
     product_id: 7,
     name: 'product 7',
   }, {
+    business_id: 2,
     product_id: 8,
     name: 'product 8',
   }, {
+    business_id: 2,
     product_id: 9,
     name: 'product 9',
   }, {
+    business_id: 3,
     product_id: 10,
     name: 'product 10',
   }, {
+    business_id: 3,
     product_id: 11,
     name: 'product 11',
   }, {
+    business_id: 1,
     product_id: 12,
     name: 'product 12',
   }, {
+    business_id: 2,
     product_id: 13,
     name: 'product 13',
   }, {
+    business_id: 3,
     product_id: 14,
     name: 'product 14',
   }, {
+    business_id: 1,
     product_id: 15,
     name: 'product 15',
   }, {
+    business_id: 2,
     product_id: 16,
     name: 'product 16',
   }];
@@ -272,6 +293,29 @@ describe('Search System', () => {
     saved_by: 10,
   }];
 
+  let tagList = [
+    {
+      name: 'transportation',
+      active: true,
+    },
+    {
+      name: 'online transportation',
+      active: false,
+    },
+    {
+      name: 'sweet food',
+      active: false,
+    },
+    {
+      name: 'taxi',
+      active: true,
+    },
+    {
+      name: 'traveling',
+      active: true,
+    },
+  ];
+
   beforeEach(done => {
     let expertise1_id, expertise2_id;
     if (needSetup)
@@ -293,6 +337,7 @@ describe('Search System', () => {
         .then(() => Promise.all(investmentList.map(el => sql.test.investment.add(el))))
         .then(() => Promise.all(consultancyList.map(el => sql.test.consultancy.add(el))))
         .then(() => Promise.all(eventList.map(el => sql.test.event.add(el))))
+        .then(() => Promise.all(tagList.map(el => sql.test.tag.add(el))))
         .then(() => {
           // needSetup = false;
           done();
@@ -392,6 +437,35 @@ describe('Search System', () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
+  it("(searching) should search business (search on tags)", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: '   transportation',
+        options: {
+          target: {
+            business: true,
+          }
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.person).not.toBeTruthy();
+        expect(res.body.business).toBeTruthy();
+        expect(res.body.product).not.toBeTruthy();
+        expect(res.body.business.length).toBe(1);
+        expect(res.body.business[0].name.toLowerCase()).toBe('snapp');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
   it("(searching) should search on product (should trimming)", function (done) {
     this.done = done;
     rp({
@@ -415,6 +489,33 @@ describe('Search System', () => {
         expect(res.body.product.length).toBe(2);
         expect(res.body.product.map(el => el.name.toLowerCase())).toContain('choocolate');
         expect(res.body.product.map(el => el.name.toLowerCase())).toContain('server distributed debugging tools');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("(searching) should search on product (search on tags)", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: ' SwEEt ',
+        options: {
+          target: {
+            product: true,
+          }
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.product).toBeTruthy();
+        expect(res.body.product.length).toBe(1);
+        expect(res.body.product.map(el => el.name.toLowerCase())).toContain('candy');
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
@@ -773,6 +874,92 @@ describe('Search System', () => {
         expect(res.body.product.length).toBe(11);
         expect(res.body.product.map(el => el.name.toLowerCase())).toContain('product 6');
         expect(res.body.product.map(el => el.name.toLowerCase())).toContain('product 16');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("(searching) should get all tags with specific constraints", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: ' tranSPORtation   ',
+        options: {
+          target: {
+            tag: true,
+          },
+          is_active: true,
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        console.log(res.body);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.tag).toBeTruthy();
+        expect(res.body.tag.length).toBe(1);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("(searching) should get all tags (no matter activation)", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: ' tranSPORtation   ',
+        options: {
+          target: {
+            tag: true,
+          },
+          is_active: null,
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        console.log(res.body);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.tag).toBeTruthy();
+        expect(res.body.tag.length).toBe(2);
+        expect(res.body.tag.map(el => el.name.toLowerCase())).toContain('online transportation');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("(searching) should get all tags", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: null,
+        options: {
+          target: {
+            tag: true,
+          },
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        console.log(res.body);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.tag).toBeTruthy();
+        expect(res.body.tag.length).toBe(5);
+        expect(res.body.tag.map(el => el.name.toLowerCase())).toContain('sweet food');
+        expect(res.body.tag.map(el => el.name.toLowerCase())).toContain('taxi');
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));

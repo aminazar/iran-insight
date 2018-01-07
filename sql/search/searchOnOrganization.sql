@@ -14,5 +14,6 @@ where
         or lower(organization.name_fa) like '%'||lower(${phrase})||'%'
         or lower(organization_type.name) like '%'||lower(${phrase})||'%'
         or lower(organization_type.name_fa) like '%'||lower(${phrase})||'%'
+        or lower(${phrase}) = any(tags)
     )) as t
 order by t.oid DESC limit ${limit} offset ${offset}

@@ -199,6 +199,7 @@ let modExp = {
     searchOnInvestment: sql('search/searchOnInvestment.sql'),
     searchOnConsultancy: sql('search/searchOnConsultancy.sql'),
     searchOnType: sql('search/searchOnType.sql'),
+    searchOnTags: sql('search/searchOnTags.sql'),
   },
   suggest: {
     suggestion: sql('suggest/suggestion.sql'),

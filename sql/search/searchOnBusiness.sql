@@ -18,5 +18,6 @@ where
         or lower(business.url) like '%'||lower(${phrase})||'%'
         or lower(business_type.name) like '%'||lower(${phrase})||'%'
         or lower(business_type.name_fa) like '%'||lower(${phrase})||'%'
+        or lower(${phrase}) = any(tags)
     )) as t
 order by t.bid DESC limit ${limit} offset ${offset}

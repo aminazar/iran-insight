@@ -11,5 +11,6 @@ where
         or lower(name_fa) like '%'||lower(${phrase})||'%'
         or lower(description) like '%'||lower(${phrase})||'%'
         or lower(description_fa) like '%'||lower(${phrase})||'%'
+        or lower(${phrase}) = any(tags)
     )) as t
 order by t.product_id DESC limit ${limit} offset ${offset}
