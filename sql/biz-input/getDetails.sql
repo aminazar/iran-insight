@@ -3,6 +3,8 @@ select
     association.*,
     organization.name as org_name,
     organization.name_fa as org_name_fa,
+    business.name as biz_name,
+    business.name_fa as biz_name_fa,
     person.firstname_en as person_firstname,
     person.surname_en as person_surname,
     person.firstname_fa as person_firstname_fa,
