@@ -190,6 +190,7 @@ router.get('/type/:name/:type_id', apiResponse('Type', 'getInfo', true, ['params
 // tags
 router.put('/tag/add_all', apiResponse('Tag', 'addAll', true, ['body']));
 router.put('/tag/add', apiResponse('Tag', 'setTag', false, ['user.pid', 'body']));
+router.post('/tag/getList', apiResponse('Tag', 'getList', false, ['user.pid', 'body']));
 router.post('/tag/confirm/:tid', apiResponse('Tag', 'confirm', true, ['params.tid']));
 router.post('/tag/reject/:tid', apiResponse('Tag', 'reject', true, ['params.tid']));
 router.post('/tag/removeFrom', apiResponse('Tag', 'removeTagFromTarget', false, ['user.pid', 'body']));

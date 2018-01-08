@@ -1,1 +1,1 @@
-UPDATE ${tableName~} SET tags = array_append(tags,${tag}) WHERE ${condition^}
+UPDATE ${tableName~} SET tags = array_append(tags,${tag}) WHERE ${condition^} and ( (tags @> Array[${tag}]) = false)

@@ -181,7 +181,8 @@ let modExp = {
     drop: sql('tag/drop.sql'),
     appendTagToTarget: sql('tag/appendTagToTarget.sql'),
     removeTagFromTarget: sql('tag/removeTagFromTarget.sql'),
-    getActiveTags: sql('tag/getActiveTags.sql'),
+    getTags: sql('tag/getTags.sql'),
+    getSimilar: sql('tag/getSimilar.sql'),
   },
   tag_connection: {
     create: sql('tag_connection/create.sql'),

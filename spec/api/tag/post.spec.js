@@ -4,7 +4,7 @@ const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
 const types = require('../../../sql/types');
 
-describe("Post Tag", () => {
+xdescribe("Post Tag", () => {
   let adminObj = {
     pid: null,
     jar: null,
@@ -88,7 +88,7 @@ describe("Post Tag", () => {
 
 });
 
-describe("Delete tag", () => {
+xdescribe("Delete tag", () => {
   let adminObj = {
     pid: null,
     jar: null,
@@ -244,4 +244,120 @@ describe("Delete tag", () => {
       });
 
   });
+});
+
+
+describe("get similar tags list", () => {
+  let adminObj = {
+    pid: null,
+    jar: null,
+  };
+  let orgRep = {
+    pid: null,
+    jar: null,
+  };
+  let bizRep = {
+    pid: null,
+    jar: null,
+  };
+  let normalUser = {
+    pid: null,
+    jar: null,
+  };
+  let org, biz, product_id, tid1, tid2;
+
+  beforeEach(done => {
+    lib.dbHelpers.create()
+      .then(() => lib.dbHelpers.addAndLoginPerson('admin'))
+      .then(res => {
+        adminObj.pid = res.pid;
+        adminObj.jar = res.rpJar;
+        return lib.dbHelpers.addAdmin(adminObj.pid);
+      })
+      .then(res => lib.dbHelpers.addAndLoginPerson('eabasir@gmail.com'))
+      .then(res => {
+        normalUser.pid = res.pid;
+        normalUser.jar = res.rpJar;
+        return lib.dbHelpers.addAndLoginPerson('orgRep')
+      })
+      .then(res => {
+        orgRep.pid = res.pid;
+        orgRep.jar = res.rpJar;
+        return lib.dbHelpers.addAndLoginPerson('bizRep')
+      })
+      .then(res => {
+        bizRep.pid = res.pid;
+        bizRep.jar = res.rpJar;
+        return lib.dbHelpers.addOrganizationWithRep(orgRep.pid, 'MTN');
+
+      })
+      .then(res => {
+        org = res;
+        return lib.dbHelpers.addBusinessWithRep(bizRep.pid, 'snapp');
+
+      })
+      .then(res => {
+        biz = res;
+        return sql.test.product.add({name: 'android app', business_id: biz.bid})
+
+      })
+      .then(res => {
+        product_id = res.product_id;
+        return sql.test.tag.add({name: 'حمل', active: true})
+      })
+      .then(res => {
+        tid1 = res.tid;
+        return sql.test.tag.add({name: 'حمل و نقل', active: false})
+      })
+      .then(res => {
+        tid2 = res.tid;
+        done();
+      })
+      .catch(err => {
+        console.log(err);
+        done();
+      });
+  });
+
+  it("Rep should be able to see just list of a activated tags", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      uri: lib.helpers.apiTestURL(`tag/getList`),
+      body: {
+        name: 'حمل'
+      },
+      json: true,
+      jar: bizRep.jar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.length).toBe(1);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+  it("admin should be able to see all list of a tags weather active or not", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      uri: lib.helpers.apiTestURL(`tag/getList`),
+      body: {
+        name: 'حمل'
+      },
+      json: true,
+      jar: adminObj.jar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.length).toBe(2);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
 });
