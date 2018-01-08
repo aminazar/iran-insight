@@ -268,6 +268,8 @@ types.forEach(t => {
     getWithAssoc: sql('biz-input/getWithAssoc.sql', param),
     getDetails: sql('biz-input/getDetails.sql', param),
     getMaxColumn: sql('biz-input/getMaxColumn.sql', {tableName: t, col: 'investment_cycle'}),
+    getBizIdById: sql('biz-input/getBizIdById.sql', param),
+    hasAccess: sql('biz-input/hasAccess.sql', param),
   }
 });
 

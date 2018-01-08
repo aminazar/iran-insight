@@ -3,6 +3,12 @@ const lib = require('../../../lib');
 const sql = require('../../../sql');
 
 describe("GET Consultancy API", () => {
+  let adminJar = null;
+  let normalUserJar = null;
+  let bizRepJar = null;
+  let bizRepId = null;
+  let consultingJar = null;
+
   let bizData, personData, orgData, personConsultancy, orgConsultancy,cofirmedByPID;
 
   beforeEach(done => {
@@ -16,18 +22,38 @@ describe("GET Consultancy API", () => {
 
     lib.dbHelpers.create()
       .then(() => {
+        return lib.dbHelpers.addAndLoginPerson('admin', 'admin', {display_name_en: 'Admin'});
+      })
+      .then(res => {
+        adminJar = res.rpJar;
+        return lib.dbHelpers.addAdmin(res.pid, true);
+      })
+      .then(() => {
+        return lib.dbHelpers.addAndLoginPerson('nUser', '123', {display_name_en: 'Normal User'});
+      })
+      .then(res => {
+        normalUserJar = res.rpJar;
+        return lib.dbHelpers.addAndLoginPerson('rUser', '123', {display_name_en: 'Biz Rep'});
+      })
+      .then(res => {
+        bizRepJar = res.rpJar;
+        bizRepId = +res.pid;
         return sql.test.business.add(bizData);
       })
       .then(res => {
         bizData.bid = +res.bid;
+        return lib.dbHelpers.connectBizWithRep(bizRepId, bizData.bid);
+      })
+      .then(res => {
         return lib.dbHelpers.addPerson('x', 'x', personData)
       })
       .then(res => {
         personData.pid = +res;
-        return lib.dbHelpers.addPerson('y', 'y', personData)
+        cofirmedByPID = +res;
+        return lib.dbHelpers.loginPerson('x', 'x')
       })
       .then(res => {
-        cofirmedByPID = +res;
+        consultingJar = res;
         return sql.test.association.add({pid: personData.pid, bid: bizData.bid});
       })
       .then(res => {
@@ -170,6 +196,7 @@ describe("GET Consultancy API", () => {
     rp({
       method: 'GET',
       uri: lib.helpers.apiTestURL(`consultancy/business/all/${bizData.bid}`),
+      jar: adminJar,
       resolveWithFullResponse: true
     })
       .then(res => {
@@ -190,6 +217,7 @@ describe("GET Consultancy API", () => {
     rp({
       method: 'GET',
       uri: lib.helpers.apiTestURL(`consultancy/person/all/${personData.pid}`),
+      jar: adminJar,
       resolveWithFullResponse: true
     })
       .then(res => {
@@ -210,6 +238,7 @@ describe("GET Consultancy API", () => {
     rp({
       method: 'GET',
       uri: lib.helpers.apiTestURL(`consultancy/organization/all/${orgData.oid}`),
+      jar: adminJar,
       resolveWithFullResponse: true
     })
       .then(res => {
@@ -223,11 +252,12 @@ describe("GET Consultancy API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should get specific consultancy", function (done) {
+  it("should get specific consultancy (consultancy is confirmed)", function (done) {
     this.done = done;
     rp({
       method: 'GET',
       uri: lib.helpers.apiTestURL(`consultancy/${personData.consultancy_id}`),
+      jar: normalUserJar,
       resolveWithFullResponse: true
     })
       .then(res => {
@@ -235,6 +265,42 @@ describe("GET Consultancy API", () => {
         let data = JSON.parse(res.body);
         expect(data.is_mentor).toBe(true);
         expect(data.is_confirmed).toBe(true);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get specific consultancy (rep request)", function (done) {
+    this.done = done;
+    rp({
+      method: 'GET',
+      uri: lib.helpers.apiTestURL(`consultancy/${personData.consultancy_id_1}`),
+      jar: bizRepJar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data.is_mentor).toBe(false);
+        expect(data.is_confirmed).toBe(false);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get specific consultancy (consulting)", function (done) {
+    this.done = done;
+    rp({
+      method: 'GET',
+      uri: lib.helpers.apiTestURL(`consultancy/${personData.consultancy_id_1}`),
+      jar: consultingJar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data.is_mentor).toBe(false);
+        expect(data.is_confirmed).toBe(false);
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
