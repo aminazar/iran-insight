@@ -267,6 +267,8 @@ types.forEach(t => {
     getPendingByPerson: sql('biz-input/getPendingByPerson.sql', param),
     getWithAssoc: sql('biz-input/getWithAssoc.sql', param),
     getDetails: sql('biz-input/getDetails.sql', param),
+    getBizIdById: sql('biz-input/getBizIdById.sql', param),
+    hasAccess: sql('biz-input/hasAccess.sql', param),
   }
 });
 
