@@ -3,6 +3,12 @@ const lib = require('../../../lib');
 const sql = require('../../../sql');
 
 describe("GET Investment API", () => {
+  let adminJar = null;
+  let normalUserJar = null;
+  let bizRepJar = null;
+  let bizRepId = null;
+  let investorJar = null;
+
   let bizData, personData, orgData, personInvestment, orgInvestment,cofirmedByPID;
 
   beforeEach(done => {
@@ -16,18 +22,43 @@ describe("GET Investment API", () => {
 
     lib.dbHelpers.create()
       .then(() => {
+        return lib.dbHelpers.addAndLoginPerson('admin', 'admin', {display_name_en: 'Admin'});
+      })
+      .then(res => {
+        adminJar = res.rpJar;
+        return lib.dbHelpers.addAdmin(res.pid, true);
+      })
+      .then(() => {
+        return lib.dbHelpers.addAndLoginPerson('nUser', '123', {display_name_en: 'Normal User'});
+      })
+      .then(res => {
+        normalUserJar = res.rpJar;
+        return lib.dbHelpers.addAndLoginPerson('rUser', '123', {display_name_en: 'Biz Rep'});
+      })
+      .then(res => {
+        bizRepJar = res.rpJar;
+        bizRepId = +res.pid;
         return sql.test.business.add(bizData);
       })
       .then(res => {
         bizData.bid = +res.bid;
-        return lib.dbHelpers.addPerson('x', 'x', personData)
+        return lib.dbHelpers.connectBizWithRep(bizRepId, bizData.bid);
+      })
+      .then(res => {
+        return lib.dbHelpers.addPerson('x', 'x', personData);
       })
       .then(res => {
         personData.pid = +res;
-        return lib.dbHelpers.addPerson('y', 'y', personData)
-      })
-      .then(res => {
         cofirmedByPID = +res;
+        return lib.dbHelpers.loginPerson('x', 'x');
+        // return lib.dbHelpers.addPerson('y', 'y', personData);
+      })
+      // .then(res => {
+      //   cofirmedByPID = +res;
+      //   return lib.dbHelpers.loginPerson('x', 'x');
+      // })
+      .then(res => {
+        investorJar = res;
         return sql.test.association.add({pid: personData.pid, bid: bizData.bid});
       })
       .then(res => {
@@ -178,6 +209,7 @@ describe("GET Investment API", () => {
     rp({
       method: 'GET',
       uri: lib.helpers.apiTestURL(`investment/business/all/${bizData.bid}`),
+      jar: adminJar,
       resolveWithFullResponse: true
     })
       .then(res => {
@@ -198,6 +230,7 @@ describe("GET Investment API", () => {
     rp({
       method: 'GET',
       uri: lib.helpers.apiTestURL(`investment/person/all/${personData.pid}`),
+      jar: adminJar,
       resolveWithFullResponse: true
     })
       .then(res => {
@@ -217,6 +250,7 @@ describe("GET Investment API", () => {
     rp({
       method: 'GET',
       uri: lib.helpers.apiTestURL(`investment/organization/all/${orgData.oid}`),
+      jar: adminJar,
       resolveWithFullResponse: true
     })
       .then(res => {
@@ -231,11 +265,12 @@ describe("GET Investment API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should get specific investment", function (done) {
+  it("should get specific investment (investment is confirmed)", function (done) {
     this.done = done;
     rp({
       method: 'GET',
       uri: lib.helpers.apiTestURL(`investment/${personData.investment_id}`),
+      jar: normalUserJar,
       resolveWithFullResponse: true
     })
       .then(res => {
@@ -246,6 +281,48 @@ describe("GET Investment API", () => {
         expect(data.is_lead).toBe(true);
         expect(data.investment_cycle).toBe(1);
         expect(data.is_confirmed).toBe(true);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get specific investment (rep request)", function (done) {
+    this.done = done;
+    rp({
+      method: 'GET',
+      uri: lib.helpers.apiTestURL(`investment/${personData.investment_id_1}`),
+      jar: bizRepJar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data.amount).toBe(2000);
+        expect(data.currency).toBe('USD');
+        expect(data.is_lead).toBe(false);
+        expect(data.investment_cycle).toBe(2);
+        expect(data.is_confirmed).toBe(false);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get specific investment (investor )", function (done) {
+    this.done = done;
+    rp({
+      method: 'GET',
+      uri: lib.helpers.apiTestURL(`investment/${personData.investment_id_1}`),
+      jar: investorJar,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data.amount).toBe(2000);
+        expect(data.currency).toBe('USD');
+        expect(data.is_lead).toBe(false);
+        expect(data.investment_cycle).toBe(2);
+        expect(data.is_confirmed).toBe(false);
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));

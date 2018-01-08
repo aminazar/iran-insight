@@ -48,15 +48,8 @@ left outer join
 on
     confirmed_by = confirm_person.pid
 where
-    id = ${id}
---select
---    ${tableName~}.*,
---    association.pid as person_id,
---    association.oid as organization_id,
---    association.bid as business_id,
---    business.name as business_name,
---    business.name_fa as business_name_fa
---from ${tableName~} as tbl
---join association on tbl.assoc_id = association.aid
---join business on association.bid = business.bid
---where id = ${id}
+    id = ${id} and (
+        claimed_by = ${user_id}
+        or
+        (${is_confirmed} is null or (${is_confirmed} is not null and is_confirmed = ${is_confirmed}))
+    )
