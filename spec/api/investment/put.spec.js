@@ -654,10 +654,4 @@ describe("PUT Investment API", () => {
       })
       .catch(lib.helpers.errorHandler.bind(this));
   });
-
-  it("should add investment cycle automatically (for personal investment)", function (done) {
-
-  });
-
-  it("should add investment cycle automatically (for organizational investment)")
 });
