@@ -267,6 +267,7 @@ types.forEach(t => {
     getPendingByPerson: sql('biz-input/getPendingByPerson.sql', param),
     getWithAssoc: sql('biz-input/getWithAssoc.sql', param),
     getDetails: sql('biz-input/getDetails.sql', param),
+    getMaxColumn: sql('biz-input/getMaxColumn.sql', {tableName: t, col: 'investment_cycle'}),
   }
 });
 
