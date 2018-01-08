@@ -48,8 +48,4 @@ left outer join
 on
     confirmed_by = confirm_person.pid
 where
-    id = ${id} and (
-        claimed_by = ${user_id}
-        or
-        (${is_confirmed} is null or (${is_confirmed} is not null and is_confirmed = ${is_confirmed}))
-    )
+    id = ${id} and (${is_confirmed} is null or (${is_confirmed} is not null and is_confirmed = ${is_confirmed}))
