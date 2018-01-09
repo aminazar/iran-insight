@@ -104,6 +104,7 @@ let modExp = {
     get: sql('business/get.sql'),
     getBusinessProducts: sql('business/getBusinessProducts.sql'),
     getOne: sql('business/getOne.sql'),
+    delete: sql('business/delete.sql'),
   },
   business_lce: {
     create: sql('lce/create.sql'),
@@ -198,6 +199,7 @@ let modExp = {
     searchOnInvestment: sql('search/searchOnInvestment.sql'),
     searchOnConsultancy: sql('search/searchOnConsultancy.sql'),
     searchOnType: sql('search/searchOnType.sql'),
+    searchOnTags: sql('search/searchOnTags.sql'),
   },
   suggest: {
     suggestion: sql('suggest/suggestion.sql'),
@@ -265,6 +267,8 @@ types.forEach(t => {
     getPendingByPerson: sql('biz-input/getPendingByPerson.sql', param),
     getWithAssoc: sql('biz-input/getWithAssoc.sql', param),
     getDetails: sql('biz-input/getDetails.sql', param),
+    getBizIdById: sql('biz-input/getBizIdById.sql', param),
+    hasAccess: sql('biz-input/hasAccess.sql', param),
   }
 });
 
