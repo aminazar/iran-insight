@@ -61,7 +61,7 @@ describe("Get tag", () => {
       .then(res => {
         return sql.test.tag.add({name: 'حمل و نقل', active: false})
       })
-      .then(() => {
+      .then(res => {
         done();
       })
 
@@ -89,12 +89,62 @@ describe("Get tag", () => {
 
           expect(res.statusCode).toBe(200);
           let result = JSON.parse(res.body);
-          expect(result[0].gettags.length).toBe(1);
+          expect(result.length).toBe(1);
           done();
         })
         .catch(lib.helpers.errorHandler.bind(this)))
 
   });
 
+  it("admin should be able to get all tags of biz", function (done) {
+    this.done = done;
+
+    sql.test.tag.appendTagToTarget({tableName: 'business', tag: 'اینترنت', condition: `bid = ${biz.bid}`})
+      .then(res => sql.test.tag.appendTagToTarget({
+        tableName: 'business',
+        tag: 'حمل و نقل',
+        condition: `bid = ${biz.bid}`
+      }))
+      .then(res =>
+        rp({
+          method: 'get',
+          uri: lib.helpers.apiTestURL(`tag/business/${biz.bid}`),
+          jar: adminObj.jar,
+          resolveWithFullResponse: true
+        }))
+      .then(res => {
+
+        expect(res.statusCode).toBe(200);
+        let result = JSON.parse(res.body);
+        expect(result.length).toBe(2);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this))
+  });
+  it("rep should be able to get all tags of biz", function (done) {
+    this.done = done;
+
+    sql.test.tag.appendTagToTarget({tableName: 'business', tag: 'اینترنت', condition: `bid = ${biz.bid}`})
+      .then(res => sql.test.tag.appendTagToTarget({
+        tableName: 'business',
+        tag: 'حمل و نقل',
+        condition: `bid = ${biz.bid}`
+      }))
+      .then(res =>
+        rp({
+          method: 'get',
+          uri: lib.helpers.apiTestURL(`tag/business/${biz.bid}`),
+          jar: bizRep.jar,
+          resolveWithFullResponse: true
+        }))
+      .then(res => {
+
+        expect(res.statusCode).toBe(200);
+        let result = JSON.parse(res.body);
+        expect(result.length).toBe(2);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this))
+  });
 
 });
