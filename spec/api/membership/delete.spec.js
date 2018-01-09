@@ -121,4 +121,34 @@ describe('POST product API', () => {
         done();
       });
   })
+
+  it('should threw an error if admin is going to delete a not exist membership', function (done) {
+    sql.test.business.add(biz_info[0])
+      .then(res => {
+        return sql.test.position_type.add(position_type_info[0])
+      })
+      .then(res => {
+        return sql.test.association.add(assoc_info[0])
+      })
+      .then(res => {
+        mem_info[0].assoc_id = res.aid;
+        return sql.test.membership.add(mem_info[0])
+      })
+      .then(res => {
+        return rp({
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`joiner/delete/membership/10`),
+          jar: adminObj.jar,
+          resolveWithFullResponse: true,
+        })
+      })
+      .then(res => {
+        this.fail('There is no membership whith mid 10');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(500);
+        done();
+      });
+  })
 })
