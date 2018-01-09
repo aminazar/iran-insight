@@ -41,9 +41,13 @@ for (let table in rawSql) {
       let fixedArgs = rawSql[table][query].fixedArgs;
       let q = rawSql[table][query].query;
       dataTransform = d => {
+        if(d === undefined)
+          d = {};
+
         if (d.constructor.name === 'Array') {
           d = {};
         }
+
         for (let key in fixedArgs) {
           d[key] = fixedArgs[key];
         }

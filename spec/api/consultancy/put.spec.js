@@ -483,13 +483,13 @@ describe("PUT Consultancy API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should add confirmed personal consultancy from admin", function (done) {
+  it("should add confirmed personal consultancy from admin (if admin set confirmation to true)", function (done) {
     this.done = done;
 
     rp({
       method: 'PUT',
       uri: lib.helpers.apiTestURL(`personalConsultancy/${bizData.bid}/${personData.pid}`),
-      body: personConsultancy,
+      body: Object.assign({is_confirmed: true}, personConsultancy),
       json: true,
       resolveWithFullResponse: true,
       jar: adminData.rpJar,
@@ -517,7 +517,76 @@ describe("PUT Consultancy API", () => {
       .catch(lib.helpers.errorHandler.bind(this));
   });
 
-  it("should add confirmed organizational consultancy from admin", function (done) {
+  it("should add confirmed organizational consultancy from admin (if admin set confirmation to true)", function (done) {
+    this.done = done;
+
+    rp({
+      method: 'PUT',
+      uri: lib.helpers.apiTestURL(`orgConsultancy/${bizData.bid}/${orgData.oid}`),
+      body: Object.assign({is_confirmed: true, confirmed_by: adminData.pid}, orgConsultancy),
+      json: true,
+      resolveWithFullResponse: true,
+      jar: adminData.rpJar,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data).toBe(1);
+        return sql.test.consultancy.getWithAssoc({id: 1});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        if(res[0]) {
+          expect(res[0].bid).toBe(bizData.bid);
+          expect(res[0].oid).toBe(orgData.oid);
+          expect(res[0].pid).toBe(null);
+          expect(res[0].is_confirmed).toBe(true);
+          expect(res[0].confirmed_by).toBe(adminData.pid);
+          expect(moment().diff(res[0].saved_at,'seconds')).toBeLessThan(5);
+          expect(res[0].is_claimed_by_biz).toBe(false);
+          expect(res[0].claimed_by).toBe(adminData.pid);
+          expect(res[0].is_mentor).toBe(orgConsultancy.is_mentor);
+        }
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should add non-confirmed personal consultancy from admin (if admin does not set confirmation to true)", function (done) {
+    this.done = done;
+
+    rp({
+      method: 'PUT',
+      uri: lib.helpers.apiTestURL(`personalConsultancy/${bizData.bid}/${personData.pid}`),
+      body: personConsultancy,
+      json: true,
+      resolveWithFullResponse: true,
+      jar: adminData.rpJar,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        let data = JSON.parse(res.body);
+        expect(data).toBeTruthy();
+        return sql.test.consultancy.getWithAssoc({id: data});
+      })
+      .then(res => {
+        expect(res.length).toBe(1);
+        if(res[0]) {
+          expect(res[0].bid).toBe(bizData.bid);
+          expect(res[0].oid).toBe(null);
+          expect(res[0].is_confirmed).toBe(false);
+          expect(res[0].confirmed_by).toBe(null);
+          expect(moment().diff(res[0].saved_at,'seconds')).toBeLessThan(5);
+          expect(res[0].is_claimed_by_biz).toBe(false);
+          expect(res[0].claimed_by).toBe(adminData.pid);
+          expect(res[0].is_mentor).toBe(personConsultancy.is_mentor);
+        }
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should add non-confirmed organizational consultancy from admin (if admin does not set confirmation to true)", function (done) {
     this.done = done;
 
     rp({
@@ -540,8 +609,8 @@ describe("PUT Consultancy API", () => {
           expect(res[0].bid).toBe(bizData.bid);
           expect(res[0].oid).toBe(orgData.oid);
           expect(res[0].pid).toBe(null);
-          expect(res[0].is_confirmed).toBe(true);
-          expect(res[0].confirmed_by).toBe(adminData.pid);
+          expect(res[0].is_confirmed).toBe(false);
+          expect(res[0].confirmed_by).toBe(null);
           expect(moment().diff(res[0].saved_at,'seconds')).toBeLessThan(5);
           expect(res[0].is_claimed_by_biz).toBe(false);
           expect(res[0].claimed_by).toBe(adminData.pid);
