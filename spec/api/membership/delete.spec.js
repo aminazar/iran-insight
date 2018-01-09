@@ -54,14 +54,10 @@ describe('POST product API', () => {
   }];
   let mem_info = [{
     assoc_id: 1,
-    is_active: false,
+    is_active: true,
     is_representative: false,
-    position_id:300,
+    position_id: 300,
   }];
-
-  let createNewBusiness = (biz_info) => {
-    return sql.test.business.add(biz_info);
-  };
 
   beforeEach(done => {
     lib.dbHelpers.create()
@@ -92,115 +88,37 @@ describe('POST product API', () => {
       });
   });
 
-  it('admin should be able to add a new membership', done => {
+  it('admin should be able to delete a membership', done =>  {
     sql.test.business.add(biz_info[0])
-      .then((res) =>{
+      .then(res => {
         return sql.test.position_type.add(position_type_info[0])
-      })
-      .then((res) => {
-        return rp({
-          method: 'post',
-          body: {
-            pid:normalUserObj.pid,
-            bid:1,
-            is_active: true,
-            is_representative: false,
-            position_id: 300,
-          },
-          json: true,
-          uri: lib.helpers.apiTestURL('joiner/upsert/membership'),
-          jar: adminObj.jar,
-          resolveWithFullResponse: true,
-        })
       })
       .then(res => {
-        expect(res.statusCode).toBe(200);
-        done();
-      })
-      .catch(err => {
-        console.log(err.message);
-        done();
-      });
-  });
-
-  it('admin should be able to add a new membership with exist aid', done => {
-    sql.test.business.add(biz_info[0])
-      .then((res) =>{
-        return sql.test.position_type.add(position_type_info[0])
-      })
-      .then((res) =>{
-        return sql.test.position_type.add(position_type_info[1])
-      })
-      .then((res) =>{
         return sql.test.association.add(assoc_info[0])
       })
-      .then((res) =>{
+      .then(res => {
+        mem_info[0].assoc_id = res.aid;
         return sql.test.membership.add(mem_info[0])
       })
-      .then((res) => {
+      .then(res => {
         return rp({
-          method: 'post',
-          body: {
-            pid:3,
-            bid:1,
-            is_active: true,
-            is_representative: false,
-            position_id: 301,
-          },
-          json: true,
-          uri: lib.helpers.apiTestURL('joiner/upsert/membership'),
+          method: 'DELETE',
+          uri: lib.helpers.apiTestURL(`joiner/delete/membership/${res.mid}`),
           jar: adminObj.jar,
           resolveWithFullResponse: true,
         })
       })
       .then(res => {
         expect(res.statusCode).toBe(200);
-        done();
-      })
-      .catch(err => {
-        console.log(err.message);
-        done();
-      });
-  });
-
-  it('admin should be able to update a exist membership', done => {
-    sql.test.business.add(biz_info[0])
-      .then((res) =>{
-        return sql.test.position_type.add(position_type_info[0])
-      })
-      .then((res) =>{
-        return sql.test.position_type.add(position_type_info[1])
-      })
-      .then((res) =>{
-        return sql.test.association.add(assoc_info[0])
-      })
-      .then((res) =>{
-        return sql.test.membership.add(mem_info[0])
-      })
-      .then((res) => {
-        return rp({
-          method: 'post',
-          body: {
-            mid:res.mid,
-            pid:3,
-            bid:1,
-            is_active: true,
-            is_representative: true,
-            position_id:301,
-          },
-          json: true,
-          uri: lib.helpers.apiTestURL('joiner/upsert/membership'),
-          jar: adminObj.jar,
-          resolveWithFullResponse: true,
-        })
+        return sql.test.membership.select()
       })
       .then(res => {
-        expect(res.statusCode).toBe(200);
+        expect(res.length).toBe(0);
         done();
       })
       .catch(err => {
         console.log(err.message);
         done();
       });
-  });
+  })
 })

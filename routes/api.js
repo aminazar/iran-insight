@@ -169,9 +169,10 @@ router.put('/joiner/confirmRep/:mid/:aid', apiResponse('Joiner', 'confirmRepByAd
 router.delete('/joiner/deleteRep/:mid', apiResponse('Joiner', 'deleteRepRequest', true, ['user', 'params.mid']));
 router.delete('/Joiner/deleteRepBizOrg/:mid', apiResponse('Joiner', 'deleteRepAndHisCompany', true, ['params.mid']));
 
-// upsert/delete an authoritative user(rep/regular)
-router.delete('/joiner/deleteUserOrRepAfterConfirm/:mid', apiResponse('Joiner', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
+// upsert/delete a membeship(rep/regular)
+router.delete('/joiner/delete/membership/:mid', apiResponse('Joiner', 'deleteUserMembership', false, ['params.mid', 'user.pid']));
 router.post('/joiner/upsert/membership', apiResponse('Joiner', 'upsertMembership', true, ['body', 'user.pid']));
+// router.delete('/joiner/deleteUserOrRepAfterConfirm/:mid', apiResponse('Joiner', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
 
 // Joiners API
 router.get('/joiners/org/:oid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
