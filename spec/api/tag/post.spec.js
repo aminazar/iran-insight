@@ -4,7 +4,7 @@ const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
 const types = require('../../../sql/types');
 
-xdescribe("Post Tag", () => {
+describe("Post Tag", () => {
   let adminObj = {
     pid: null,
     jar: null,
@@ -88,7 +88,7 @@ xdescribe("Post Tag", () => {
 
 });
 
-xdescribe("Delete tag", () => {
+describe("Delete tag", () => {
   let adminObj = {
     pid: null,
     jar: null,
@@ -264,7 +264,7 @@ describe("get similar tags list", () => {
     pid: null,
     jar: null,
   };
-  let org, biz, product_id, tid1, tid2;
+  let org, biz, product_id, tid1, tid2, tid3;
 
   beforeEach(done => {
     lib.dbHelpers.create()
@@ -303,14 +303,18 @@ describe("get similar tags list", () => {
       })
       .then(res => {
         product_id = res.product_id;
-        return sql.test.tag.add({name: 'حمل', active: true})
+        return sql.test.tag.add({name: 'حمل', active: false})
       })
       .then(res => {
         tid1 = res.tid;
-        return sql.test.tag.add({name: 'حمل و نقل', active: false})
+        return sql.test.tag.add({name: 'internet', active: true})
       })
       .then(res => {
         tid2 = res.tid;
+        return sql.test.tag.add({name: 'آنلاین', active: false})
+      })
+      .then(res => {
+        tid3 = res.tid;
         done();
       })
       .catch(err => {
@@ -319,7 +323,7 @@ describe("get similar tags list", () => {
       });
   });
 
-  it("Rep should be able to see just list of a activated tags", function (done) {
+  it("Rep should be able to see just list of similar activated tags", function (done) {
     this.done = done;
     rp({
       method: 'post',
@@ -334,7 +338,7 @@ describe("get similar tags list", () => {
       .then(res => {
 
         expect(res.statusCode).toBe(200);
-        expect(res.body.length).toBe(1);
+        expect(res.body.length).toBe(0);
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
@@ -354,10 +358,37 @@ describe("get similar tags list", () => {
       .then(res => {
 
         expect(res.statusCode).toBe(200);
-        expect(res.body.length).toBe(2);
+        expect(res.body.length).toBe(1);
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
   });
+
+  it("all users should be able to get all related active tags of biz with affinity more than 10", function (done) {
+    this.done = done;
+
+    sql.test.tag_connection.add({tid1: tid3, tid2: tid1, affinity: 6})
+      .then(res => sql.test.tag_connection.add({tid1: tid3, tid2:tid2, affinity: 15}))
+      .then(res =>
+        rp({
+          method: 'post',
+          uri: lib.helpers.apiTestURL(`tag/getConnection`),
+          body: {
+            name: 'آنلاین'
+          },
+          json: true,
+          jar: bizRep.jar,
+          resolveWithFullResponse: true
+        }))
+      .then(res => {
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.length).toBe(1);
+        expect(res.body[0].name).toBe('internet');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this))
+  });
+
 
 });
