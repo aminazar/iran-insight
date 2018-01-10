@@ -164,6 +164,24 @@ router.post('/business/product/:business_id/:product_id', apiResponse('Business'
 router.get('/business/product/all/:business_id', apiResponse('Business', 'allProducts', false, ['params']));
 router.get('/business/product/one/:business_id', apiResponse('Business', 'oneProduct', false, ['params']));
 
+// Representation-check API
+router.get('/joiner/getRepPendingList', apiResponse('Joiner', 'findRepRequests', true));
+router.put('/joiner/confirmRep/:mid/:aid', apiResponse('Joiner', 'confirmRepByAdmin', true, ['params.mid', 'params.aid', 'user']));
+router.delete('/joiner/deleteRep/:mid', apiResponse('Joiner', 'deleteRepRequest', true, ['user', 'params.mid']));
+router.delete('/Joiner/deleteRepBizOrg/:mid', apiResponse('Joiner', 'deleteRepAndHisCompany', true, ['params.mid']));
+
+// upsert/delete a membeship(rep/regular)
+router.delete('/joiner/delete/membership/:mid', apiResponse('Joiner', 'deleteUserMembership', false, ['params.mid', 'user.pid']));
+router.post('/joiner/upsert/membership', apiResponse('Joiner', 'upsertMembership', true, ['body', 'user.pid']));
+// router.delete('/joiner/deleteUserOrRepAfterConfirm/:mid', apiResponse('Joiner', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
+
+// Joiners API
+router.get('/joiners/org/:oid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
+router.get('/joiners/biz/:bid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
+router.get('/joiners', apiResponse('Joiner', 'select', false, ['user.pid']));
+router.put('/joiner/:mid', apiResponse('Joiner', 'saveData', false, ['params.mid', 'user'])); //just confirm a membership by admin or representative
+router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['params.mid', 'params.aid', 'user']));
+
 
 // Organization API
 router.get('/organization', apiResponse('Organization', 'getAll', false));
@@ -197,23 +215,6 @@ router.post('/tag/confirm/:tid', apiResponse('Tag', 'confirm', true, ['params.ti
 router.post('/tag/reject/:tid', apiResponse('Tag', 'reject', true, ['params.tid']));
 router.post('/tag/removeFrom', apiResponse('Tag', 'removeTagFromTarget', false, ['user.pid', 'body']));
 router.get('/tag/:type/:id', apiResponse('Tag', 'getTags', false, ['user.pid', 'params.type', 'params.id']));
-
-// Representation-check API
-router.get('/joiner/getRepPendingList', apiResponse('Joiner', 'findRepRequests', true));
-router.put('/joiner/confirmRep/:mid/:aid', apiResponse('Joiner', 'confirmRepByAdmin', true, ['params.mid', 'params.aid', 'user']));
-router.delete('/joiner/deleteRep/:mid', apiResponse('Joiner', 'deleteRepRequest', true, ['user', 'params.mid']));
-router.delete('/Joiner/deleteRepBizOrg/:mid', apiResponse('Joiner', 'deleteRepAndHisCompany', true, ['params.mid']));
-
-// upsert/delete an authoritative user(rep/regular)
-router.delete('/joiner/deleteUserOrRepAfterConfirm/:mid', apiResponse('Joiner', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
-router.post('/joiner/upsert/membership', apiResponse('Joiner', 'upsertMembership', true, ['body', 'user.pid']));
-
-// Joiners API
-router.get('/joiners/org/:oid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
-router.get('/joiners/biz/:bid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
-router.get('/joiners', apiResponse('Joiner', 'select', false, ['user.pid']));
-router.put('/joiner/:mid', apiResponse('Joiner', 'saveData', false, ['params.mid', 'user'])); //just confirm a membership by admin or representative
-router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['params.mid', 'params.aid', 'user']));
 
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load' , false, ['params.eid', '?user.pid']));
