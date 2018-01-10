@@ -15,5 +15,6 @@ create table if not exists person(
     notify_period varchar(1) default 'd',
     is_user boolean default true,
     display_name_en varchar(30),
-    display_name_fa varchar(30)
+    display_name_fa varchar(30),
+    CONSTRAINT one_display_name CHECK (display_name_en is not null or display_name_fa is not null)
 );

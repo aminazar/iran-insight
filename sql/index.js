@@ -14,7 +14,7 @@ let usingFunction = query => {
   let res = {
     get: 'any',
     uniqueGet: 'one',
-    getOne: 'one',
+    getOne: 'oneOrNone',
     checkNone: 'none',
     test: 'one',
     add: 'one',
@@ -41,9 +41,13 @@ for (let table in rawSql) {
       let fixedArgs = rawSql[table][query].fixedArgs;
       let q = rawSql[table][query].query;
       dataTransform = d => {
+        if(d === undefined)
+          d = {};
+
         if (d.constructor.name === 'Array') {
           d = {};
         }
+
         for (let key in fixedArgs) {
           d[key] = fixedArgs[key];
         }
@@ -219,7 +223,7 @@ let tablesWithSqlCreatedByHelpers = [
     insert: true,
     update: true,
     select: true,
-    delete: true,
+    delete: false,
     get: true,
     idColumn: 'bid',
   },
@@ -320,6 +324,15 @@ let tablesWithSqlCreatedByHelpers = [
     delete: true,
     get: true,
     idColumn: 'tid',
+  },
+  {
+    name: 'tag_connection',
+    insert: true,
+    update: true,
+    select: true,
+    delete: true,
+    get: true,
+    idColumn: 'id',
   }
 ].concat(templateGeneratedTables
   .map(tableName => {

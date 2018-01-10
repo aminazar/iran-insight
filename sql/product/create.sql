@@ -8,7 +8,7 @@ create table if not exists product(
     start_time timestamp with time zone not null default current_timestamp,
     end_time timestamp with time zone,
     parent_product_id integer references product(product_id),
-    tags text[],
+    tags text[] DEFAULT array[]::text[],
     CONSTRAINT product_start_and_end_time_in_sequence
     CHECK (start_time < end_time),
     constraint chk_name
