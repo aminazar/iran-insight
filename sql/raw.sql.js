@@ -80,6 +80,7 @@ let modExp = {
     getById: sql('organization/get_by_id.sql'),
     getAll: sql('organization/get_all.sql'),
     get: sql('organization/get.sql'),
+    delete: sql('organization/delete.sql'),
   },
   organization_lce: {
     create: sql('organization_lce/create.sql'),
