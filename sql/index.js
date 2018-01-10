@@ -215,7 +215,7 @@ let tablesWithSqlCreatedByHelpers = [
     insert: true,
     update: true,
     select: false,
-    delete: true,
+    delete: false,
     idColumn: 'oid',
   },
   {

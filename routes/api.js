@@ -185,6 +185,7 @@ router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['para
 
 // Organization API
 router.get('/organization', apiResponse('Organization', 'getAll', false));
+router.post('/organization/one/delete/:oid', apiResponse('Organization', 'deleteOrg', false, ['params.oid', 'user.pid', 'body.end_date']));
 router.get('/organization/:oid', apiResponse('Organization', 'getById', false, ['params.oid']));
 router.put('/organization', apiResponse('Organization', 'saveData', false, ['body']));
 router.post('/organization/profile', apiResponse('Organization', 'setProfile', false, ['body', 'user.pid']));

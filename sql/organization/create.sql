@@ -4,6 +4,8 @@ CREATE TABLE if not exists organization(
     name_fa varchar(50) unique,
     ceo_pid integer references person(pid),
     org_type_id integer references organization_type(id),
+    start_date date,
+    end_date date,
     tags text[] DEFAULT array[]::text[],
     constraint chk_name check (name is not null or name_fa is not null)
 )
