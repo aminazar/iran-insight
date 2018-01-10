@@ -13,7 +13,7 @@ create table if not exists business (
     longitude real,
     tel varchar(12),
     url varchar(30),
-    tags text[],
+    tags text[] DEFAULT array[]::text[],
     start_date date,
     end_date date,
     general_stats jsonb,

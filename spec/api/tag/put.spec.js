@@ -3,7 +3,7 @@ const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
 
-xdescribe("Put bunch of tags by admin", () => {
+describe("Put bunch of tags by admin", () => {
   let adminObj = {
     pid: null,
     jar: null,
@@ -187,6 +187,40 @@ describe("Put tag for biz, org and products", () => {
       jar: bizRep.jar,
       resolveWithFullResponse: true
     }).then(res => {
+
+      expect(res.statusCode).toBe(200);
+
+      return sql.test.tag.select();
+    }).then(res => {
+      expect(res.length).toBe(1);
+      expect(res[0].active).toBe(false);
+      return sql.test.business.get({bid: biz.bid});
+    }).then(res => {
+
+      expect(res[0].tags.length).toBe(1);
+      expect(res[0].tags[0]).toBe('اینترنت');
+      done();
+
+    })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+  it("Duplicate tags must not be exists", function (done) {
+    this.done = done;
+
+    sql.test.tag.appendTagToTarget({tableName: 'business', tag: 'اینترنت', condition: `bid = ${biz.bid}`})
+      .then(res =>
+        rp({
+          method: 'put',
+          uri: lib.helpers.apiTestURL(`tag/add`),
+          body: {
+            bid: biz.bid,
+            name: 'اینترنت'
+          },
+          json: true,
+          jar: bizRep.jar,
+          resolveWithFullResponse: true
+        }))
+      .then(res => {
 
       expect(res.statusCode).toBe(200);
 
