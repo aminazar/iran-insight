@@ -283,7 +283,7 @@ describe('Upsert/Delete membership, POST API', () => {
         position_id: 300,
         end_time: moment(new Date()).add(20, 'day').format()
       },
-      uri: lib.helpers.apiTestURL('user/updateMembershipForUser/1'),
+      uri: lib.helpers.apiTestURL('joiner/updateMembershipForUser/1'),
       jar: adminJar,
       resolveWithFullResponse: true
     })
@@ -315,7 +315,7 @@ describe('Upsert/Delete membership, POST API', () => {
         position_id: 303,
         start_time: moment(new Date()).add(5, 'day').format()
       },
-      uri: lib.helpers.apiTestURL('user/updateMembershipForUser/5'),
+      uri: lib.helpers.apiTestURL('joiner/updateMembershipForUser/5'),
       jar: adminJar,
       resolveWithFullResponse: true
     })
@@ -355,7 +355,7 @@ describe('Upsert/Delete membership, POST API', () => {
             aid: res[0].assoc_id,
             position_id: 301,
           },
-          uri: lib.helpers.apiTestURL('user/updateMembershipForUser/2'),
+          uri: lib.helpers.apiTestURL('joiner/updateMembershipForUser/2'),
           jar: repJar,
           resolveWithFullResponse: true
         })
@@ -389,7 +389,7 @@ describe('Upsert/Delete membership, POST API', () => {
         position_id: 300,
         end_time: moment(new Date()).add(10, 'day').format()
       },
-      uri: lib.helpers.apiTestURL('user/updateMembershipForUser/4'),
+      uri: lib.helpers.apiTestURL('joiner/updateMembershipForUser/4'),
       jar: repJar,
       resolveWithFullResponse: true
     })
@@ -421,7 +421,7 @@ describe('Upsert/Delete membership, POST API', () => {
         aid: 5,
         position_id: 300,
       },
-      uri: lib.helpers.apiTestURL('user/updateMembershipForUser/5'),
+      uri: lib.helpers.apiTestURL('joiner/updateMembershipForUser/5'),
       jar: userJar2,
       resolveWithFullResponse: true
     })
@@ -456,7 +456,7 @@ describe('Upsert/Delete membership, POST API', () => {
             position_id: 300,
             end_time: moment(new Date()).add(10, 'day').format()
           },
-          uri: lib.helpers.apiTestURL('user/updateMembershipForUser/5'),
+          uri: lib.helpers.apiTestURL('joiner/updateMembershipForUser/5'),
           jar: repJar,
           resolveWithFullResponse: true
         })
@@ -479,7 +479,7 @@ describe('Upsert/Delete membership, POST API', () => {
         aid: 5,
         position_id: 300,
       },
-      uri: lib.helpers.apiTestURL('user/updateMembershipForUser/5'),
+      uri: lib.helpers.apiTestURL('joiner/updateMembershipForUser/5'),
       jar: userJar1,
       resolveWithFullResponse: true
     })

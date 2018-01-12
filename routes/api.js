@@ -4,6 +4,18 @@ const router = express.Router();
 const passport = require('passport');
 const sql = require('../sql');
 const error = require('../lib/errors.list');
+const env = require('../env');
+const path = require('path');
+const app = require('../app');
+const multer = require('multer');
+
+var storage = multer.diskStorage({
+  destination: env.uploadPath + path.sep,
+  filename: (req, file, cb) => {
+    cb(null, [req.params.username || req.user.username, file.mimetype.substr(file.mimetype.lastIndexOf('/') + 1)].join('.'));
+  }
+});
+var upload = multer({storage: storage});
 
 function apiResponse(className, functionName, adminOnly = false, reqFuncs = []) {
   let args = Array.prototype.slice.call(arguments, 4);
@@ -93,6 +105,10 @@ router.get('/user/activate/link/:link', apiResponse('Person', 'checkActiveLink',
 router.post('/user/auth/local/:link', apiResponse('Person', 'completeAuth', false, ['params.link', 'body']));
 router.post('/user/auth/link', apiResponse('Person', 'sendActivationMail', false, ['body.email', 'body.is_forgot_mail']));
 router.post('/membership/introducing/rep', apiResponse('Person', 'introduceAsRep', false, ['body', 'user']));
+router.post('/profile/image/:pid', upload.single('image'), apiResponse('Person', 'setProfileImage', false, ['user.pid', 'params.pid', 'file']));
+router.post('/profile/image/:username/:pid', upload.single('image'), apiResponse('Person', 'setProfileImage', true, ['user.pid', 'params.pid', 'file']));
+router.get('/profile/image/:pid', apiResponse('Person', 'getProfileImage', false, ['params.pid']));
+router.delete('/profile/image/:pid', apiResponse('Person', 'deleteProfileImage', false, ['user.pid', 'params.pid']));
 
 router.put('/user', apiResponse('Person', 'insert', true, ['body']));
 router.get('/user', apiResponse('Person', 'select', true));
@@ -133,6 +149,7 @@ router.delete('/person/partnership/:pid', apiResponse('Person', 'deletePartnersh
 
 // Business API
 router.get('/business/one/:bid', apiResponse('Business', 'getOne', false, ['params']));
+router.post('/business/one/delete/:bid', apiResponse('Business', 'deleteBiz', false, ['params.bid', 'user.pid', 'body.end_date']));
 router.get('/business/oneAll/:bid', apiResponse('Business', 'getOneAll', false, ['params']));
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
 router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
@@ -147,9 +164,28 @@ router.post('/business/product/:business_id/:product_id', apiResponse('Business'
 router.get('/business/product/all/:business_id', apiResponse('Business', 'allProducts', false, ['params']));
 router.get('/business/product/one/:business_id', apiResponse('Business', 'oneProduct', false, ['params']));
 
+// Representation-check API
+router.get('/joiner/getRepPendingList', apiResponse('Joiner', 'findRepRequests', true));
+router.put('/joiner/confirmRep/:mid/:aid', apiResponse('Joiner', 'confirmRepByAdmin', true, ['params.mid', 'params.aid', 'user']));
+router.delete('/joiner/deleteRep/:mid', apiResponse('Joiner', 'deleteRepRequest', true, ['user', 'params.mid']));
+router.delete('/Joiner/deleteRepBizOrg/:mid', apiResponse('Joiner', 'deleteRepAndHisCompany', true, ['params.mid']));
+
+// upsert/delete a membeship(rep/regular)
+router.delete('/joiner/delete/membership/:mid', apiResponse('Joiner', 'deleteUserMembership', false, ['params.mid', 'user.pid']));
+router.post('/joiner/upsert/membership', apiResponse('Joiner', 'upsertMembership', true, ['body', 'user.pid']));
+// router.delete('/joiner/deleteUserOrRepAfterConfirm/:mid', apiResponse('Joiner', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
+
+// Joiners API
+router.get('/joiners/org/:oid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
+router.get('/joiners/biz/:bid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
+router.get('/joiners', apiResponse('Joiner', 'select', false, ['user.pid']));
+router.put('/joiner/:mid', apiResponse('Joiner', 'saveData', false, ['params.mid', 'user'])); //just confirm a membership by admin or representative
+router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['params.mid', 'params.aid', 'user']));
+
 
 // Organization API
 router.get('/organization', apiResponse('Organization', 'getAll', false));
+router.post('/organization/one/delete/:oid', apiResponse('Organization', 'deleteOrg', false, ['params.oid', 'user.pid', 'body.end_date']));
 router.get('/organization/:oid', apiResponse('Organization', 'getById', false, ['params.oid']));
 router.put('/organization', apiResponse('Organization', 'saveData', false, ['body']));
 router.post('/organization/profile', apiResponse('Organization', 'setProfile', false, ['body', 'user.pid']));
@@ -173,18 +209,12 @@ router.get('/type/:name/:type_id', apiResponse('Type', 'getInfo', true, ['params
 // tags
 router.put('/tag/add_all', apiResponse('Tag', 'addAll', true, ['body']));
 router.put('/tag/add', apiResponse('Tag', 'setTag', false, ['user.pid', 'body']));
+router.post('/tag/getList', apiResponse('Tag', 'getList', false, ['user.pid', 'body']));
+router.post('/tag/getConnection', apiResponse('Tag', 'getConnection', false, ['user.pid', 'body']));
 router.post('/tag/confirm/:tid', apiResponse('Tag', 'confirm', true, ['params.tid']));
-router.delete('/tag/removeFrom', apiResponse('Tag', 'removeTagFromTarget', false, ['user.pid', 'body']));
+router.post('/tag/reject/:tid', apiResponse('Tag', 'reject', true, ['params.tid']));
+router.post('/tag/removeFrom', apiResponse('Tag', 'removeTagFromTarget', false, ['user.pid', 'body']));
 router.get('/tag/:type/:id', apiResponse('Tag', 'getTags', false, ['user.pid', 'params.type', 'params.id']));
-
-// Representation-check API
-router.get('/user/getRepPendingList', apiResponse('Person', 'findRepRequests', true));
-router.put('/user/confirmRep/:mid/:aid', apiResponse('Person', 'confirmRepByAdmin', true, ['params.mid', 'params.aid', 'user']));
-router.delete('/user/deleteRep/:mid', apiResponse('Person', 'deleteRepRequest', true, ['user', 'params.mid']));
-router.delete('/user/deleteRepBizOrg/:mid', apiResponse('Person', 'deleteRepAndHisCompany', true, ['params.mid']));
-
-//upsert/delete an authoritative user(rep/regular)
-router.delete('/user/deleteUserOrRepAfterConfirm/:mid', apiResponse('Person', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
 
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load' , false, ['params.eid', '?user.pid']));
@@ -205,17 +235,13 @@ router.put('/attends/:eid', apiResponse('Attendance', 'attends', true, ['params.
 router.post('/attendee/:id', apiResponse('Attendance', 'updateAttendee', false, ['params.id', 'body']));
 router.get('/attendance/types', apiResponse('Attendance', 'getTypes', false, []));
 
-// Joiners API
-router.get('/joiners/org/:oid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
-router.get('/joiners/biz/:bid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
-router.get('/joiners', apiResponse('Joiner', 'select', false, ['user.pid']));
-router.put('/joiner/:mid', apiResponse('Joiner', 'saveData', false, ['params.mid', 'user']));
-router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['params.mid', 'params.aid', 'user']));
-
 // Investment API
 router.get('/investment/business/:bid', apiResponse('Investment', 'getByBiz', false, ['params.bid']));
+router.get('/investment/business/all/:bid', apiResponse('Investment', 'getByBiz', true, ['params.bid', () => true]));
 router.get('/investment/organization/:oid', apiResponse('Investment', 'getByOrg', false, ['params.oid']));
+router.get('/investment/organization/all/:oid', apiResponse('Investment', 'getByOrg', true, ['params.oid', () => true]));
 router.get('/investment/person/:pid', apiResponse('Investment', 'getByPerson', false, ['params.pid']));
+router.get('/investment/person/all/:pid', apiResponse('Investment', 'getByPerson', true, ['params.pid', () => true]));
 router.get('/investment/pending/business', apiResponse('Investment', 'getBizPending', false, ['user.pid']));
 router.get('/investment/pending/organization', apiResponse('Investment', 'getOrgPending', false, ['user.pid']));
 router.get('/investment/pending/person', apiResponse('Investment', 'getPersonalPending', false, ['user.pid']));
@@ -224,12 +250,16 @@ router.put('/orgInvestment/:bid/:oid', apiResponse('Investment', 'saveOrganizati
 router.post('/personalInvestment/:id/:bid/:pid', apiResponse('Investment', 'savePersonal', false, ['params.bid', 'params.pid', 'body', 'user', 'params.id']));
 router.post('/orgInvestment/:id/:bid/:oid', apiResponse('Investment', 'saveOrganizational', false, ['params.bid', 'params.oid', 'body', 'user', 'params.id']));
 router.put('/investment/:id', apiResponse('Investment', 'confirm', false, ['params.id', 'user']));
+router.get('/investment/:id', apiResponse('Investment', 'get', false, ['params.id', 'user.pid']));
 router.delete('/investment/:id', apiResponse('Investment', 'delete', false, ['params.id', 'user']));
 
 // Consultancy API
 router.get('/consultancy/business/:bid', apiResponse('Consultancy', 'getByBiz', false, ['params.bid']));
+router.get('/consultancy/business/all/:bid', apiResponse('Consultancy', 'getByBiz', true, ['params.bid', () => true]));
 router.get('/consultancy/organization/:oid', apiResponse('Consultancy', 'getByOrg', false, ['params.oid']));
+router.get('/consultancy/organization/all/:oid', apiResponse('Consultancy', 'getByOrg', true, ['params.oid', () => true]));
 router.get('/consultancy/person/:pid', apiResponse('Consultancy', 'getByPerson', false, ['params.pid']));
+router.get('/consultancy/person/all/:pid', apiResponse('Consultancy', 'getByPerson', true, ['params.pid', () => true]));
 router.get('/consultancy/pending/business', apiResponse('Consultancy', 'getBizPending', false, ['user.pid']));
 router.get('/consultancy/pending/organization', apiResponse('Consultancy', 'getOrgPending', false, ['user.pid']));
 router.get('/consultancy/pending/person', apiResponse('Consultancy', 'getPersonalPending', false, ['user.pid']));
@@ -238,6 +268,7 @@ router.put('/orgConsultancy/:bid/:oid', apiResponse('Consultancy', 'saveOrganiza
 router.post('/personalConsultancy/:id/:bid/:pid', apiResponse('Consultancy', 'savePersonal', false, ['params.bid', 'params.pid', 'body', 'user', 'params.id']));
 router.post('/orgConsultancy/:id/:bid/:oid', apiResponse('Consultancy', 'saveOrganizational', false, ['params.bid', 'params.oid', 'body', 'user', 'params.id']));
 router.put('/consultancy/:id', apiResponse('Consultancy', 'confirm', false, ['params.id', 'user']));
+router.get('/consultancy/:id', apiResponse('Consultancy', 'get', false, ['params.id', 'user.pid']));
 router.delete('/consultancy/:id', apiResponse('Consultancy', 'delete', false, ['params.id', 'user']));
 
 //Search API

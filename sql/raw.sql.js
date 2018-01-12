@@ -80,6 +80,7 @@ let modExp = {
     getById: sql('organization/get_by_id.sql'),
     getAll: sql('organization/get_all.sql'),
     get: sql('organization/get.sql'),
+    delete: sql('organization/delete.sql'),
   },
   organization_lce: {
     create: sql('organization_lce/create.sql'),
@@ -104,6 +105,7 @@ let modExp = {
     get: sql('business/get.sql'),
     getBusinessProducts: sql('business/getBusinessProducts.sql'),
     getOne: sql('business/getOne.sql'),
+    delete: sql('business/delete.sql'),
   },
   business_lce: {
     create: sql('lce/create.sql'),
@@ -118,6 +120,7 @@ let modExp = {
     create: sql('association/create.sql'),
     drop: sql('association/drop.sql'),
     get: sql('association/get.sql'),
+    getSpecialAssoc: sql('association/getSpecialAssoc.sql'),
   },
   membership: {
     create: sql('membership/create.sql'),
@@ -177,14 +180,16 @@ let modExp = {
   tag: {
     create: sql('tag/create.sql'),
     drop: sql('tag/drop.sql'),
-    updateProposer: sql('tag/updateProposer.sql'),
-    appendTag: sql('tag/appendTag.sql'),
+    appendTagToTarget: sql('tag/appendTagToTarget.sql'),
     removeTagFromTarget: sql('tag/removeTagFromTarget.sql'),
-    getActiveTags: sql('tag/getActiveTags.sql'),
+    getTags: sql('tag/getTags.sql'),
+    getSimilar: sql('tag/getSimilar.sql'),
   },
   tag_connection: {
     create: sql('tag_connection/create.sql'),
     drop: sql('tag_connection/drop.sql'),
+    getConnection: sql('tag_connection/getConnection.sql'),
+    recalculateAffiliation: sql('tag_connection/recalculateAffiliation.sql'),
   },
   search: {
     searchOnPerson: sql('search/searchOnPerson.sql'),
@@ -197,6 +202,8 @@ let modExp = {
     searchOnInvestment: sql('search/searchOnInvestment.sql'),
     searchOnConsultancy: sql('search/searchOnConsultancy.sql'),
     searchOnType: sql('search/searchOnType.sql'),
+    searchOnTags: sql('search/searchOnTags.sql'),
+    searchOnEntityTags: sql('search/searchOnEntityTags.sql'),
   },
   suggest: {
     suggestion: sql('suggest/suggestion.sql'),
@@ -264,6 +271,8 @@ types.forEach(t => {
     getPendingByPerson: sql('biz-input/getPendingByPerson.sql', param),
     getWithAssoc: sql('biz-input/getWithAssoc.sql', param),
     getDetails: sql('biz-input/getDetails.sql', param),
+    getBizIdById: sql('biz-input/getBizIdById.sql', param),
+    hasAccess: sql('biz-input/hasAccess.sql', param),
   }
 });
 

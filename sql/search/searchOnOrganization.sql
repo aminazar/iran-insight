@@ -10,9 +10,11 @@ left outer join organization_type on organization_type.id = organization.org_typ
 where
     (${show_all} = true)
     or(
-           lower(organization.name) like '%'||lower(${phrase})||'%'
-        or lower(organization.name_fa) like '%'||lower(${phrase})||'%'
-        or lower(organization_type.name) like '%'||lower(${phrase})||'%'
-        or lower(organization_type.name_fa) like '%'||lower(${phrase})||'%'
+        (${phrase} is not null and (
+               lower(organization.name) like '%'||lower(${phrase})||'%'
+            or lower(organization.name_fa) like '%'||lower(${phrase})||'%'
+            or lower(organization_type.name) like '%'||lower(${phrase})||'%'
+            or lower(organization_type.name_fa) like '%'||lower(${phrase})||'%'
+        ) or ${phrase} is null)
     )) as t
 order by t.oid DESC limit ${limit} offset ${offset}

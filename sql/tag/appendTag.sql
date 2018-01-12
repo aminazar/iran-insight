@@ -1,1 +1,0 @@
-UPDATE ${tableName~} SET tags = array_append(tags,${tag}) WHERE ${condition^}

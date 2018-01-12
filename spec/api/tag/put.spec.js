@@ -3,7 +3,7 @@ const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
 
-xdescribe("Put bunch of tags by admin", () => {
+describe("Put bunch of tags by admin", () => {
   let adminObj = {
     pid: null,
     jar: null,
@@ -193,15 +193,21 @@ describe("Put tag for biz, org and products", () => {
       return sql.test.tag.select();
     }).then(res => {
       expect(res.length).toBe(1);
-      expect(res[0].proposer.business.length).toBe(1);
+      expect(res[0].active).toBe(false);
+      return sql.test.business.get({bid: biz.bid});
+    }).then(res => {
+
+      expect(res[0].tags.length).toBe(1);
+      expect(res[0].tags[0]).toBe('اینترنت');
       done();
+
     })
       .catch(lib.helpers.errorHandler.bind(this));
   });
-  xit("rep should be able to add proposer id to an existing tag for biz", function (done) {
+  it("Duplicate tags must not be exists", function (done) {
     this.done = done;
 
-    sql.test.tag.add({name: 'اینترنت'})
+    sql.test.tag.appendTagToTarget({tableName: 'business', tag: 'اینترنت', condition: `bid = ${biz.bid}`})
       .then(res =>
         rp({
           method: 'put',
@@ -215,16 +221,24 @@ describe("Put tag for biz, org and products", () => {
           resolveWithFullResponse: true
         }))
       .then(res => {
-        expect(res.statusCode).toBe(200);
-        return sql.test.tag.select();
-      }).then(res => {
+
+      expect(res.statusCode).toBe(200);
+
+      return sql.test.tag.select();
+    }).then(res => {
       expect(res.length).toBe(1);
-      expect(res[0].proposer.business.length).toBe(1);
+      expect(res[0].active).toBe(false);
+      return sql.test.business.get({bid: biz.bid});
+    }).then(res => {
+
+      expect(res[0].tags.length).toBe(1);
+      expect(res[0].tags[0]).toBe('اینترنت');
       done();
+
     })
       .catch(lib.helpers.errorHandler.bind(this));
   });
-  xit("Rep should be able to add non-existing tag for org", function (done) {
+  it("Rep should be able to add non-existing tag for org", function (done) {
     this.done = done;
     rp({
       method: 'put',
@@ -243,12 +257,37 @@ describe("Put tag for biz, org and products", () => {
       return sql.test.tag.select();
     }).then(res => {
       expect(res.length).toBe(1);
-      expect(res[0].proposer.organization.length).toBe(1);
+      expect(res[0].active).toBe(false);
       done();
     })
       .catch(lib.helpers.errorHandler.bind(this));
   });
-  xit("admin should be able to add non-existing tag for product", function (done) {
+  it("tag must not be active if rep is add new tag even he/her specified active in body of request", function (done) {
+    this.done = done;
+    rp({
+      method: 'put',
+      uri: lib.helpers.apiTestURL(`tag/add`),
+      body: {
+        oid: org.oid,
+        name: 'اینترنت',
+        active: true
+      },
+      json: true,
+      jar: orgRep.jar,
+      resolveWithFullResponse: true
+    }).then(res => {
+
+      expect(res.statusCode).toBe(200);
+
+      return sql.test.tag.select();
+    }).then(res => {
+      expect(res.length).toBe(1);
+      expect(res[0].active).toBe(false);
+      done();
+    })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+  it("admin should be able to add active non-existing tag for product", function (done) {
     this.done = done;
 
     rp({
@@ -256,7 +295,8 @@ describe("Put tag for biz, org and products", () => {
       uri: lib.helpers.apiTestURL(`tag/add`),
       body: {
         product_id: product_id,
-        name: 'اینترنت'
+        name: 'اینترنت',
+        active: true
       },
       json: true,
       jar: adminObj.jar,
@@ -268,25 +308,26 @@ describe("Put tag for biz, org and products", () => {
       return sql.test.tag.select();
     }).then(res => {
       expect(res.length).toBe(1);
+      expect(res[0].active).toBe(true);
       done();
     })
       .catch(lib.helpers.errorHandler.bind(this));
   });
-  xit("admin should be able to add non-existing tag and add affinity with other tags ", function (done) {
+  it("admin should be able to add non-existing tag for product and add affinity with other tags ", function (done) {
     this.done = done;
 
     sql.test.tag.add({name: 'حمل و نقل'})
       .then(res => sql.test.tag.add({name: 'آنلاین'}))
       .then(res => sql.test.tag.add({name: 'شهری'}))
       .then(res => sql.test.tag.add({name: 'عمومی'}))
-      .then(res =>{
+      .then(res => sql.test.product.update({tags: ['عمومی', 'شهری', 'آنلاین', 'حمل و نقل']}, product_id))
+      .then(res => {
         rp({
           method: 'put',
           uri: lib.helpers.apiTestURL(`tag/add`),
           body: {
             product_id: product_id,
             name: 'اینترنت',
-            related_names : ['حمل و نقل', 'شهری' , 'عمومی', 'آنلاین']
           },
           json: true,
           jar: adminObj.jar,
@@ -294,38 +335,64 @@ describe("Put tag for biz, org and products", () => {
         }).then(res => {
 
           expect(res.statusCode).toBe(200);
-
           return sql.test.tag_connection.select();
         }).then(res => {
           expect(res.length).toBe(4);
+          res.forEach(r => {
+            expect(r.affinity).toBe(5);
+          });
+
           done();
         })
           .catch(lib.helpers.errorHandler.bind(this));
       })
 
   });
-  xit("Expect error when other users want to add tag for product", function (done) {
+  it("admin should be able to add existing tag for product and increase affinity with other tags ", function (done) {
+    this.done = done;
 
-    rp({
-      method: 'put',
-      uri: lib.helpers.apiTestURL(`tag/add`),
-      body: {
-        product_id: product_id,
-        name: 'اینترنت'
-      },
-      json: true,
-      jar: orgRep.jar,
-      resolveWithFullResponse: true
-    })
+    let id1, id2;
+    sql.test.tag.add({name: 'حمل و نقل'})
       .then(res => {
-        this.fail('did not failed when other users want to add tag for product');
-        done();
+        id1 = res.tid;
+        return sql.test.tag.add({name: 'آنلاین'});
       })
-      .catch(err => {
-        expect(err.statusCode).toBe(error.notAllowed.status);
-        expect(err.error).toBe(error.notAllowed.message);
-        done();
-      });
+      .then(res => {
+        id2 = res.tid;
+        return sql.test.tag.add({name: 'شهری'})
+      })
+      .then(res => sql.test.product.update({tags: ['شهری', 'حمل و نقل']}, product_id))
+      .then(res => sql.test.tag_connection.add({tid1: id1, tid2: id2}))
+      .then(res => {
+        rp({
+          method: 'put',
+          uri: lib.helpers.apiTestURL(`tag/add`),
+          body: {
+            product_id: product_id,
+            name: 'آنلاین',
+          },
+          json: true,
+          jar: adminObj.jar,
+          resolveWithFullResponse: true
+        }).then(res => {
+
+          expect(res.statusCode).toBe(200);
+          return sql.test.tag_connection.select();
+        }).then(res => {
+          expect(res.length).toBe(2);
+          res.forEach(r => {
+            if (r.tid1 === id1 && r.tid2 === id2)
+              expect(r.affinity).toBe(6);
+            else
+              expect(r.affinity).toBe(5);
+          });
+
+          done();
+        })
+          .catch(lib.helpers.errorHandler.bind(this));
+      })
 
   });
+
+
 });

@@ -260,7 +260,7 @@ describe('Representation-check, PUT API', () => {
         expect(res[0].is_representative).toBe(true);
         return rp({
           method: 'PUT',
-          uri: lib.helpers.apiTestURL(`user/confirmRep/2/2`),
+          uri: lib.helpers.apiTestURL(`joiner/confirmRep/2/2`),
           jar: adminJar,
           resolveWithFullResponse: true,
         })
@@ -291,7 +291,7 @@ describe('Representation-check, PUT API', () => {
         expect(res[0].is_representative).toBe(true);
         return rp({
           method: 'PUT',
-          uri: lib.helpers.apiTestURL(`user/confirmRep/8/${temp_aid}`),
+          uri: lib.helpers.apiTestURL(`joiner/confirmRep/8/${temp_aid}`),
           jar: adminJar,
           resolveWithFullResponse: true,
         })
@@ -323,14 +323,14 @@ describe('Representation-check, PUT API', () => {
   it('admin should NOT be able to activate a rep request for a biz/org with representative', function (done) {
     rp({
       method: 'PUT',
-      uri: lib.helpers.apiTestURL(`user/confirmRep/8/7`),
+      uri: lib.helpers.apiTestURL(`joiner/confirmRep/8/7`),
       jar: adminJar,
       resolveWithFullResponse: true,
     })
       .then(res => {
         return rp({
           method: 'PUT',
-          uri: lib.helpers.apiTestURL(`user/confirmRep/7/7`), //this membership's biz/org already has rep.
+          uri: lib.helpers.apiTestURL(`joiner/confirmRep/7/7`), //this membership's biz/org already has rep.
           jar: adminJar,
           resolveWithFullResponse: true,
         })
