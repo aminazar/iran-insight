@@ -4,6 +4,7 @@
     "appAddress": "http://localhost:3000",
     "initDb":   "postgres",
     "database": "iran-insight",
+    "uploadPath": "public/documents/profile-image",
     "pgConnection": "postgres://postgres:postgres@localhost:5432/",
     "mailPeriodConfig":{
       "minute" : 5,
