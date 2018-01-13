@@ -1,6 +1,6 @@
 create table if not exists product(
     product_id serial primary key,
-    business_id integer not null references business(bid),
+    business_id integer not null references business(bid) on delete cascade,
     name varchar(100),
     name_fa varchar(100),
     description text,
