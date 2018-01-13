@@ -80,7 +80,7 @@ let modExp = {
     getById: sql('organization/get_by_id.sql'),
     getAll: sql('organization/get_all.sql'),
     get: sql('organization/get.sql'),
-    delete: sql('organization/delete.sql'),
+    ending: sql('organization/ending.sql'),
   },
   organization_lce: {
     create: sql('organization_lce/create.sql'),
@@ -105,7 +105,7 @@ let modExp = {
     get: sql('business/get.sql'),
     getBusinessProducts: sql('business/getBusinessProducts.sql'),
     getOne: sql('business/getOne.sql'),
-    delete: sql('business/delete.sql'),
+    ending: sql('business/ending.sql'),
   },
   business_lce: {
     create: sql('lce/create.sql'),
@@ -244,7 +244,7 @@ types.forEach(t => {
   let possessorIdName = t === 'business' ? 'bid' : 'oid';
 
   modExp[tableName] = {
-    create: sql('lce/create.sql', {tableName}),
+    create: sql('lce/create.sql', {tableName, possessorName, possessorIdName}),
     drop: sql('lce/drop.sql', {tableName}),
     get: sql('lce/get.sql', {tableName}),
     getLCEList: sql('lce/getLCEList.sql', {tableName, possessorName, possessorIdName}),

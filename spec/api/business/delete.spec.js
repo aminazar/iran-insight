@@ -156,4 +156,59 @@ describe('DELETE Business API', () => {
       })
       .catch(lib.helpers.errorHandler.bind(this));
   });
+
+  it('admin should delete business', function (done) {
+    this.done = done;
+    rp({
+      method: 'delete',
+      uri: lib.helpers.apiTestURL('business/' + businessId),
+      jar: adminObj.jar,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return sql.test.business.get({bid: businessId});
+      })
+      .then(res => {
+        expect(res.length).toBe(0);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it('rep of business cannot delete the business', function (done) {
+    rp({
+      method: 'delete',
+      uri: lib.helpers.apiTestURL('business/' + businessId),
+      jar: repObj.jar,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        this.fail('Rep of business delete the business');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.adminOnly.status);
+        expect(err.error).toBe(error.adminOnly.message);
+        done();
+      });
+  });
+
+  it('normal user cannot delete the business', function (done) {
+    rp({
+      method: 'delete',
+      uri: lib.helpers.apiTestURL('business/' + businessId),
+      jar: normalUserObj.jar,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        this.fail('Normal user delete the business');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.adminOnly.status);
+        expect(err.error).toBe(error.adminOnly.message);
+        done();
+      });
+  });
 });

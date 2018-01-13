@@ -1,7 +1,7 @@
 CREATE TABLE if not exists partnership(
     id serial not null primary key,
-    pid1 integer not null references person(pid),
-    pid2 integer not null references person(pid),
+    pid1 integer not null references person(pid) on delete cascade,
+    pid2 integer not null references person(pid) on delete cascade,
     start_date timestamp with time zone NOT NULL,
     end_date timestamp with time zone ,
     description varchar (200),

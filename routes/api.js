@@ -149,8 +149,9 @@ router.delete('/person/partnership/:pid', apiResponse('Person', 'deletePartnersh
 
 // Business API
 router.get('/business/one/:bid', apiResponse('Business', 'getOne', false, ['params']));
-router.post('/business/one/delete/:bid', apiResponse('Business', 'deleteBiz', false, ['params.bid', 'user.pid', 'body.end_date']));
+router.post('/business/one/delete/:bid', apiResponse('Business', 'endBiz', false, ['params.bid', 'user.pid', 'body.end_date']));
 router.get('/business/oneAll/:bid', apiResponse('Business', 'getOneAll', false, ['params']));
+router.delete('/business/:bid', apiResponse('Business', 'deleteBiz', true, ['params.bid']));
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
 router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
 router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
@@ -185,7 +186,8 @@ router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['para
 
 // Organization API
 router.get('/organization', apiResponse('Organization', 'getAll', false));
-router.post('/organization/one/delete/:oid', apiResponse('Organization', 'deleteOrg', false, ['params.oid', 'user.pid', 'body.end_date']));
+router.post('/organization/one/delete/:oid', apiResponse('Organization', 'endOrg', false, ['params.oid', 'user.pid', 'body.end_date']));
+router.delete('/organization/:oid', apiResponse('Organization', 'deleteOrg', true, ['params.oid']));
 router.get('/organization/:oid', apiResponse('Organization', 'getById', false, ['params.oid']));
 router.put('/organization', apiResponse('Organization', 'saveData', false, ['body']));
 router.post('/organization/profile', apiResponse('Organization', 'setProfile', false, ['body', 'user.pid']));
