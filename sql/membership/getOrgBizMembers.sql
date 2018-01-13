@@ -5,7 +5,8 @@ second.display_name_en,
 second.display_name_fa,
 second.is_active,
 second.is_representative,
-
+second.position_id,
+second.person_pid,
 
 position_type.name as position_name,
 position_type.name_fa as position_name_fa,
@@ -17,7 +18,8 @@ from
     membership
     inner join
         (select
-         *
+         *,
+         person.pid as person_pid
          from
          association
          inner join
