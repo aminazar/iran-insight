@@ -47,14 +47,16 @@ describe("POST External Data API", () => {
       method: 'post',
       body: {
         phrase: null,
+        category: '',
       },
-      uri: lib.helpers.apiTestURL('exdata/get/0/10'),
+      uri: lib.helpers.apiTestURL('exdata/get/0/5'),
       json: true,
       jar: adminJar,
       resolveWithFullResponse: true,
     })
       .then(res => {
         expect(res.statusCode).toBe(200);
+        expect(res.body.length).toBe(5);
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
@@ -66,7 +68,7 @@ describe("POST External Data API", () => {
       body: {
         phrase: null,
       },
-      uri: lib.helpers.apiTestURL('exdata/get/0/10'),
+      uri: lib.helpers.apiTestURL('exdata/get/0/5'),
       json: true,
       jar: normalUserJar,
       resolveWithFullResponse: true,
@@ -80,5 +82,70 @@ describe("POST External Data API", () => {
         expect(err.error).toBe(Err.adminOnly.message);
         done();
       });
+  });
+
+  it("admin should get all items in cat6 category", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: null,
+        category: 'cat6',
+      },
+      uri: lib.helpers.apiTestURL('exdata/get/0/5'),
+      json: true,
+      jar: adminJar,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.length).toBe(4);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("admin should get all items with specific condition", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: ' 5  ',
+        category: 'cat6',
+      },
+      uri: lib.helpers.apiTestURL('exdata/get/0/5'),
+      json: true,
+      jar: adminJar,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.length).toBe(0);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("admin should get all items in next page", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: '',
+        category: '',
+      },
+      uri: lib.helpers.apiTestURL('exdata/get/5/5'),
+      json: true,
+      jar: adminJar,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.length).toBe(2);
+        expect(res.body.map(el => el.name)).toContain('data6');
+        expect(res.body.map(el => el.name)).toContain('data7');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
   });
 });

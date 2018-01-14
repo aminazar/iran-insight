@@ -1,13 +1,14 @@
 select *
 from ex_data
 where
-    ${phrase} is null or (
+    (${phrase} is null or (
         ${phrase} is not null
         and (
-            lower(${phrase}) like '%'||lower(name)||'%'
-         or lower(${phrase}) like '%'||lower(type)||'%'
-         or lower(${phrase}) like '%'||lower(class)||'%'
-         or lower(${phrase}) like '%'||lower(category)||'%'
-         or lower(${phrase}) like '%'||lower(province)||'%'
-        ))
+            lower(name) like '%'||lower(${phrase})||'%'
+         or lower(type) like '%'||lower(${phrase})||'%'
+         or lower(class) like '%'||lower(${phrase})||'%'
+         or lower(category) like '%'||lower(${phrase})||'%'
+         or lower(province) like '%'||lower(${phrase})||'%'
+        )))
+     and (${category} is null or (${category} is not null and lower(${category}) = lower(category)))
 order by eid limit ${limit} offset ${offset}
