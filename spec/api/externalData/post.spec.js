@@ -9,13 +9,13 @@ describe("POST External Data API", () => {
   let adminJar = null;
 
   let exDataList = [
-    {name: 'data1', market_share: 12.3, type: 'type 1', class: 'class 10', category: 'cat6', hhi: 22888.66},
-    {name: 'data2', market_share: 12.7, type: 'type 2', class: 'class 13', category: 'cat6', hhi: 26014.46},
-    {name: 'data3', market_share: 6.3, type: 'type 3', class: 'class 12', category: 'cat5', hhi: 1575.2661},
-    {name: 'data4', market_share: 42.8, type: 'type 4', class: 'class 3', category: 'cat6', hhi: 3355637.785},
-    {name: 'data5', market_share: 2.4, type: 'type 5', class: 'class 1', category: 'cat5', hhi: 33.1776},
-    {name: 'data6', market_share: 9.2, type: 'type 6', class: 'class 10', category: 'cat6', hhi: 7163.92},
-    {name: 'data7', market_share: 36, type: 'type 7', class: 'class 16', category: 'cat5', hhi: 1679616},
+    {eid: 1, name: 'data1', market_share: 12.3, type: 'type 1', class: 'class 10', category: 'cat6', hhi: 22888.66},
+    {eid: 2, name: 'data2', market_share: 12.7, type: 'type 2', class: 'class 13', category: 'cat6', hhi: 26014.46},
+    {eid: 3, name: 'data3', market_share: 6.3, type: 'type 3', class: 'class 12', category: 'cat5', hhi: 1575.2661},
+    {eid: 4, name: 'data4', market_share: 42.8, type: 'type 4', class: 'class 3', category: 'cat6', hhi: 3355637.785},
+    {eid: 5, name: 'data5', market_share: 2.4, type: 'type 5', class: 'class 1', category: 'cat5', hhi: 33.1776},
+    {eid: 6, name: 'data6', market_share: 9.2, type: 'type 6', class: 'class 10', category: 'cat6', hhi: 7163.92},
+    {eid: 7, name: 'data7', market_share: 36, type: 'type 7', class: 'class 16', category: 'cat5', hhi: 1679616},
   ];
 
   beforeEach(done => {
@@ -144,6 +144,7 @@ describe("POST External Data API", () => {
         expect(res.body.length).toBe(2);
         expect(res.body.map(el => el.name)).toContain('data6');
         expect(res.body.map(el => el.name)).toContain('data7');
+        expect(parseInt(res.body[0].total)).toBe(7);
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
