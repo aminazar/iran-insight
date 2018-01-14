@@ -19,7 +19,7 @@ let redisClientInit = () => {
       bluebird.promisifyAll(redis.Multi.prototype);
 
       redis_client.on('ready', () => {
-        console.log('Redis is ready');
+        console.log('Redis is ready!!');
         redisIsReady = true;
         resolve();
       });
