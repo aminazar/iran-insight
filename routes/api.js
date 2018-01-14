@@ -279,7 +279,7 @@ router.post('/suggest', apiResponse('SearchSystem', 'suggest', false, ['body']))
 router.post('/searchOnProduct/:offset/:limit', apiResponse('SearchSystem', 'searchOnProduct', false, ['product','body', 'params.offset', 'params.limit']));
 
 //External Data API
-router.post('/exdata/:offset/:limit', apiResponse('ExternalData', 'get', true, ['body.phrase', 'params.offset', 'params.limit']));
+router.post('/exdata/get/:offset/:limit', apiResponse('ExternalData', 'get', true, ['body.phrase', 'params.offset', 'params.limit']));
 router.get('/exdata/cat', apiResponse('ExternalData', 'getCategories', true, []));
 
 module.exports = router;

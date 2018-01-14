@@ -48,7 +48,7 @@ describe("POST External Data API", () => {
       body: {
         phrase: null,
       },
-      uri: lib.helpers.apiTestURL('exdata/0/10'),
+      uri: lib.helpers.apiTestURL('exdata/get/0/10'),
       json: true,
       jar: adminJar,
       resolveWithFullResponse: true,
@@ -66,7 +66,7 @@ describe("POST External Data API", () => {
       body: {
         phrase: null,
       },
-      uri: lib.helpers.apiTestURL('exdata/0/10'),
+      uri: lib.helpers.apiTestURL('exdata/get/0/10'),
       json: true,
       jar: normalUserJar,
       resolveWithFullResponse: true,
