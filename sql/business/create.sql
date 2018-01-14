@@ -14,9 +14,11 @@ create table if not exists business (
     tel varchar(12),
     url varchar(30),
     tags text[] DEFAULT array[]::text[],
-    start_date date,
+    start_date date not null default current_date,
     end_date date,
     general_stats jsonb,
     financial_stats jsonb,
-    constraint chk_name check (name is not null or name_fa is not null)
+    constraint chk_name check (name is not null or name_fa is not null),
+     CONSTRAINT biz_start_and_end_dates_in_sequence
+     CHECK (start_date <= end_date)
 );
