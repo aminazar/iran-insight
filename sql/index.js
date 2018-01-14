@@ -333,7 +333,15 @@ let tablesWithSqlCreatedByHelpers = [
     delete: true,
     get: true,
     idColumn: 'id',
-  }
+  },
+  {
+    name: 'ex_data',
+    insert: true,
+    update: true,
+    select: true,
+    delete: true,
+    idColumn: 'eid',
+  },
 ].concat(templateGeneratedTables
   .map(tableName => {
       return {
