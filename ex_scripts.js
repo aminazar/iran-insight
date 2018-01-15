@@ -1,4 +1,5 @@
 const externalData = require('./lib/externalData.model');
+const stdin = process.openStdin();
 
 let exData = new externalData();
 
