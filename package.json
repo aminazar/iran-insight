@@ -42,7 +42,8 @@
     "socket.io": "^2.0.3",
     "socket.io-redis": "^5.1.0",
     "socket.io.session": "^1.0.13",
-    "spider-detector": "^1.0.18"
+    "spider-detector": "^1.0.18",
+    "xlsx": "^0.11.17"
   },
   "devDependencies": {
     "jasmine": "^2.8.0",

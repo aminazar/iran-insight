@@ -207,7 +207,13 @@ let modExp = {
   },
   suggest: {
     suggestion: sql('suggest/suggestion.sql'),
-  }
+  },
+  ex_data: {
+    create: sql('ex_data/create.sql'),
+    drop: sql('ex_data/drop.sql'),
+    get: sql('ex_data/get.sql'),
+    getCat: sql('ex_data/getCat.sql'),
+  },
 };
 
 // Template-generated tables

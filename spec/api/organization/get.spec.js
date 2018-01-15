@@ -1,6 +1,6 @@
 const request = require("request");
 const base_url = "http://localhost:3000/api/";
-const test_query = '?test.js=tEsT';
+const test_query = '?test=tEsT';
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
 const error = require('../../../lib/errors.list');
@@ -53,8 +53,8 @@ describe("organization", () => {
 
   beforeEach(done => {
     lib.dbHelpers.create()
-      .then(res => lib.dbHelpers.addPerson('orgRep1'))
-      .then(() => {
+      .then(() => lib.dbHelpers.addPerson('orgRep1'))
+      .then(res => {
         orgRep_pid = res.pid;
         done();
       }).catch(err => {
@@ -71,6 +71,10 @@ describe("organization", () => {
       .then(() => {
         request.get(base_url + `organization/${orgs_info[0].oid}` + test_query, function (error, response) {
           let result = JSON.parse(response.body);
+
+          console.log('response body: ', response.body);
+          console.log('result: ', result);
+
           expect(response.statusCode).toBe(200);
           expect(result.length).toBe(1);
           expect(result[0]['org_type']).toBe(orgs_type_info[0].name);
@@ -94,6 +98,9 @@ describe("organization", () => {
       .then(() => {
         request.get(base_url + `organization/${new_org_info.oid}` + test_query, function (error, response) {
           let result = JSON.parse(response.body);
+
+          console.log('=====>result: ', result);
+
           expect(response.statusCode).toBe(200);
           expect(result.length).toBe(1);
           expect(result[0]['org_type']).toBeNull();
