@@ -14,7 +14,7 @@ position_type.name as position_name,
 position_type.name_fa as position_name_fa,
 position_type.active as position_active
 from
-    (select
+(select
 	 *, membership.start_time as membership_start_time, membership.end_time as membership_end_time
      from
     membership
@@ -30,13 +30,11 @@ from
          person.pid = association.pid
         ) as first
     on
-    first.aid = membership.assoc_id
+    first.aid = membership.assoc_id and membership.mid = ${mid}
     where
     (first.bid = ${bid} and ${bid} is not null and ${oid} is null) or (first.oid = ${oid} and ${oid} is not null and ${bid} is null)
-    ) as second
+) as second
 left outer join
 position_type
 on
 second.position_id = position_type.id
-order by second.membership_end_time desc,second.membership_start_time desc limit ${limit} offset ${offset}
-
