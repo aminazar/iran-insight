@@ -281,5 +281,6 @@ router.post('/searchOnProduct/:offset/:limit', apiResponse('SearchSystem', 'sear
 //External Data API
 router.post('/exdata/get/:offset/:limit', apiResponse('ExternalData', 'get', true, ['body', 'params.offset', 'params.limit']));
 router.get('/exdata/cat', apiResponse('ExternalData', 'getCategories', true, []));
+router.put('/exdata/batch', apiResponse('ExternalData', 'batchInsert', true, ['body', 'user.pid']));
 
 module.exports = router;

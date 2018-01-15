@@ -6,5 +6,6 @@ create table if not exists ex_data(
     class varchar(50),
     category varchar(50),
     hhi real,
+    bid integer references business(bid) on delete set null,
     province varchar(20)
 )

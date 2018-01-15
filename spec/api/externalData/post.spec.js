@@ -144,6 +144,8 @@ describe("POST External Data API", () => {
         expect(res.body.length).toBe(2);
         expect(res.body.map(el => el.name)).toContain('data6');
         expect(res.body.map(el => el.name)).toContain('data7');
+        expect(res.body.map(el => el.pending)).toContain(false);
+        expect(res.body.map(el => el.pending)).not.toContain(true);
         expect(parseInt(res.body[0].total)).toBe(7);
         done();
       })
