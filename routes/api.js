@@ -285,4 +285,7 @@ router.post('/exdata/get/:offset/:limit', apiResponse('ExternalData', 'get', tru
 router.get('/exdata/cat', apiResponse('ExternalData', 'getCategories', true, []));
 router.put('/exdata/batch', apiResponse('ExternalData', 'batchInsert', true, ['body', 'user.pid']));
 
+// General API
+router.get('/general/datetime', apiResponse('General', 'getServerDateTime', false, []));
+
 module.exports = router;

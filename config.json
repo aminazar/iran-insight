@@ -5,7 +5,7 @@
     "initDb":   "postgres",
     "database": "iran-insight",
     "uploadPath": "public/documents/profile-image",
-    "pgConnection": "postgres://postgres:admin@localhost:5432/",
+    "pgConnection": "postgres://postgres:postgres@localhost:5432/",
     "mailPeriodConfig":{
       "minute" : 5,
       "hour" : 9,

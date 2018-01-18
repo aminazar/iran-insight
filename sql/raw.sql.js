@@ -215,6 +215,9 @@ let modExp = {
     get: sql('ex_data/get.sql'),
     getCat: sql('ex_data/getCat.sql'),
   },
+    general: {
+      getServerDateTime: sql('general/getServerDateTime.sql'),
+    },
 };
 
 // Template-generated tables
