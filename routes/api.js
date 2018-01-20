@@ -172,7 +172,7 @@ router.delete('/joiner/deleteRep/:mid', apiResponse('Joiner', 'deleteRepRequest'
 router.delete('/Joiner/deleteRepBizOrg/:mid', apiResponse('Joiner', 'deleteRepAndHisCompany', true, ['params.mid']));
 
 // upsert/delete a membeship(rep/regular)
-router.delete('/joiner/delete/membership/:mid', apiResponse('Joiner', 'deleteUserMembership', false, ['params.mid', 'user.pid']));
+router.delete('/joiner/delete/membership/:mid', apiResponse('Joiner', 'deleteUserMembership', true, ['params.mid', 'user.pid']));
 router.post('/joiner/upsert/membership', apiResponse('Joiner', 'upsertMembership', true, ['body', 'user.pid']));
 // router.delete('/joiner/deleteUserOrRepAfterConfirm/:mid', apiResponse('Joiner', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
 
