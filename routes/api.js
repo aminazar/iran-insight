@@ -177,9 +177,10 @@ router.post('/joiner/upsert/membership', apiResponse('Joiner', 'upsertMembership
 // router.delete('/joiner/deleteUserOrRepAfterConfirm/:mid', apiResponse('Joiner', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
 
 // Joiners API
-router.get('/joiners/org/:oid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
+router.get('/joiners/org/:oid/:offset/:limit', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid', 'params.offset', 'params.limit']));
 router.get('/joiners/biz/:bid/:offset/:limit', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid', 'params.offset', 'params.limit']));
 router.get('/joiners/biz/:bid/:mid', apiResponse('Joiner', 'getSpecialMembershipByMid', true, ['?params.bid', '?params.oid', 'params.mid']));
+router.get('/joiners/org/:oid/:mid', apiResponse('Joiner', 'getSpecialMembershipByMid', true, ['?params.bid', '?params.oid', 'params.mid']));
 router.get('/joiners', apiResponse('Joiner', 'select', false, ['user.pid']));
 router.put('/joiner/:mid', apiResponse('Joiner', 'saveData', false, ['params.mid', 'user'])); //just confirm a membership by admin or representative
 router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['params.mid', 'params.aid', 'user']));
