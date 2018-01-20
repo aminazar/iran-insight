@@ -80,6 +80,7 @@ let modExp = {
     getById: sql('organization/get_by_id.sql'),
     getAll: sql('organization/get_all.sql'),
     get: sql('organization/get.sql'),
+    ending: sql('organization/ending.sql'),
   },
   organization_lce: {
     create: sql('organization_lce/create.sql'),
@@ -104,7 +105,7 @@ let modExp = {
     get: sql('business/get.sql'),
     getBusinessProducts: sql('business/getBusinessProducts.sql'),
     getOne: sql('business/getOne.sql'),
-    delete: sql('business/delete.sql'),
+    ending: sql('business/ending.sql'),
   },
   business_lce: {
     create: sql('lce/create.sql'),
@@ -135,6 +136,7 @@ let modExp = {
     checkIfRepIsExist: sql('membership/checkIfRepIsExist.sql'),
     getBizOrgNameById: sql('membership/getBizOrgNamesById.sql'),
     getOrgBizMembers: sql('membership/getOrgBizMembers.sql'),
+    getSpecialDetailedMembershipByMid: sql('membership/getSpecialDetailedMembershipByMid.sql'),
   },
   event: {
     create: sql('event/create.sql'),
@@ -202,10 +204,17 @@ let modExp = {
     searchOnConsultancy: sql('search/searchOnConsultancy.sql'),
     searchOnType: sql('search/searchOnType.sql'),
     searchOnTags: sql('search/searchOnTags.sql'),
+    searchOnEntityTags: sql('search/searchOnEntityTags.sql'),
   },
   suggest: {
     suggestion: sql('suggest/suggestion.sql'),
-  }
+  },
+  ex_data: {
+    create: sql('ex_data/create.sql'),
+    drop: sql('ex_data/drop.sql'),
+    get: sql('ex_data/get.sql'),
+    getCat: sql('ex_data/getCat.sql'),
+  },
 };
 
 // Template-generated tables
@@ -242,7 +251,7 @@ types.forEach(t => {
   let possessorIdName = t === 'business' ? 'bid' : 'oid';
 
   modExp[tableName] = {
-    create: sql('lce/create.sql', {tableName}),
+    create: sql('lce/create.sql', {tableName, possessorName, possessorIdName}),
     drop: sql('lce/drop.sql', {tableName}),
     get: sql('lce/get.sql', {tableName}),
     getLCEList: sql('lce/getLCEList.sql', {tableName, possessorName, possessorIdName}),

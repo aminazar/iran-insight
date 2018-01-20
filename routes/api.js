@@ -149,8 +149,9 @@ router.delete('/person/partnership/:pid', apiResponse('Person', 'deletePartnersh
 
 // Business API
 router.get('/business/one/:bid', apiResponse('Business', 'getOne', false, ['params']));
-router.post('/business/one/delete/:bid', apiResponse('Business', 'deleteBiz', false, ['params.bid', 'user.pid', 'body.end_date']));
+router.post('/business/one/delete/:bid', apiResponse('Business', 'endBiz', false, ['params.bid', 'user.pid', 'body.end_date']));
 router.get('/business/oneAll/:bid', apiResponse('Business', 'getOneAll', false, ['params']));
+router.delete('/business/:bid', apiResponse('Business', 'deleteBiz', true, ['params.bid']));
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
 router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
 router.get('/product/one/:product_id', apiResponse('Business', 'getProduct', false, ['params.product_id']));
@@ -164,9 +165,31 @@ router.post('/business/product/:business_id/:product_id', apiResponse('Business'
 router.get('/business/product/all/:business_id', apiResponse('Business', 'allProducts', false, ['params']));
 router.get('/business/product/one/:business_id', apiResponse('Business', 'oneProduct', false, ['params']));
 
+// Representation-check API
+router.get('/joiner/getRepPendingList', apiResponse('Joiner', 'findRepRequests', true));
+router.put('/joiner/confirmRep/:mid/:aid', apiResponse('Joiner', 'confirmRepByAdmin', true, ['params.mid', 'params.aid', 'user']));
+router.delete('/joiner/deleteRep/:mid', apiResponse('Joiner', 'deleteRepRequest', true, ['user', 'params.mid']));
+router.delete('/Joiner/deleteRepBizOrg/:mid', apiResponse('Joiner', 'deleteRepAndHisCompany', true, ['params.mid']));
+
+// upsert/delete a membeship(rep/regular)
+router.delete('/joiner/delete/membership/:mid', apiResponse('Joiner', 'deleteUserMembership', true, ['params.mid', 'user.pid']));
+router.post('/joiner/upsert/membership', apiResponse('Joiner', 'upsertMembership', true, ['body', 'user.pid']));
+// router.delete('/joiner/deleteUserOrRepAfterConfirm/:mid', apiResponse('Joiner', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
+
+// Joiners API
+router.get('/joiners/org/:oid/:offset/:limit', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid', 'params.offset', 'params.limit']));
+router.get('/joiners/biz/:bid/:offset/:limit', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid', 'params.offset', 'params.limit']));
+router.get('/joiners/biz/:bid/:mid', apiResponse('Joiner', 'getSpecialMembershipByMid', true, ['?params.bid', '?params.oid', 'params.mid']));
+router.get('/joiners/org/:oid/:mid', apiResponse('Joiner', 'getSpecialMembershipByMid', true, ['?params.bid', '?params.oid', 'params.mid']));
+router.get('/joiners', apiResponse('Joiner', 'select', false, ['user.pid']));
+router.put('/joiner/:mid', apiResponse('Joiner', 'saveData', false, ['params.mid', 'user'])); //just confirm a membership by admin or representative
+router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['params.mid', 'params.aid', 'user']));
+
 
 // Organization API
 router.get('/organization', apiResponse('Organization', 'getAll', false));
+router.post('/organization/one/delete/:oid', apiResponse('Organization', 'endOrg', false, ['params.oid', 'user.pid', 'body.end_date']));
+router.delete('/organization/:oid', apiResponse('Organization', 'deleteOrg', true, ['params.oid']));
 router.get('/organization/:oid', apiResponse('Organization', 'getById', false, ['params.oid']));
 router.put('/organization', apiResponse('Organization', 'saveData', false, ['body']));
 router.post('/organization/profile', apiResponse('Organization', 'setProfile', false, ['body', 'user.pid']));
@@ -196,23 +219,6 @@ router.post('/tag/confirm/:tid', apiResponse('Tag', 'confirm', true, ['params.ti
 router.post('/tag/reject/:tid', apiResponse('Tag', 'reject', true, ['params.tid']));
 router.post('/tag/removeFrom', apiResponse('Tag', 'removeTagFromTarget', false, ['user.pid', 'body']));
 router.get('/tag/:type/:id', apiResponse('Tag', 'getTags', false, ['user.pid', 'params.type', 'params.id']));
-
-// Representation-check API
-router.get('/joiner/getRepPendingList', apiResponse('Joiner', 'findRepRequests', true));
-router.put('/joiner/confirmRep/:mid/:aid', apiResponse('Joiner', 'confirmRepByAdmin', true, ['params.mid', 'params.aid', 'user']));
-router.delete('/joiner/deleteRep/:mid', apiResponse('Joiner', 'deleteRepRequest', true, ['user', 'params.mid']));
-router.delete('/Joiner/deleteRepBizOrg/:mid', apiResponse('Joiner', 'deleteRepAndHisCompany', true, ['params.mid']));
-
-// upsert/delete an authoritative user(rep/regular)
-router.delete('/joiner/deleteUserOrRepAfterConfirm/:mid', apiResponse('Joiner', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
-router.post('/joiner/upsert/membership', apiResponse('Joiner', 'upsertMembership', true, ['body', 'user.pid']));
-
-// Joiners API
-router.get('/joiners/org/:oid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
-router.get('/joiners/biz/:bid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
-router.get('/joiners', apiResponse('Joiner', 'select', false, ['user.pid']));
-router.put('/joiner/:mid', apiResponse('Joiner', 'saveData', false, ['params.mid', 'user'])); //just confirm a membership by admin or representative
-router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['params.mid', 'params.aid', 'user']));
 
 //Events API
 router.get('/event/:eid', apiResponse('Event', 'load' , false, ['params.eid', '?user.pid']));
@@ -273,5 +279,10 @@ router.delete('/consultancy/:id', apiResponse('Consultancy', 'delete', false, ['
 router.post('/search/:offset/:limit', apiResponse('SearchSystem', 'search', false, ['body', 'params.offset', 'params.limit']));
 router.post('/suggest', apiResponse('SearchSystem', 'suggest', false, ['body']));
 router.post('/searchOnProduct/:offset/:limit', apiResponse('SearchSystem', 'searchOnProduct', false, ['product','body', 'params.offset', 'params.limit']));
+
+//External Data API
+router.post('/exdata/get/:offset/:limit', apiResponse('ExternalData', 'get', true, ['body', 'params.offset', 'params.limit']));
+router.get('/exdata/cat', apiResponse('ExternalData', 'getCategories', true, []));
+router.put('/exdata/batch', apiResponse('ExternalData', 'batchInsert', true, ['body', 'user.pid']));
 
 module.exports = router;

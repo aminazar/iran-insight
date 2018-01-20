@@ -25,4 +25,5 @@ module.exports = [ // Name tables in order of dependency
   'subscription',
   'tag',
   'tag_connection',
+  'ex_data',
 ];
