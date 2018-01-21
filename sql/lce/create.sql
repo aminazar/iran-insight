@@ -1,7 +1,7 @@
 CREATE TABLE if not exists  ${tableName~}( -- lce or organization_lce
     id serial not null primary key,
-    id1 integer not null references business(bid),
-    id2 integer references business(bid),
+    id1 integer not null references ${tableName~}(${possessorIdName~}),
+    id2 integer references ${tableName~}(${possessorIdName~}),
     start_date timestamp with time zone NOT NULL,
     end_date timestamp with time zone ,
     description varchar (200),
