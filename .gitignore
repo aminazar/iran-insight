@@ -33,6 +33,11 @@ build.cmd
 /e2e/*.js
 /e2e/*.map
 
-#System Files
+# System Files
 .DS_Store
 Thumbs.db
+
+# env variables
+.env
+
+dump.rdb

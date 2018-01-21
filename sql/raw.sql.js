@@ -80,6 +80,7 @@ let modExp = {
     getById: sql('organization/get_by_id.sql'),
     getAll: sql('organization/get_all.sql'),
     get: sql('organization/get.sql'),
+    ending: sql('organization/ending.sql'),
   },
   person_activation_link: {
     create: sql('person_activation_link/create.sql'),
@@ -96,7 +97,7 @@ let modExp = {
     get: sql('business/get.sql'),
     getBusinessProducts: sql('business/getBusinessProducts.sql'),
     getOne: sql('business/getOne.sql'),
-    delete: sql('business/delete.sql'),
+    ending: sql('business/ending.sql'),
   },
   association: {
     create: sql('association/create.sql'),
@@ -118,6 +119,7 @@ let modExp = {
     checkIfRepIsExist: sql('membership/checkIfRepIsExist.sql'),
     getBizOrgNameById: sql('membership/getBizOrgNamesById.sql'),
     getOrgBizMembers: sql('membership/getOrgBizMembers.sql'),
+    getSpecialDetailedMembershipByMid: sql('membership/getSpecialDetailedMembershipByMid.sql'),
   },
   event: {
     create: sql('event/create.sql'),
@@ -185,10 +187,17 @@ let modExp = {
     searchOnConsultancy: sql('search/searchOnConsultancy.sql'),
     searchOnType: sql('search/searchOnType.sql'),
     searchOnTags: sql('search/searchOnTags.sql'),
+    searchOnEntityTags: sql('search/searchOnEntityTags.sql'),
   },
   suggest: {
     suggestion: sql('suggest/suggestion.sql'),
-  }
+  },
+  ex_data: {
+    create: sql('ex_data/create.sql'),
+    drop: sql('ex_data/drop.sql'),
+    get: sql('ex_data/get.sql'),
+    getCat: sql('ex_data/getCat.sql'),
+  },
 };
 
 // Template-generated tables

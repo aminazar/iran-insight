@@ -180,4 +180,89 @@ describe("POST Organization API", () => {
         done();
       });
   });
+
+  it('admin or rep of org can delete org', function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        end_date: '2018-03-03',
+      },
+      json: true,
+      uri: lib.helpers.apiTestURL('organization/one/delete/' + orgObj.oid),
+      jar: repObj.jar,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it('any user except admin or related rep cannot able to delete org', function (done) {
+    rp({
+      method: 'post',
+      body: {
+        end_date: '2018-03-03',
+      },
+      json: true,
+      uri: lib.helpers.apiTestURL('organization/one/delete/' + orgObj.oid),
+      jar: normalUserObj.jar,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        this.fail('Non related rep or admin can delete a organization');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.notOrgRep.status);
+        expect(err.error).toBe(error.notOrgRep.message);
+        done();
+      })
+  });
+
+  it('admin should delete organization without any rep', function (done) {
+    this.done = done;
+    sql.test.organization.add({
+      name: 'one organization',
+      name_fa: 'یه شرکت',
+    })
+      .then(res => {
+        return rp({
+          method: 'post',
+          body: {
+            end_date: '2018-03-03',
+          },
+          json: true,
+          uri: lib.helpers.apiTestURL('organization/one/delete/' + res.oid),
+          jar: adminObj.jar,
+          resolveWithFullResponse: true,
+        });
+      })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+  it("should get error when no end date passed in body", function (done) {
+    rp({
+      method: 'post',
+      json: true,
+      uri: lib.helpers.apiTestURL('organization/one/delete/' + orgObj.oid),
+      jar: normalUserObj.jar,
+      resolveWithFullResponse: true,
+    })
+      .then(res => {
+        this.fail('Organization is deleted without defining body');
+        done();
+      })
+      .catch(err => {
+        expect(err.statusCode).toBe(error.noEndDate.status);
+        expect(err.error).toBe(error.noEndDate.message);
+        done();
+      })
+  });
 });

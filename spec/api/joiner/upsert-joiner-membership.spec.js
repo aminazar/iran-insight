@@ -20,6 +20,7 @@ describe('POST product API', () => {
     pid: null,
     jar: null,
   };
+
   let biz_info = [{
     bid: 1,
     name: 'hakupian',
@@ -33,6 +34,7 @@ describe('POST product API', () => {
     general_stats: null,
     financial_stats: null
   }];
+
   let position_type_info = [{
     id: 300,
     name: 'CEO',
