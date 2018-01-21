@@ -172,13 +172,15 @@ router.delete('/joiner/deleteRep/:mid', apiResponse('Joiner', 'deleteRepRequest'
 router.delete('/Joiner/deleteRepBizOrg/:mid', apiResponse('Joiner', 'deleteRepAndHisCompany', true, ['params.mid']));
 
 // upsert/delete a membeship(rep/regular)
-router.delete('/joiner/delete/membership/:mid', apiResponse('Joiner', 'deleteUserMembership', false, ['params.mid', 'user.pid']));
+router.delete('/joiner/delete/membership/:mid', apiResponse('Joiner', 'deleteUserMembership', true, ['params.mid', 'user.pid']));
 router.post('/joiner/upsert/membership', apiResponse('Joiner', 'upsertMembership', true, ['body', 'user.pid']));
 // router.delete('/joiner/deleteUserOrRepAfterConfirm/:mid', apiResponse('Joiner', 'deleteUserOrRepAfterConfirm', false, ['params.mid', 'user.pid']));
 
 // Joiners API
-router.get('/joiners/org/:oid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
-router.get('/joiners/biz/:bid', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid']));
+router.get('/joiners/org/:oid/:offset/:limit', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid', 'params.offset', 'params.limit']));
+router.get('/joiners/biz/:bid/:offset/:limit', apiResponse('Joiner', 'getOrgBizMembers', true, ['?params.bid', '?params.oid', 'params.offset', 'params.limit']));
+router.get('/joiners/biz/:bid/:mid', apiResponse('Joiner', 'getSpecialMembershipByMid', true, ['?params.bid', '?params.oid', 'params.mid']));
+router.get('/joiners/org/:oid/:mid', apiResponse('Joiner', 'getSpecialMembershipByMid', true, ['?params.bid', '?params.oid', 'params.mid']));
 router.get('/joiners', apiResponse('Joiner', 'select', false, ['user.pid']));
 router.put('/joiner/:mid', apiResponse('Joiner', 'saveData', false, ['params.mid', 'user'])); //just confirm a membership by admin or representative
 router.delete('/joiner/:mid/:aid', apiResponse('Joiner', 'delete', false, ['params.mid', 'params.aid', 'user']));
@@ -277,5 +279,11 @@ router.delete('/consultancy/:id', apiResponse('Consultancy', 'delete', false, ['
 router.post('/search/:offset/:limit', apiResponse('SearchSystem', 'search', false, ['body', 'params.offset', 'params.limit']));
 router.post('/suggest', apiResponse('SearchSystem', 'suggest', false, ['body']));
 router.post('/searchOnProduct/:offset/:limit', apiResponse('SearchSystem', 'searchOnProduct', false, ['product','body', 'params.offset', 'params.limit']));
+
+//External Data API
+router.put('/exdata/init', apiResponse('ExternalData', 'set', true, ['body']));
+router.post('/exdata/get/:offset/:limit', apiResponse('ExternalData', 'get', true, ['body', 'params.offset', 'params.limit']));
+router.get('/exdata/cat', apiResponse('ExternalData', 'getCategories', true, []));
+router.put('/exdata/batch', apiResponse('ExternalData', 'batchInsert', true, ['body', 'user.pid']));
 
 module.exports = router;
