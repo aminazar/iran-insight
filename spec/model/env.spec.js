@@ -30,8 +30,8 @@ describe("Env",()=> {
 
   describe("Config",()=>{
     it("should have 'pgConnection' key",()=>{
-      expect(env.config.pgConnection).toBeDefined();
-      expect(env.config.database).toBeDefined();
+      expect(env.pgConnection).toBeDefined();
+      expect(env.database).toBeDefined();
     })
   });
 });
