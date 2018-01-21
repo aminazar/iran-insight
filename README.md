@@ -1,7 +1,8 @@
 # NodeJS (With Express Framework) Seed Project
 This app assumes a connection to postgres exists in development server.
 
-* Change **initDb** in **config.json** to the database that already exists in your Postgres (e.g. 'postgres' in Windows, and your user name in Linux)
+* make a .env file in root of project to set local environment variable in development mode
+* Change **INIT_DB** in .env to the database that already exists in your Postgres (e.g. 'postgres' in Windows, and your user name in Linux)
 * If you use windows, in **package.json** change npm/test to:
 
     _jasmine&jasmine-node server_spec_
