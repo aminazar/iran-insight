@@ -44,7 +44,7 @@ const appAddress = process.env.APP_ADDRESS;
  * upload files
  */
 
-uploadPath = "public/documents/profile-image";
+uploadPath = process.env.MAIL_CONFIG_FROM;
 
 /**
  * Mail Configs

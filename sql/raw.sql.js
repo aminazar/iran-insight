@@ -234,7 +234,7 @@ types.forEach(t => {
   let possessorIdName = t === 'business' ? 'bid' : 'oid';
 
   modExp[tableName] = {
-    create: sql('lce/create.sql', {tableName, possessorIdName}),
+    create: sql('lce/create.sql', {tableName,possessorName, possessorIdName}),
     drop: sql('lce/drop.sql', {tableName}),
     get: sql('lce/get.sql', {tableName}),
     getLCEList: sql('lce/getLCEList.sql', {tableName, possessorName, possessorIdName}),
