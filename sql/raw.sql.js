@@ -82,14 +82,6 @@ let modExp = {
     get: sql('organization/get.sql'),
     ending: sql('organization/ending.sql'),
   },
-  organization_lce: {
-    create: sql('organization_lce/create.sql'),
-    drop: sql('organization_lce/drop.sql'),
-    getAll: sql('organization_lce/getLCEList.sql'),
-    getRequested: sql('organization_lce/getRequested.sql'),
-    getConfirmed: sql('organization_lce/getConfirmed.sql'),
-    getOrganizationLCEData: sql('organization_lce/getOrganizationLCEData.sql'),
-  },
   person_activation_link: {
     create: sql('person_activation_link/create.sql'),
     drop: sql('person_activation_link/drop.sql'),
@@ -106,15 +98,6 @@ let modExp = {
     getBusinessProducts: sql('business/getBusinessProducts.sql'),
     getOne: sql('business/getOne.sql'),
     ending: sql('business/ending.sql'),
-  },
-  business_lce: {
-    create: sql('lce/create.sql'),
-    drop: sql('lce/drop.sql'),
-    getAll: sql('lce/getLCEList.sql'),
-    getRequested: sql('lce/getRequested.sql'),
-    getConfirmed: sql('lce/getConfirmed.sql'),
-    get: sql('lce/get.sql'),
-    getBusinessLCEData: sql('lce/getLCEData.sql'),
   },
   association: {
     create: sql('association/create.sql'),
@@ -251,7 +234,7 @@ types.forEach(t => {
   let possessorIdName = t === 'business' ? 'bid' : 'oid';
 
   modExp[tableName] = {
-    create: sql('lce/create.sql', {tableName, possessorName, possessorIdName}),
+    create: sql('lce/create.sql', {tableName,possessorName, possessorIdName}),
     drop: sql('lce/drop.sql', {tableName}),
     get: sql('lce/get.sql', {tableName}),
     getLCEList: sql('lce/getLCEList.sql', {tableName, possessorName, possessorIdName}),
