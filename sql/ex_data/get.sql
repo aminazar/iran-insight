@@ -17,4 +17,4 @@ where
          or lower(ex_data.province) like '%'||lower(${phrase})||'%'
         )))
      and (${category} is null or (${category} is not null and lower(${category}) = lower(ex_data.category))))as t
-order by eid limit ${limit} offset ${offset}
+order by ${order^} ${direction^} limit ${limit} offset ${offset}
