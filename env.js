@@ -44,7 +44,7 @@ const appAddress = process.env.APP_ADDRESS;
  * upload files
  */
 
-uploadPath = process.env.MAIL_CONFIG_FROM;
+uploadPath = "public/documents/profile-image";
 
 /**
  * Mail Configs
@@ -60,7 +60,7 @@ const mailConfig = {
   tls: {
     rejectUnauthorized: false
   },
-  from: "Iran Insight <no-reply@mail.quran.parts>"
+  from: process.env.MAIL_CONFIG_FROM
 };
 const mailPeriodConfig = {
   minute: 5,
