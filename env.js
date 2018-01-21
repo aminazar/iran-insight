@@ -71,7 +71,8 @@ const mailPeriodConfig = {
 /**
  * Database
  */
-
+const pgConnection = process.env.PG_CONNECTION;
+const database = process.env.DATABASE;
 const connectionString = process.env.PG_CONNECTION + process.env.DATABASE;
 const db_name = process.env.DATABASE;
 const test_db_name = process.env.DATABASE + '_test';
@@ -115,6 +116,8 @@ module.exports = {
   mailPeriodConfig,
   pgp,
   pgm,
+  database,
+  pgConnection,
   db,
   testDb,
   initDb,
