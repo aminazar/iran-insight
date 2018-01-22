@@ -21,7 +21,10 @@ const isDev = env === 'development';
  * DATABASE
  * PG_CONNECTION
  * REDIS_URL
+ * (or
+ * REDIS_HOST
  * REDIS_PASSWORD
+ * )
  * MAIL_CONFIG_HOST
  * MAIL_CONFIG_PORT
  * MAIL_CONFIG_AUTH_USER
@@ -103,6 +106,7 @@ pgm.attach(options);
  * Redis
  */
 const redisURL = getEnvValue(process.env.REDIS_URL);
+const redisHost = getEnvValue(process.env.REDIS_HOST);
 const redisPass = getEnvValue(process.env.REDIS_PASSWORD);
 
 /**
@@ -140,5 +144,6 @@ module.exports = {
   db_name,
   test_db_name,
   redisURL,
+  redisHost,
   redisPass
 };

@@ -13,13 +13,13 @@ let redisClientInit = () => {
   return new Promise((resolve, reject) => {
     if (!redisIsReady && !redis_client && !redis_sub) {
       let option = {
-        host : env.redisURL,
+        host : env.redisHost,
         socket_keepalive: true
       };
       if (env.redisPass)
         option['password'] = env.redisPass;
 
-      redis_client = redis.createClient(option);
+      redis_client = redis.createClient(env.redisURL ? env.redisURL : option);
       redis_sub = redis.createClient(option);
 
       bluebird.promisifyAll(redis.RedisClient.prototype);
