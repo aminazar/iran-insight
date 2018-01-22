@@ -35,6 +35,8 @@ from
     (first.bid = ${bid} and ${bid} is not null and ${oid} is null) or (first.oid = ${oid} and ${oid} is not null and ${bid} is null)
     ) as second
 left outer join
+
+
 position_type
 on
 second.position_id = position_type.id

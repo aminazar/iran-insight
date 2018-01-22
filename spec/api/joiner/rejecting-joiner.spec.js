@@ -78,10 +78,11 @@ describe('DELETE Joiner API', () => {
         })
       })
       .then(() => {
-        this.fail('activates user with non-rep login')
+        this.fail('activates user with non-rep login');
+        done();
       })
       .catch(err => {
-        this.expect(err.statusCode).toBe(403);
+        expect(err.statusCode).toBe(403);
         if (err.statusCode !== 403) {
           this.fail(lib.helpers.parseServerErrorToString(err))
         }
@@ -101,11 +102,12 @@ describe('DELETE Joiner API', () => {
         })
       })
       .then(() => {
-        this.fail('activates user with non-rep login')
+        this.fail('activates user with non-rep login');
+        done();
       })
       .catch(err => {
         console.log(err);
-        this.expect(err.statusCode).toBe(403);
+        expect(err.statusCode).toBe(403);
         if (err.statusCode !== 403) {
           this.fail(lib.helpers.parseServerErrorToString(err))
         }
@@ -120,17 +122,18 @@ describe('DELETE Joiner API', () => {
       jar: aminJar,
       resolveWithFullResponse: true,
     })
-    .then(() => {
-      this.fail('activates user with non-rep login')
-    })
-    .catch(err => {
-      console.log(err);
-      this.expect(err.statusCode).toBe(500);
-      if (err.statusCode !== 500) {
-        this.fail(lib.helpers.parseServerErrorToString(err))
-      }
-      done();
-    });
+      .then(() => {
+        this.fail('activates user with non-rep login');
+        done();
+      })
+      .catch(err => {
+        console.log(err.message);
+        this.expect(err.statusCode).toBe(500);
+        if (err.statusCode !== 500) {
+          this.fail(lib.helpers.parseServerErrorToString(err))
+        }
+        done();
+      });
   });
 
   it('rejects users for an org rep', function (done) {
@@ -151,7 +154,6 @@ describe('DELETE Joiner API', () => {
       .then(res => {
         expect(res.length).toBe(0);
         return sql.test.association.get({aid: aliData.aid})
-
       })
       .then(res => {
         expect(res.length).toBe(1);
@@ -198,4 +200,5 @@ describe('DELETE Joiner API', () => {
         done();
       });
   });
+
 });

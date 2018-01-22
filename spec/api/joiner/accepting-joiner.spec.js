@@ -1,6 +1,7 @@
 const rp = require("request-promise");
 const lib = require('../../../lib/index');
 const sql = require('../../../sql/index');
+const error = require('../../../lib/errors.list');
 
 describe('PUT Joiner API', () => {
   let pid = 0, aliMid = 0, orgData, bizData,
@@ -62,10 +63,12 @@ describe('PUT Joiner API', () => {
         })
       })
       .then(() => {
-        this.fail('activates user with non-rep login')
+        this.fail('activates user with non-rep login');
+        done();
       })
       .catch(err => {
-        this.expect(err.statusCode).toBe(403);
+        expect(err.statusCode).toBe(error.notBizRep.status);
+        expect(err.error).toBe(error.notBizRep.message);
         if(err.statusCode !== 403) {
           this.fail(lib.helpers.parseServerErrorToString(err))
         }
@@ -85,10 +88,12 @@ describe('PUT Joiner API', () => {
         })
       })
       .then(() => {
-        this.fail('activates user with non-rep login')
+        this.fail('activates user with non-rep login');
+        done();
       })
       .catch(err => {
-        this.expect(err.statusCode).toBe(403);
+        expect(err.statusCode).toBe(error.notOrgRep.status);
+        expect(err.error).toBe(error.notOrgRep.message);
         if(err.statusCode !== 403) {
           this.fail(lib.helpers.parseServerErrorToString(err))
         }
@@ -116,6 +121,7 @@ describe('PUT Joiner API', () => {
           });
       })
       .catch(err => {
+        console.log('***--***');
         this.fail(lib.helpers.parseServerErrorToString(err));
         done();
       });

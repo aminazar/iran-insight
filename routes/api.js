@@ -150,7 +150,7 @@ router.delete('/person/partnership/:pid', apiResponse('Person', 'deletePartnersh
 // Business API
 router.get('/business/one/:bid', apiResponse('Business', 'getOne', false, ['params']));
 router.post('/business/one/delete/:bid', apiResponse('Business', 'endBiz', false, ['params.bid', 'user.pid', 'body.end_date']));
-router.get('/business/oneAll/:bid', apiResponse('Business', 'getOneAll', false, ['params']));
+router.get('/business/oneAll/:bid', apiResponse('Business', 'getOne', false, ['params']));
 router.delete('/business/:bid', apiResponse('Business', 'deleteBiz', true, ['params.bid']));
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
 router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
@@ -169,7 +169,7 @@ router.get('/business/product/one/:business_id', apiResponse('Business', 'onePro
 router.get('/joiner/getRepPendingList', apiResponse('Joiner', 'findRepRequests', true));
 router.put('/joiner/confirmRep/:mid/:aid', apiResponse('Joiner', 'confirmRepByAdmin', true, ['params.mid', 'params.aid', 'user']));
 router.delete('/joiner/deleteRep/:mid', apiResponse('Joiner', 'deleteRepRequest', true, ['user', 'params.mid']));
-router.delete('/Joiner/deleteRepBizOrg/:mid', apiResponse('Joiner', 'deleteRepAndHisCompany', true, ['params.mid']));
+router.delete('/joiner/deleteRepBizOrg/:mid', apiResponse('Joiner', 'deleteRepAndHisCompany', true, ['params.mid']));
 
 // upsert/delete a membeship(rep/regular)
 router.delete('/joiner/delete/membership/:mid', apiResponse('Joiner', 'deleteUserMembership', true, ['params.mid', 'user.pid']));
