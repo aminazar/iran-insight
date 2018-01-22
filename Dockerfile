@@ -5,13 +5,13 @@ RUN addgroup -g 997 -S app \
 # Working directory for application
 RUN mkdir /iran_insight
 ADD . /iran_insight
+RUN npm i
+# Binds to port 3000
+EXPOSE 3000
 # write access to public documents folder
 RUN chown -R app:app /iran_insight/public
 USER app
 WORKDIR /iran_insight
-RUN npm i
-# Binds to port 3000
-EXPOSE 3000
 # Creates a mount point
 VOLUME [ "/usr/src/app" ]
 CMD ["npm", "start"]
