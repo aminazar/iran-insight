@@ -16,8 +16,6 @@ RUN apk update && \
     # Set the timezone based on the `TZ` variable above.
     cp /usr/share/zoneinfo/${TZ} /etc/localtime && \
     echo "${TZ}" > /etc/timezone && \
-    # Set the nginx config. Nginx should be run as the default Docker image's
-    # user so this has to be commented out in the config.
     # Setup permissions for directories and files that will be written to at runtime.
     # These need to be group-writeable for the default Docker image's user.
     # To do this, the folders are created, their group is set to the root
@@ -50,9 +48,7 @@ RUN chgrp -R 0 /tmp/app /.config && \
     chmod -R g=u /tmp/app /.config && \
     cp -a /tmp/app/. /usr/src/app && \
     rm -rf /tmp/app && \
-    # Ensure the start script is executable
-    chmod +x start.sh
-
+    
 # Specify the command to run when the container starts.
 CMD ["npm" , "start"]
 
