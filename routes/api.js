@@ -281,6 +281,7 @@ router.post('/suggest', apiResponse('SearchSystem', 'suggest', false, ['body']))
 router.post('/searchOnProduct/:offset/:limit', apiResponse('SearchSystem', 'searchOnProduct', false, ['product','body', 'params.offset', 'params.limit']));
 
 //External Data API
+router.put('/exdata/init', apiResponse('ExternalData', 'set', true, ['body']));
 router.post('/exdata/get/:offset/:limit', apiResponse('ExternalData', 'get', true, ['body', 'params.offset', 'params.limit']));
 router.get('/exdata/cat', apiResponse('ExternalData', 'getCategories', true, []));
 router.put('/exdata/batch', apiResponse('ExternalData', 'batchInsert', true, ['body', 'user.pid']));

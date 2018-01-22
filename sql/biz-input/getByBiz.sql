@@ -7,6 +7,8 @@ select
     person.surname_en as person_surname,
     person.firstname_fa as person_firstname_fa,
     person.surname_fa as person_surname_fa,
+    person.display_name_en as person_display_name,
+    person.display_name_fa as person_display_name_fa,
     claim_person.firstname_en as claimed_by_firstname,
     claim_person.surname_en as claimed_by_surname,
     claim_person.firstname_fa as claimed_by_firstname_fa,
