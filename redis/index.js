@@ -19,8 +19,9 @@ let redisClientInit = () => {
       if (env.redisPass)
         option['password'] = env.redisPass;
 
-      redis_client = redis.createClient(env.redisURL ? env.redisURL : option);
-      redis_sub = redis.createClient(option);
+      let conn = env.redisURL ? env.redisURL : option;
+      redis_client = redis.createClient(conn);
+      redis_sub = redis.createClient(conn);
 
       bluebird.promisifyAll(redis.RedisClient.prototype);
       bluebird.promisifyAll(redis.Multi.prototype);
