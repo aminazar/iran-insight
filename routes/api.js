@@ -150,7 +150,7 @@ router.delete('/person/partnership/:pid', apiResponse('Person', 'deletePartnersh
 // Business API
 router.get('/business/one/:bid', apiResponse('Business', 'getOne', false, ['params']));
 router.post('/business/one/delete/:bid', apiResponse('Business', 'endBiz', false, ['params.bid', 'user.pid', 'body.end_date']));
-router.get('/business/oneAll/:bid', apiResponse('Business', 'getOneAll', false, ['params']));
+router.get('/business/oneAll/:bid', apiResponse('Business', 'getOne', false, ['params']));
 router.delete('/business/:bid', apiResponse('Business', 'deleteBiz', true, ['params.bid']));
 router.post('/business/profile', apiResponse('Business', 'setProfile', false, ['body', 'user.pid']));
 router.get('/product/all', apiResponse('Business', 'getAllProducts', false));
@@ -281,6 +281,7 @@ router.post('/suggest', apiResponse('SearchSystem', 'suggest', false, ['body']))
 router.post('/searchOnProduct/:offset/:limit', apiResponse('SearchSystem', 'searchOnProduct', false, ['product','body', 'params.offset', 'params.limit']));
 
 //External Data API
+router.put('/exdata/init', apiResponse('ExternalData', 'set', true, ['body']));
 router.post('/exdata/get/:offset/:limit', apiResponse('ExternalData', 'get', true, ['body', 'params.offset', 'params.limit']));
 router.get('/exdata/cat', apiResponse('ExternalData', 'getCategories', true, []));
 router.put('/exdata/batch', apiResponse('ExternalData', 'batchInsert', true, ['body', 'user.pid']));
