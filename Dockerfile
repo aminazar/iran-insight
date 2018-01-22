@@ -47,7 +47,7 @@ COPY . /tmp/app
 RUN chgrp -R 0 /tmp/app /.config && \
     chmod -R g=u /tmp/app /.config && \
     cp -a /tmp/app/. /usr/src/app && \
-    rm -rf /tmp/app && \
+    rm -rf /tmp/app
     
 # Specify the command to run when the container starts.
 CMD ["npm" , "start"]
