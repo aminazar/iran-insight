@@ -7,7 +7,7 @@
 const debug = require('debug')('node-express-seed:server');
 const http = require('http');
 const socket = require('../socket');
-
+const env = require('../env');
 /**
  * Get port from environment and store in Express.
  */
@@ -17,7 +17,7 @@ appWaiter = setInterval(() => {
     console.log('App is set up!');
     clearInterval(appWaiter);
     app = require('../app').get();
-    const port = normalizePort(process.env.PORT || '3000');
+    const port = normalizePort(env.port || '3000');
     app.set('port', port);
 
     /**
