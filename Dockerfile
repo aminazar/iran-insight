@@ -6,7 +6,7 @@ RUN addgroup -g 997 -S app \
 RUN mkdir /iran_insight
 ADD . /iran_insight
 # write access to public documents folder
-RUN chown -R app:app /iran_insight/public/documents
+RUN chown -R app:app /iran_insight/public
 USER app
 WORKDIR /iran_insight
 RUN npm i
