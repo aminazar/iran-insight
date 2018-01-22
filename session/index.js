@@ -14,7 +14,7 @@ let setup = (app) => {
     redis.redisClientInit()
       .then(() => {
 
-        let sessionStore = new redisStore(env.isProd ? {url: process.env.REDIS_URL} : {
+        let sessionStore = new redisStore(env.isProd ? {url: env.redisURL} : {
           "client": redis.redis_client(),
           "host": "127.0.0.1",
           "port": 6379
