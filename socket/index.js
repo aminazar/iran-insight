@@ -32,7 +32,7 @@ let setup = (http) => {
         //   success: onAuthorizeSuccess,
         //   fail: onAuthorizeFail
         // }));
-        // io.adapter(redis.redis_socket(env.isProd ? {url: process.env.REDIS_URL} : {host: 'localhost', port: 6379}));
+        // io.adapter(redis.redis_socket(env.isProd ? {url: env.redisURL} : {host: 'localhost', port: 6379}));
         // // io.set('transports', ['websocket']);
         //
         // let socketSession = socketIOSession(session.session_config());
