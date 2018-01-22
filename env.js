@@ -1,5 +1,5 @@
 const promise = Promise;
-const bCrypt = require('bcrypt-nodejs');
+const bcrypt = require('bcrypt-nodejs');
 const app = require('express')();
 const options = {
   promiseLib: promise,
@@ -120,7 +120,7 @@ function getEnvValue(procEnv) {
 }
 
 module.exports = {
-  bCrypt,
+  bcrypt,
   isProd: isProd,
   isDev: isDev,
   appAddress,
