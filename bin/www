@@ -4,10 +4,11 @@
  * Module dependencies.
  */
 
+const env = require('../env');
+console.log(env.isProd);
 const debug = require('debug')('node-express-seed:server');
 const http = require('http');
 const socket = require('../socket');
-const env = require('../env');
 /**
  * Get port from environment and store in Express.
  */
