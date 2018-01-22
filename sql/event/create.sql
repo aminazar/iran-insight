@@ -1,8 +1,8 @@
  create table if not exists event(
     eid serial not null primary key,
-    organizer_pid integer references person(pid) on delete set null,
-    organizer_oid integer references organization(oid) on delete set null,
-    organizer_bid integer references business(bid) on delete set null,
+    organizer_pid integer references person(pid) on delete cascade,
+    organizer_oid integer references organization(oid) on delete cascade,
+    organizer_bid integer references business(bid) on delete cascade,
     title varchar(100) not null unique,
     title_fa varchar(100) unique,
     address varchar(100),
