@@ -14,4 +14,4 @@ USER app
 WORKDIR /iran_insight
 # Creates a mount point
 VOLUME [ "/usr/src/app" ]
-CMD ["npm", "start"]
+CMD ["npm", "start", "prod"]
