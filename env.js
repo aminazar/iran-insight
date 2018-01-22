@@ -36,8 +36,9 @@ if (isDev)
  *  App
  */
 
-const appName = process.env.APP_NAME;
-const appAddress = process.env.APP_ADDRESS;
+const appName = getEnvValue(process.env.APP_NAME);
+const appAddress = getEnvValue(process.env.APP_ADDRESS);
+const port = getEnvValue(process.env.PORT);
 
 
 /**
@@ -50,17 +51,17 @@ uploadPath = "public/documents/profile-image";
  * Mail Configs
  */
 const mailConfig = {
-  host: process.env.MAIL_CONFIG_HOST,
-  port: process.env.MAIL_CONFIG_PORT,
+  host: getEnvValue(process.env.MAIL_CONFIG_HOST),
+  port: getEnvValue(process.env.MAIL_CONFIG_PORT),
   secure: true,
   auth: {
-    user: process.env.MAIL_CONFIG_AUTH_USER,
-    pass: process.env.MAIL_CONFIG_AUTH_PASS
+    user: getEnvValue(process.env.MAIL_CONFIG_AUTH_USER),
+    pass: getEnvValue(process.env.MAIL_CONFIG_AUTH_PASS)
   },
   tls: {
     rejectUnauthorized: false
   },
-  from: process.env.MAIL_CONFIG_FROM
+  from: getEnvValue(process.env.MAIL_CONFIG_FROM)
 };
 const mailPeriodConfig = {
   minute: 5,
@@ -71,13 +72,13 @@ const mailPeriodConfig = {
 /**
  * Database
  */
-const pgConnection = process.env.PG_CONNECTION;
-const database = process.env.DATABASE;
-const connectionString = process.env.PG_CONNECTION + process.env.DATABASE;
-const db_name = process.env.DATABASE;
-const test_db_name = process.env.DATABASE + '_test';
-const testConnectionString = process.env.PG_CONNECTION + test_db_name;
-const initDb = pgp(process.env.PG_CONNECTION + process.env.INIT_DB);
+const pgConnection = getEnvValue(process.env.PG_CONNECTION);
+const database = getEnvValue(process.env.DATABASE);
+const connectionString = getEnvValue(process.env.PG_CONNECTION) + getEnvValue(process.env.DATABASE);
+const db_name = getEnvValue(process.env.DATABASE);
+const test_db_name = getEnvValue(process.env.DATABASE) + '_test';
+const testConnectionString = getEnvValue(process.env.PG_CONNECTION) + test_db_name;
+const initDb = pgp(getEnvValue(process.env.PG_CONNECTION) + getEnvValue(process.env.INIT_DB));
 const db = pgp(connectionString);
 const testDb = pgp(testConnectionString);
 const pgm = require('pg-monitor');
@@ -101,8 +102,22 @@ pgm.attach(options);
 /**
  * Redis
  */
-const redisURL = process.env.REDIS_URL;
-const redisPass = process.env.REDIS_PASSWORD;
+const redisURL = getEnvValue(process.env.REDIS_URL);
+const redisPass = getEnvValue(process.env.REDIS_PASSWORD);
+
+/**
+ *  in some cases env var name which is declared in .env file is not compatible with server env var in production mode.
+ *  for example in Heroku the name of env var for database connection is DATABASE_URL, but it is declared as pg_connection in .env file
+ *  To resolve this if the name of env var contains !! at first, its value will be extracted from name after this two character
+ * @param procEnv
+ * @returns {*}
+ */
+function getEnvValue(procEnv) {
+  if (procEnv && procEnv.startsWith('!!'))
+    return process.env[procEnv.substring(2)]; // remove two first char (!!)
+  else
+    return procEnv;
+}
 
 module.exports = {
   bCrypt,
@@ -111,6 +126,7 @@ module.exports = {
   appAddress,
   appName,
   app,
+  port,
   uploadPath,
   mailConfig,
   mailPeriodConfig,
