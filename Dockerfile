@@ -10,7 +10,9 @@ ENV TZ=Asia/Tehran \
 
 # Install the required packages. Find any additional packages from [the Alpine
 # package explorer](https://pkgs.alpinelinux.org/packages).
-RUN 
+RUN apk update && \
+    apk add tzdata curl bash ca-certificates rsync supervisor nginx \
+            python python-dev py-pip build-base libpng-dev autoconf automake nasm libtool && \
     # Set the timezone based on the `TZ` variable above.
     cp /usr/share/zoneinfo/${TZ} /etc/localtime && \
     echo "${TZ}" > /etc/timezone && \
