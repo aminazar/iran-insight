@@ -14,11 +14,13 @@ let setup = (app) => {
     redis.redisClientInit()
       .then(() => {
 
-        let sessionStore = new redisStore(env.isProd ? {url: env.redisURL} : {
+      let option = {
           "client": redis.redis_client(),
-          "host": "127.0.0.1",
+          "host": env.redisHost,
           "port": 6379
-        });
+        };
+        let conn = env.redisURL ? env.redisURL : option;
+        let sessionStore = new redisStore(conn);
 
         //Initialize session with settings for production
         session_config = {

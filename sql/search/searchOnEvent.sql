@@ -24,12 +24,13 @@ left outer join organization on event.organizer_oid = organization.oid
 where
     (${show_all} = true)
     or(
-        lower(event.title) like '%'||lower(${phrase})||'%'
+        (  lower(event.title) like '%'||lower(${phrase})||'%'
         or lower(event.title_fa) like '%'||lower(${phrase})||'%'
         or lower(event.address) like '%'||lower(${phrase})||'%'
         or lower(event.address_fa) like '%'||lower(${phrase})||'%'
         or lower(event.description) like '%'||lower(${phrase})||'%'
         or lower(event.description_fa) like '%'||lower(${phrase})||'%'
+        or ${phrase} is null)
         and (
            (${start_date} is not null and ${end_date} is not null and event.start_date >= ${start_date} and event.end_date <= ${end_date})
            or
@@ -39,5 +40,12 @@ where
            or
            (${start_date} is null and ${end_date} is null)
            )
+        and (
+            ${related_to_id} is null or (${related_to_id} is not null and (
+                    (lower(${related_to_name}) = 'person' and person.pid = ${related_to_id})
+                or  (lower(${related_to_name}) = 'organizatoin' and organization.oid = ${related_to_id})
+                or  (lower(${related_to_name}) = 'business' and business.bid = ${related_to_id})
+            ))
+        )
     )) as t
 order by t.eid DESC limit ${limit} offset ${offset}
