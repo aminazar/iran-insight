@@ -133,7 +133,7 @@ router.get('/expertise/:expertise_id', apiResponse('Expertise', 'get', false, ['
 router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['user', 'body']));
 router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, ['user.pid', 'params.pid']));
 router.delete('/expertise/:pid/:expertise_id', apiResponse('Person', 'deleteExpertise', false, ['user', 'params.pid', 'params.expertise_id']));
-
+router.delete('/expertise/:expertise_id', apiResponse('Expertise', 'deleteExpertise', true, ['user.pid', 'params.expertise_id']));
 
 // Notification
 router.post('/user/notify', apiResponse('Person', 'changeNotifyType', false, ['user.pid', 'body']));
