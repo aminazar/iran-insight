@@ -4,8 +4,6 @@
 /dist
 /tmp
 
-dump.rdb
-
 # dependencies
 /node_modules
 /bower_components
