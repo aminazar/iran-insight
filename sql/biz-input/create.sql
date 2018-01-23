@@ -1,6 +1,6 @@
 create table if not exists ${tableName~}(
     id serial not null primary key,
-    assoc_id integer not null references association(aid),
+    assoc_id integer not null references association(aid) on delete cascade,
     ${extraSQL^}
     claimed_by integer not null references person(pid),
     confirmed_by integer references person(pid),

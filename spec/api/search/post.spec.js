@@ -633,10 +633,8 @@ describe('Search System', () => {
         console.log(res.body);
         expect(res.statusCode).toBe(200);
         expect(res.body.event).toBeTruthy();
-        expect(res.body.event.length).toBe(2);
-        expect(res.body.event.map(el => el.title.toLowerCase())).toContain('shake well before using');
+        expect(res.body.event.length).toBe(1);
         expect(res.body.event.map(el => el.title.toLowerCase())).toContain('ict in world');
-        expect(res.body.event.map(el => el.person_display_name_en && el.person_display_name_en.toLowerCase())).toContain('asghar taraghe');
         done();
       })
       .catch(lib.helpers.errorHandler.bind(this));
@@ -962,6 +960,41 @@ describe('Search System', () => {
       })
       .catch(lib.helpers.errorHandler.bind(this));
   });
+
+  it("(searching) should get all events related to specific person", function (done) {
+    this.done = done;
+    rp({
+      method: 'post',
+      body: {
+        phrase: null,
+        options: {
+          target: {
+            event: true,
+          },
+          relatedTo: {
+            id: 20,
+            name: 'person',
+          },
+        }
+      },
+      uri: lib.helpers.apiTestURL('search/0/10'),
+      jar: pJar,
+      json: true,
+      resolveWithFullResponse: true
+    })
+      .then(res => {
+        console.log(res.body);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.event).toBeTruthy();
+        expect(res.body.event.length).toBe(1);
+        expect(res.body.event.map(el => el.title.toLowerCase())).toContain('shake well before using');
+        expect(res.body.event.map(el => el.title_fa.toLowerCase())).toContain('قبل از مصرف خوب تکان دهید');
+        done();
+      })
+      .catch(lib.helpers.errorHandler.bind(this));
+  });
+
+
 
   //Suggesting
   it('(suggestion) should get all expertise match phrase except expertise that specific user has', function (done) {
