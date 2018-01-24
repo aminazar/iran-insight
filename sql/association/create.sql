@@ -10,5 +10,3 @@ create table if not exists association(
     CHECK (start_time <= end_time),
     constraint chk_association check ((pid is not null and bid is not null and oid is null) or (pid is not null and oid is not null and bid is null) or (bid is not null and oid is not null and pid is null))
 );
-
-

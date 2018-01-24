@@ -133,7 +133,7 @@ router.get('/expertise/:expertise_id', apiResponse('Expertise', 'get', false, ['
 router.post('/user/expertise', apiResponse('Person', 'setExpertise', false, ['user', 'body']));
 router.get('/user/:pid/expertise', apiResponse('Person', 'getExpertise', false, ['user.pid', 'params.pid']));
 router.delete('/expertise/:pid/:expertise_id', apiResponse('Person', 'deleteExpertise', false, ['user', 'params.pid', 'params.expertise_id']));
-
+router.delete('/expertise/:expertise_id', apiResponse('Expertise', 'deleteExpertise', true, ['user.pid', 'params.expertise_id']));
 
 // Notification
 router.post('/user/notify', apiResponse('Person', 'changeNotifyType', false, ['user.pid', 'body']));
@@ -169,7 +169,7 @@ router.get('/business/product/one/:business_id', apiResponse('Business', 'onePro
 router.get('/joiner/getRepPendingList', apiResponse('Joiner', 'findRepRequests', true));
 router.put('/joiner/confirmRep/:mid/:aid', apiResponse('Joiner', 'confirmRepByAdmin', true, ['params.mid', 'params.aid', 'user']));
 router.delete('/joiner/deleteRep/:mid', apiResponse('Joiner', 'deleteRepRequest', true, ['user', 'params.mid']));
-router.delete('/Joiner/deleteRepBizOrg/:mid', apiResponse('Joiner', 'deleteRepAndHisCompany', true, ['params.mid']));
+router.delete('/joiner/deleteRepBizOrg/:mid', apiResponse('Joiner', 'deleteRepAndHisCompany', true, ['params.mid']));
 
 // upsert/delete a membeship(rep/regular)
 router.delete('/joiner/delete/membership/:mid', apiResponse('Joiner', 'deleteUserMembership', true, ['params.mid', 'user.pid']));

@@ -1,6 +1,6 @@
 create table if not exists membership(
     mid serial not null primary key,
-    assoc_id integer not null references association(aid) on delete cascade,
+    assoc_id integer not null references association(aid),
     is_active boolean default false not null,
     is_representative boolean default false not null,
     start_time date not null default current_date,
