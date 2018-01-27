@@ -205,7 +205,7 @@ router.delete('/lce/:type/:id', apiResponse('LCE', 'deleteLCE', false, ['params.
 
 // types
 router.post('/type/:name', apiResponse('Type', 'suggest', false, ['user.pid', 'params.name', 'body']));
-router.put('/type/:name/:type_id', apiResponse('Type', 'update', true, ['params.name', 'params.type_id', 'body']));
+router.put('/type/:name/:type_id', apiResponse('Type', 'update', true, ['params.name', 'params.type_id', 'body', 'user']));
 router.delete('/type/:name/:type_id', apiResponse('Type', 'delete', true, ['params.name', 'params.type_id']));
 router.get('/type/getCats', apiResponse('Type', 'getTypes', true, []));
 router.get('/type/:name/:type_id', apiResponse('Type', 'getInfo', true, ['params.name', 'params.type_id']));
