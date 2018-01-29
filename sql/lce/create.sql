@@ -1,7 +1,7 @@
 CREATE TABLE if not exists  ${tableName~}( -- lce or organization_lce
     id serial not null primary key,
-    id1 integer not null references ${possessorName~}(${possessorIdName~}),
-    id2 integer references ${possessorName~}(${possessorIdName~}),
+    id1 integer not null references ${possessorName~}(${possessorIdName~}) on delete cascade,
+    id2 integer references ${possessorName~}(${possessorIdName~}) on delete set null,
     start_date timestamp with time zone NOT NULL,
     end_date timestamp with time zone ,
     description varchar (200),
